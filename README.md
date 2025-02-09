@@ -11,7 +11,7 @@ Chat-based RPG app built with Next.js
 - Drizzle ORM
 - Auth.js
 
-## For the developers
+## Developers
 
 ### Installation
 
@@ -30,6 +30,7 @@ Chat-based RPG app built with Next.js
 - [ ] Zod for validation (should be configurable with drizzle)
 - [ ] Configurable dictionary (consider just reading a json file at build time - less flexible but easier)
 - [ ] More Auth options
+- [ ] Roled-based access (admin, master, user)
 
 ### Utils
 

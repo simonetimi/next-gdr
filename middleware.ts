@@ -25,8 +25,6 @@ export default auth((req) => {
   if (isAuthRoute && isLoggedIn) {
     return Response.redirect(new URL("/", nextUrl));
   }
-
-  return null;
 });
 
 export const config = {
