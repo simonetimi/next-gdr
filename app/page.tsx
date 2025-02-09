@@ -5,8 +5,6 @@ import { Logout } from "@/components/auth/Logout";
 export default async function Home() {
   const session = await auth();
 
-  if (session) console.log(session.user);
-
   return (
     <main className="flex items-center justify-center h-screen gap-6 flex-col">
       <h1>Next GdR</h1>

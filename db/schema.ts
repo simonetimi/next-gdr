@@ -28,6 +28,7 @@ export const users = pgTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   role: text("role").default("user"),
+  isBanned: boolean("is_banned").default(false),
 });
 
 export const accounts = pgTable(

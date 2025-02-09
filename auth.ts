@@ -1,44 +1,71 @@
-import authConfig from "@/auth.config";
 import { db } from "@/db/db";
-import { users } from "@/db/schema";
+import {
+  users,
+  accounts,
+  sessions,
+  verificationTokens,
+  authenticators,
+} from "@/db/schema";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
+import { Provider } from "next-auth/providers";
+import GitHub, { GitHubProfile } from "next-auth/providers/github";
+
+const providers: Provider[] = [
+  GitHub({
+    profile(profile: GitHubProfile) {
+      return {
+        ...profile,
+        id: profile.id.toString(),
+        role: (profile.role as string) ?? "user",
+        image: profile.avatar_url,
+      };
+    },
+  }),
+];
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: DrizzleAdapter(db),
-  session: { strategy: "jwt" },
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+    authenticatorsTable: authenticators,
+  }),
+  session: {
+    maxAge: 60 * 30, // in seconds, before expiring (no requests)
+    updateAge: 60, // in seconds, interval for refreshing the age
+  },
   callbacks: {
     authorized: async ({ auth }) => {
       return !!auth;
     },
-    async jwt({ token, user }) {
-      if (user?.id) {
+    async signIn({ user }) {
+      if (user) {
         const result = await db
-          .selectDistinct({ role: users.role })
+          .selectDistinct({ role: users.role, isBanned: users.isBanned })
           .from(users)
-          .where(eq(users.id, user.id));
-
-        token.id = user.id;
-        token.role = result[0].role ?? "user";
+          .where(eq(users.id, user.id!))
+          .limit(1);
+        const { isBanned, role } = result[0];
+        user.name = role;
+        // TODO customize redirect if user is banned. can return a string (acts as callback url)
+        if (!isBanned) return true;
       }
-      return token;
+      return false;
     },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-      }
+    async session({ session }) {
       return session;
     },
   },
   pages: {
     signIn: "/signin",
   },
-  ...authConfig,
+  providers,
 });
 
-export const providerMap = authConfig.providers
+export const providerMap = providers
   .map((provider) => {
     if (typeof provider === "function") {
       const providerData = provider();

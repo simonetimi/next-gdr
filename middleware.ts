@@ -1,7 +1,4 @@
-import authConfig from "@/auth.config";
-import NextAuth from "next-auth";
-
-const { auth } = NextAuth(authConfig);
+import { auth } from "@/auth";
 
 // Define protected routes
 const protectedRoutes = ["/game"];
@@ -15,6 +12,8 @@ export default auth((req) => {
   const isProtectedRoute = protectedRoutes.some((route) =>
     nextUrl.pathname.startsWith(route)
   );
+
+  // unlogged user accessing protected routes
   if (isProtectedRoute && !isLoggedIn) {
     return Response.redirect(new URL("/login", nextUrl));
   }
@@ -22,10 +21,12 @@ export default auth((req) => {
   const isAuthRoute = authRoutes.some((route) =>
     nextUrl.pathname.startsWith(route)
   );
+  // logged user accesing auth routes
   if (isAuthRoute && isLoggedIn) {
     return Response.redirect(new URL("/", nextUrl));
   }
 
+  // admin user accessing admin routes
   const isAdminRoute = adminRoutes.some((route) =>
     nextUrl.pathname.startsWith(route)
   );
