@@ -48,12 +48,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .from(users)
           .where(eq(users.id, user.id!))
           .limit(1);
+
+        /// first login
+        if (!result.length) return true;
+
         const { isBanned, role } = result[0];
         user.name = role;
-        // TODO customize redirect if user is banned. can return a string (acts as callback url)
-        if (!isBanned) return true;
+
+        // redirect to banned page
+        if (isBanned) return "/banned";
       }
-      return false;
+      return true;
     },
     async session({ session }) {
       return session;
