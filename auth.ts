@@ -5,7 +5,7 @@ import {
   sessions,
   verificationTokens,
   authenticators,
-} from "@/db/schema";
+} from "@/db/schema/auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
