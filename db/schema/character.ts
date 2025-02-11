@@ -1,13 +1,5 @@
 import { users } from "@/db/schema/auth";
-import { integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-
-export const relationshipEnum = pgEnum("relationship_type", [
-  "friend",
-  "enemy",
-  "acquaintance",
-  "romantic",
-  "family",
-]);
+import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const characters = pgTable("character", {
   id: text("id")
@@ -37,5 +29,5 @@ export const characterFriends = pgTable("character_friend", {
   friendId: text("friend_id")
     .notNull()
     .references(() => characters.id, { onDelete: "cascade" }),
-  relationshipType: relationshipEnum("relationship_type").notNull(),
+  relationshipType: text("relationship_type").notNull(),
 });

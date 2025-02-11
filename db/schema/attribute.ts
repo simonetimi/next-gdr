@@ -1,18 +1,11 @@
 import { characters } from "@/db/schema/character";
-import { integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
-
-export const attributeEnum = pgEnum("attribute_type", [
-  "spirit",
-  "strength",
-  "agility",
-  "intelligence",
-]);
+import { integer, pgTable, text } from "drizzle-orm/pg-core";
 
 export const attributes = pgTable("attribute", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: attributeEnum("name").notNull().unique(),
+  name: text("name").notNull().unique(),
 });
 
 export const characterAttributes = pgTable("character_attribute", {
