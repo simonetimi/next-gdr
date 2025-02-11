@@ -11,6 +11,7 @@ import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
 import { Provider } from "next-auth/providers";
 import GitHub, { GitHubProfile } from "next-auth/providers/github";
+import { BANNED_ROUTE, LOGIN_ROUTE } from "@/utils/routes";
 
 const providers: Provider[] = [
   GitHub({
@@ -56,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user.name = role;
 
         // redirect to banned page
-        if (isBanned) return "/banned";
+        if (isBanned) return BANNED_ROUTE;
       }
       return true;
     },
@@ -65,7 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/signin",
+    signIn: LOGIN_ROUTE,
   },
   providers,
 });
