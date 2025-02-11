@@ -65,14 +65,14 @@ h6 {
 /* CSS reset - end */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: @apply bg-white;
+  --foreground: @apply bg-gray-500;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: @apply bg-gray-800;
+    --foreground: @apply bg-white;
   }
 }
 
