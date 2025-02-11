@@ -28,7 +28,7 @@ Chat-based RPG app built with Next.js
 
 - [ ] SWR for fetching data
 - [ ] Zod for validation (should be configurable with drizzle)
-- [ ] Configurable dictionary (consider just reading a json file at build time - less flexible but easier)
+- [x] Configurable dictionary
 - [ ] More Auth options
 - [x] Roled-based access (admin, master, user)
 
