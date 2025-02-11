@@ -18,6 +18,7 @@ export const users = pgTable("user", {
   image: text("image"),
   role: text("role").default("user"),
   isBanned: boolean("is_banned").default(false),
+  hasCharacter: boolean("has_character").default(false),
 });
 
 export const accounts = pgTable(

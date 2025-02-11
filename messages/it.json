@@ -1,0 +1,22 @@
+{
+  "page": {
+    "newCharacter": {
+      "title": "Nuovo Personaggio",
+      "name": {
+        "label": "Nome",
+        "placeholder": "Nome del personaggio",
+        "error": "Nome non valido"
+      },
+      "lastName": {
+        "label": "Cognome",
+        "placeholder": "Cognome del personaggio",
+        "error": "Cognome non valido"
+      },
+      "race": {
+        "label": "Razza",
+        "placeholder": "Seleziona una razza"
+      },
+      "submit": "Crea!"
+    }
+  }
+}
