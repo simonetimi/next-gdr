@@ -1,5 +1,8 @@
 {
-  "page": {
+  "pages": {
+    "index": {
+      "enter": "Entra"
+    },
     "newCharacter": {
       "title": "Nuovo Personaggio",
       "name": {

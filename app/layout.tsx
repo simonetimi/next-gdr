@@ -28,10 +28,7 @@ export default async function RootLayout({
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html
-      lang={locale}
-      className="system scroll-smooth text-black dark:text-white"
-    >
+    <html lang={locale} className="system scroll-smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
