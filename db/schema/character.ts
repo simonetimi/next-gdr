@@ -1,5 +1,6 @@
 import { users } from "@/db/schema/auth";
 import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const characters = pgTable("character", {
   id: text("id")
@@ -8,12 +9,18 @@ export const characters = pgTable("character", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  name: text("name").notNull().unique(),
-  creation: timestamp("creation", { mode: "date" }).defaultNow().notNull(),
-  race: text("race").references(() => races.id),
+  firstName: text("first_name").notNull().unique(),
+  lastName: text("last_name").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  raceId: text("race_id")
+    .references(() => races.id)
+    .notNull(),
   currentExperience: integer("current_experience").default(0),
   totalExperience: integer("total_experience").default(0),
 });
+
+export const characterInsertSchema = createInsertSchema(characters);
+export const characterSelectSchema = createSelectSchema(characters);
 
 export const races = pgTable("race", {
   id: text("id")

@@ -9,5 +9,10 @@ export default async function GamePage() {
 
   if (!session.user.hasCharacter) return redirect(NEW_CHARACTER_ROUTE);
 
-  return <div>Main page of the game (protected!)</div>;
+  return (
+    <div>
+      Main page of the game (protected). If you can see this, you have a
+      character
+    </div>
+  );
 }

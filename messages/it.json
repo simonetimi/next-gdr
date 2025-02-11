@@ -19,7 +19,8 @@
         "label": "Razza",
         "placeholder": "Seleziona una razza"
       },
-      "submit": "Crea!"
+      "submit": "Crea!",
+      "play": "Vai al gioco!"
     }
   }
 }

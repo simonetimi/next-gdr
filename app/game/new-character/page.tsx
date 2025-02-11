@@ -1,4 +1,4 @@
-import { getRaces } from "@/app/actions/game";
+import { getRaces } from "@/server/actions/game";
 import NewCharacterForm from "@/components/forms/NewCharacter";
 
 export default async function NewChacterPage() {
