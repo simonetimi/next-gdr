@@ -1,4 +1,6 @@
 import { signIn } from "@/auth";
+import { Button } from "@heroui/button";
+import { Github } from "lucide-react";
 
 export default function Login() {
   return (
@@ -8,7 +10,9 @@ export default function Login() {
         await signIn("github", { redirectTo: "/" });
       }}
     >
-      <button type="submit">Sign in</button>
+      <Button type="submit" color="primary" startContent={<Github />}>
+        Login with GitHub
+      </Button>
     </form>
   );
 }

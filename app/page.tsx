@@ -11,8 +11,7 @@ export default async function Home() {
   const t = await getTranslations("pages.index");
 
   return (
-    <main className="flex h-screen flex-col items-center justify-center gap-6">
-      <h1>Next GdR</h1>
+    <main className="flex min-h-[92vh] flex-1 flex-col items-center justify-center gap-6">
       {session ? (
         <div className="flex flex-col gap-4">
           <p>Welcome, {session.user?.name}!</p>

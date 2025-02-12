@@ -4,7 +4,7 @@ export default function GameLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-col h-screen w-screen items-center justify-center">
+    <main className="flex min-h-[92vh] flex-1 flex-col items-center justify-center gap-6">
       {children}
     </main>
   );

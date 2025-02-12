@@ -1,4 +1,5 @@
 import { signOut } from "@/auth";
+import { Button } from "@heroui/button";
 
 export function Logout() {
   return (
@@ -8,7 +9,9 @@ export function Logout() {
         await signOut();
       }}
     >
-      <button type="submit">Sign Out</button>
+      <Button type="submit" color="danger">
+        Logout
+      </Button>
     </form>
   );
 }
