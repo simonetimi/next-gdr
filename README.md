@@ -10,6 +10,9 @@ Chat-based RPG app built with Next.js
 - Hero UI
 - Drizzle ORM
 - Auth.js
+- React-draggable
+- Zod
+- react-rnd
 
 ## Developers
 
@@ -24,13 +27,18 @@ Chat-based RPG app built with Next.js
 
 -
 
-### TODO
+### Features to implement
 
 - [ ] SWR for fetching data
-- [ ] Zod for validation (should be configurable with drizzle)
+- [x] Zod for validation (should be configurable with drizzle)
 - [x] Configurable dictionary
 - [ ] More Auth options
 - [x] Roled-based access (admin, master, user)
+- [x] Movable windows (react-rnd)
+
+### Bugs
+
+- [ ] White flashing on route navigation
 
 ### Utils
 

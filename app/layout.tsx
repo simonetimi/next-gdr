@@ -33,12 +33,14 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-screen antialiased`}
       >
-        <Providers>
-          <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
             <Header />
-            {children}
-          </NextIntlClientProvider>
-        </Providers>
+            <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
+              {children}
+            </main>
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

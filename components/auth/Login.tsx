@@ -2,12 +2,14 @@ import { signIn } from "@/auth";
 import { Button } from "@heroui/button";
 import { Github } from "lucide-react";
 
+// TODO replace lucide github icon with svg
+
 export default function Login() {
   return (
     <form
       action={async () => {
         "use server";
-        await signIn("github", { redirectTo: "/" });
+        await signIn("github");
       }}
     >
       <Button type="submit" color="primary" startContent={<Github />}>
