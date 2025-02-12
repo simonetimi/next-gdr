@@ -19,7 +19,6 @@ export default async function Home() {
           <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
             {t("enter")}
           </Button>
-          <Logout />
         </div>
       ) : (
         <Login />

@@ -1,25 +1,31 @@
 import { auth } from "@/auth";
+import {
+  ADMIN_ROUTE,
+  GAME_ROUTE,
+  LOGIN_ROUTE,
+  SIGNUP_ROUTE,
+} from "@/utils/routes";
 
 // Define protected routes
-const protectedRoutes = ["/game"];
-const authRoutes = ["/login", "/signup"];
-const adminRoutes = ["/admin"];
+const protectedRoutes = [GAME_ROUTE];
+const authRoutes = [LOGIN_ROUTE, SIGNUP_ROUTE];
+const adminRoutes = [ADMIN_ROUTE];
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
 
   const isProtectedRoute = protectedRoutes.some((route) =>
-    nextUrl.pathname.startsWith(route)
+    nextUrl.pathname.startsWith(route),
   );
 
-  // unlogged user accessing protected routes
+  // anonym user accessing protected routes
   if (isProtectedRoute && !isLoggedIn) {
-    return Response.redirect(new URL("/login", nextUrl));
+    return Response.redirect(new URL("/", nextUrl));
   }
 
   const isAuthRoute = authRoutes.some((route) =>
-    nextUrl.pathname.startsWith(route)
+    nextUrl.pathname.startsWith(route),
   );
   // logged user accesing auth routes
   if (isAuthRoute && isLoggedIn) {
@@ -28,7 +34,7 @@ export default auth((req) => {
 
   // admin user accessing admin routes
   const isAdminRoute = adminRoutes.some((route) =>
-    nextUrl.pathname.startsWith(route)
+    nextUrl.pathname.startsWith(route),
   );
   if (isAdminRoute && isLoggedIn && req.auth?.user.role !== "admin") {
     return Response.redirect(new URL("/", nextUrl));
