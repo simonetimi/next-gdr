@@ -35,6 +35,7 @@ Chat-based RPG app built with Next.js
 - [ ] More Auth options
 - [x] Roled-based access (admin, master, user)
 - [x] Movable windows (react-rnd)
+- [ ] Error management when calling server actions
 
 ### Bugs
 

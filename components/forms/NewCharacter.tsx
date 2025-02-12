@@ -2,7 +2,7 @@
 
 import { characterSelectSchema } from "@/db/schema/character";
 import { Race } from "@/models/characters";
-import { createCharacter } from "@/server/actions/game";
+import { createCharacter } from "@/server/actions/character";
 import { GAME_ROUTE } from "@/utils/routes";
 import { Form } from "@heroui/form";
 import { Button, Input, Link, Select, SelectItem } from "@heroui/react";

@@ -30,7 +30,7 @@ export default function ControlNavbar() {
   return (
     <>
       {
-        // the draggable components are conditionally rendered depending on their state
+        // the draggable components are groupped here and conditionally rendered depending on their state
       }
       {isExampleMovableOpen && (
         <Movable
@@ -41,7 +41,7 @@ export default function ControlNavbar() {
         />
       )}
       <Navbar
-        className="h-14 w-[800px] rounded-2xl border-1 border-gray-200 dark:border-gray-800"
+        className="h-14 w-[800px] rounded-2xl border-1 border-gray-200 bg-transparent dark:border-gray-800"
         onMenuOpenChange={setIsMenuOpen}
       >
         <NavbarMenuToggle
