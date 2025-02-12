@@ -1,7 +1,8 @@
 import { signOut } from "@/auth";
 import { Button } from "@heroui/button";
+import { LogOut } from "lucide-react";
 
-export function Logout() {
+export function Logout({ className }: { className?: string }) {
   return (
     <form
       action={async () => {
@@ -9,9 +10,14 @@ export function Logout() {
         await signOut();
       }}
     >
-      <Button type="submit" color="danger">
-        Logout
-      </Button>
+      <Button
+        type="submit"
+        color="danger"
+        startContent={<LogOut />}
+        className={`${className} p-2`}
+        isIconOnly
+        size="sm"
+      />
     </form>
   );
 }
