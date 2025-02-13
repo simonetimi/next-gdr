@@ -17,13 +17,18 @@ const compat = new FlatCompat({
 const eslintConfig = [
   {
     // This ignores configuration should be in a separate object
-    ignores: ["**/.next/**", "**/node_modules/**", "**/drizzle/**"],
+    ignores: [
+      "**/.next/**",
+      "**/node_modules/**",
+      "**/drizzle/**",
+      "**/public/**",
+    ],
   },
   ...compat.extends(
     "next/core-web-vitals",
     "next/typescript",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
   ),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],

@@ -11,7 +11,7 @@ import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
 import { Provider } from "next-auth/providers";
 import GitHub, { GitHubProfile } from "next-auth/providers/github";
-import { BANNED_ROUTE, LOGIN_ROUTE } from "@/utils/routes";
+import { BANNED_ROUTE } from "@/utils/routes";
 
 const providers: Provider[] = [
   GitHub({
@@ -64,9 +64,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session }) {
       return session;
     },
-  },
-  pages: {
-    signIn: LOGIN_ROUTE,
   },
   providers,
 });

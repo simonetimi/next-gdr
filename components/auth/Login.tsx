@@ -4,7 +4,7 @@ import { Github } from "lucide-react";
 
 // TODO replace lucide github icon with svg
 
-export default function Login() {
+export default async function Login() {
   return (
     <form
       action={async () => {

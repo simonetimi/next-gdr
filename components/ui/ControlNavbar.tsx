@@ -28,7 +28,7 @@ export default function ControlNavbar() {
     if (!portal) {
       portal = document.createElement("div");
       portal.id = "portal-root";
-      document.body.appendChild(portal);
+      document.body.prepend(portal);
     }
     portalRef.current = portal as HTMLDivElement;
   }, []);
