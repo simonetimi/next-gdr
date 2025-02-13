@@ -13,33 +13,49 @@ import {
 } from "@heroui/react";
 import { AppWindowMac } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function ControlNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const [isExampleMovableOpen, setIsExampleMovableOpen] = useState(false);
+  // manage portal creation and access safety
+  // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
+  const portalRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    let portal = document.getElementById("portal-root");
+    if (!portal) {
+      portal = document.createElement("div");
+      portal.id = "portal-root";
+      document.body.appendChild(portal);
+    }
+    portalRef.current = portal as HTMLDivElement;
+  }, []);
+
+  const [showExampleMovable, setShowExampleMovable] = useState(false);
   const toggleExampleMovable = () => {
-    setIsExampleMovableOpen((prev) => !prev);
+    setShowExampleMovable((prev) => !prev);
   };
 
   // renders only if on game route
   if (!pathname.startsWith(GAME_ROUTE)) return null;
 
+  // the draggable components are groupped here and conditionally rendered depending on their state
+
   return (
     <>
-      {
-        // the draggable components are groupped here and conditionally rendered depending on their state
-      }
-      {isExampleMovableOpen && (
-        <Movable
-          boundsSelector="main"
-          dragHandleClassName="example"
-          component={<div>Hi</div>}
-          stateSetter={setIsExampleMovableOpen}
-        />
-      )}
+      {showExampleMovable &&
+        portalRef.current &&
+        createPortal(
+          <Movable
+            boundsSelector="main"
+            dragHandleClassName="example"
+            component={<div>Hi</div>}
+            showSetter={setShowExampleMovable}
+          />,
+          portalRef.current,
+        )}
       <Navbar
         className="h-14 w-[800px] rounded-2xl border-1 border-gray-200 bg-transparent dark:border-gray-800"
         onMenuOpenChange={setIsMenuOpen}

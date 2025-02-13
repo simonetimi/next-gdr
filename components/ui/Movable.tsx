@@ -16,7 +16,7 @@ interface MovableProps {
   boundsSelector: string;
   dragHandleClassName: string;
   component: ReactElement;
-  stateSetter: React.Dispatch<React.SetStateAction<boolean>>;
+  showSetter: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Movable({
@@ -30,16 +30,16 @@ export default function Movable({
   boundsSelector,
   dragHandleClassName,
   component,
-  stateSetter,
+  showSetter,
 }: MovableProps) {
   const onClose = () => {
-    stateSetter(false);
+    showSetter(false);
   };
 
   return (
     <div>
       <Rnd
-        className="rounded-2xl border-1 border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+        className="rounded-2xl border-1 border-gray-200 bg-transparent backdrop-blur-md dark:border-gray-700"
         bounds={boundsSelector}
         dragHandleClassName={dragHandleClassName}
         minWidth={minWidth}
@@ -48,8 +48,8 @@ export default function Movable({
         maxHeight={maxHeight}
         enableResizing={enableResizing}
         default={{
-          x: 0,
-          y: 200,
+          x: 100,
+          y: 150,
           width: width,
           height: height,
         }}
