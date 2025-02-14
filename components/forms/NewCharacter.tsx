@@ -1,18 +1,17 @@
 "use client";
 
-import { characterSelectSchema } from "@/db/schema/character";
-import { Race } from "@/models/characters";
+import { Character } from "@/models/characters";
+import { Races } from "@/models/race";
 import { createCharacter } from "@/server/actions/character";
 import { GAME_ROUTE } from "@/utils/routes";
 import { Form } from "@heroui/form";
 import { Button, Input, Link, Select, SelectItem } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
-import { z } from "zod";
 
-type Character = z.infer<typeof characterSelectSchema>;
-export default function NewCharacterForm({ races }: { races: Race[] }) {
+export default function NewCharacterForm({ races }: { races: Races }) {
   const [character, setCharacter] = useState<Character | null>(null);
+  // TODO state for error not needed if it's handles with toast
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations("pages.newCharacter");

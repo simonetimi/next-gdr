@@ -35,9 +35,10 @@ Chat-based RPG app built with Next.js
 - [ ] More Auth options
 - [x] Roled-based access (admin, master, user)
 - [x] Movable windows (react-rnd)
-- [ ] Error management when calling server actions (implement toast)
+- [ ] Error management when calling all server actions (implement toast)
 - [x] Catch 404 page without layout
-- [ ] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
+- [x] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
+- [ ] Add zod validation for new character from (trim, first letter uppercase, rest lowercase, no spaces)
 
 ### Bugs
 

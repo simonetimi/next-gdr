@@ -1,28 +1,31 @@
 "use server";
 
 import { auth } from "@/auth";
-import { db } from "@/db/db";
-import { users } from "@/db/schema/auth";
+import { db } from "@/database/db";
+import { characters } from "@/database/schema/character";
 import {
   characterInsertSchema,
-  characters,
   characterSelectSchema,
-} from "@/db/schema/character";
+  charactersSelectSchema,
+} from "@/zod/schemas/character";
+import { newCharacterFormSchema } from "@/zod/schemas/new-character-form";
 import { eq } from "drizzle-orm";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) return null;
+  if (!session || !userId) throw new Error("User not authenticated");
 
-  const characterData = {
-    userId: userId,
+  const validatedForm = newCharacterFormSchema.parse({
     firstName: formData.get("firstName"),
     lastName: formData.get("lastName"),
     raceId: formData.get("race"),
-  };
+  });
 
-  const parsedCharacterData = characterInsertSchema.parse(characterData);
+  const parsedCharacterData = characterInsertSchema.parse({
+    userId,
+    ...validatedForm,
+  });
 
   const characterList = await db
     .insert(characters)
@@ -31,20 +34,18 @@ export async function createCharacter(formData: FormData) {
 
   const parsedCharacter = characterSelectSchema.parse(characterList[0]);
 
-  await db.update(users).set({ hasCharacter: true });
-
   return parsedCharacter;
 }
 
-export async function getCharacter() {
+export async function getCharacters() {
   const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
 
-  if (!session || !session.user.id) throw new Error("User not authorized");
-
-  const characterList = await db
+  const charactersList = await db
     .select()
     .from(characters)
-    .where(eq(characters.userId, session.user.id));
+    .where(eq(characters.userId, userId));
 
-  return characterSelectSchema.parse(characterList[0]);
+  return charactersSelectSchema.parse(charactersList);
 }

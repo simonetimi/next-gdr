@@ -1,11 +1,11 @@
-import { db } from "@/db/db";
+import { db } from "@/database/db";
 import {
   users,
   accounts,
   sessions,
   verificationTokens,
   authenticators,
-} from "@/db/schema/auth";
+} from "@/database/schema/auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";

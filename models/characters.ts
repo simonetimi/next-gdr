@@ -1,4 +1,4 @@
-export interface Race {
-  name: string;
-  id: number;
-}
+import { z } from "zod";
+import { characterSelectSchema } from "@/zod/schemas/character";
+
+export type Character = z.infer<typeof characterSelectSchema>;

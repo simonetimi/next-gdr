@@ -1,7 +1,6 @@
 "use client";
 
 import Movable from "@/components/ui/Movable";
-import { GAME_ROUTE } from "@/utils/routes";
 import {
   Button,
   Navbar,
@@ -12,13 +11,11 @@ import {
   NavbarMenuToggle,
 } from "@heroui/react";
 import { AppWindowMac } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function ControlNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const pathname = usePathname();
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template

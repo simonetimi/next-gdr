@@ -4,11 +4,14 @@ import { auth } from "@/auth";
 
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
+import { getCharacters } from "@/server/actions/character";
 
 export default async function NewChacterPage() {
   const session = await auth();
-
-  if (session && session.user?.hasCharacter) redirect(GAME_ROUTE);
+  if (session?.user) {
+    const characters = await getCharacters();
+    if (characters.length > 0) redirect(GAME_ROUTE);
+  }
 
   const races = await getRaces();
 
