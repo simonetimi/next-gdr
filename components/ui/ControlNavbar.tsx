@@ -27,7 +27,7 @@ export default function ControlNavbar() {
     let portal = document.getElementById("portal-root");
     if (!portal) {
       portal = document.createElement("div");
-      portal.id = "portal-root";
+      portal.style.cssText = "width: 90%; height: 90%";
       document.body.prepend(portal);
     }
     portalRef.current = portal as HTMLDivElement;
@@ -37,9 +37,6 @@ export default function ControlNavbar() {
   const toggleExampleMovable = () => {
     setShowExampleMovable((prev) => !prev);
   };
-
-  // renders only if on game route
-  if (!pathname.startsWith(GAME_ROUTE)) return null;
 
   // the draggable components are groupped here and conditionally rendered depending on their state
 

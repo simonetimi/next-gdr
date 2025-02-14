@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import Login from "@/components/auth/Login";
+import Header from "@/components/ui/Header";
 import { GAME_ROUTE } from "@/utils/routes";
 import { Button } from "@heroui/button";
 import { getTranslations } from "next-intl/server";
@@ -10,18 +11,21 @@ export default async function Home() {
   const t = await getTranslations("pages.index");
 
   return (
-    <div className="flex min-h-full flex-1 flex-col items-center justify-center gap-6">
-      {session ? (
-        <div className="flex flex-col gap-4">
-          <p>Welcome, {session.user?.name}!</p>
-          <p> Role: {session.user?.role}</p>
-          <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
-            {t("enter")}
-          </Button>
-        </div>
-      ) : (
-        <Login />
-      )}
-    </div>
+    <>
+      <Header />
+      <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
+        {session ? (
+          <div className="flex flex-col gap-4">
+            <p>Welcome, {session.user?.name}!</p>
+            <p> Role: {session.user?.role}</p>
+            <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
+              {t("enter")}
+            </Button>
+          </div>
+        ) : (
+          <Login />
+        )}
+      </main>
+    </>
   );
 }

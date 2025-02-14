@@ -14,10 +14,12 @@ type Character = z.infer<typeof characterSelectSchema>;
 export default function NewCharacterForm({ races }: { races: Race[] }) {
   const [character, setCharacter] = useState<Character | null>(null);
   const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations("pages.newCharacter");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     const formData = new FormData(event.target as HTMLFormElement);
     try {
       const response = await createCharacter(formData);
@@ -26,11 +28,13 @@ export default function NewCharacterForm({ races }: { races: Race[] }) {
     } catch (err) {
       if (err instanceof Error) setError(err.message);
       setCharacter(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <section className="flex h-screen flex-col items-center justify-center gap-8">
+    <section className="flex flex-col items-center justify-center gap-8">
       {character ? (
         <>
           <h2>Welcome</h2>
@@ -56,6 +60,7 @@ export default function NewCharacterForm({ races }: { races: Race[] }) {
               name="firstName"
               placeholder={t("name.placeholder")}
               type="text"
+              isDisabled={isLoading}
             />
             <Input
               isRequired
@@ -66,6 +71,7 @@ export default function NewCharacterForm({ races }: { races: Race[] }) {
               name="lastName"
               placeholder={t("lastName.placeholder")}
               type="text"
+              isDisabled={isLoading}
             />
             <Select
               className="max-w-xs"
@@ -74,6 +80,7 @@ export default function NewCharacterForm({ races }: { races: Race[] }) {
               label={t("race.label")}
               placeholder={t("race.placeholder")}
               name="race"
+              isDisabled={isLoading}
             >
               {(race) => (
                 <SelectItem key={race.id} textValue={race.name}>
@@ -81,7 +88,12 @@ export default function NewCharacterForm({ races }: { races: Race[] }) {
                 </SelectItem>
               )}
             </Select>
-            <Button type="submit" color="primary" className="self-center">
+            <Button
+              type="submit"
+              color="primary"
+              className="self-center"
+              isLoading={isLoading}
+            >
               {t("submit")}
             </Button>
           </Form>

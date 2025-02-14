@@ -64,24 +64,6 @@ h6 {
 
 /* CSS reset - end */
 
-:root {
-  --background: @apply bg-white;
-  --foreground: @apply bg-gray-500;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: @apply bg-gray-800;
-    --foreground: @apply bg-white;
-  }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 h1 {
   @apply text-3xl;
 }

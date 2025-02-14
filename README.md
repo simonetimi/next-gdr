@@ -35,11 +35,15 @@ Chat-based RPG app built with Next.js
 - [ ] More Auth options
 - [x] Roled-based access (admin, master, user)
 - [x] Movable windows (react-rnd)
-- [ ] Error management when calling server actions
+- [ ] Error management when calling server actions (implement toast)
+- [x] Catch 404 page without layout
+- [ ] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
 
 ### Bugs
 
-- [ ] White flashing on route navigation
+- [x] White flashing on route navigation
+- [x] Only render the navbar when starts with "/game" but it's also valid
+- [ ] Movable will increase height and width limits when pushed on the edges
 
 ### Utils
 
