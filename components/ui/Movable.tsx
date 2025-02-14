@@ -8,12 +8,13 @@ import { Rnd } from "react-rnd";
 interface MovableProps {
   width?: number | string;
   height?: number | string;
-  minWidth?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  maxHeight?: number;
+  minWidth?: number | string;
+  minHeight?: number | string;
+  maxWidth?: number | string;
+  maxHeight?: number | string;
   coords?: number[];
   enableResizing?: boolean;
+  enableMovement?: boolean;
   boundsSelector: string;
   dragHandleClassName: string;
   component: ReactElement;
@@ -29,6 +30,7 @@ export default function Movable({
   maxHeight = 600,
   coords = [0, 0],
   enableResizing = true,
+  enableMovement = true,
   boundsSelector,
   dragHandleClassName,
   component,
@@ -39,7 +41,7 @@ export default function Movable({
   };
 
   return (
-    <div>
+    <div className="z-50">
       <Rnd
         className="rounded-2xl border-1 border-gray-200 bg-transparent backdrop-blur-md dark:border-gray-700"
         bounds={boundsSelector}
@@ -57,7 +59,11 @@ export default function Movable({
         }}
       >
         <div className="flex h-12 border-b-1 border-gray-200 p-2 dark:border-gray-700">
-          <div className={`${dragHandleClassName} w-full flex-1 cursor-move`} />
+          {enableMovement && (
+            <div
+              className={`${dragHandleClassName} w-full flex-1 cursor-move`}
+            />
+          )}
           <Button
             color="danger"
             className="ml-auto"

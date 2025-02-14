@@ -16,11 +16,11 @@ export default async function GamePage() {
   if (characters.length === 0) redirect(NEW_CHARACTER_ROUTE);
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3>
+    <div className="m-8 flex flex-col gap-4">
+      <p>
         Main page of the game (protected). If you can see this, you have a
         character
-      </h3>
+      </p>
       <h4>
         Character name: {characters[0].firstName + " " + characters[0].lastName}
       </h4>

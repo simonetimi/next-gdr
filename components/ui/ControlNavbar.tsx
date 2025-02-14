@@ -24,7 +24,7 @@ export default function ControlNavbar() {
     let portal = document.getElementById("portal-root");
     if (!portal) {
       portal = document.createElement("div");
-      portal.style.cssText = "width: 90%; height: 90%";
+      portal.style.cssText = "width: 100%; height: 100%";
       document.body.prepend(portal);
     }
     portalRef.current = portal as HTMLDivElement;
@@ -35,10 +35,15 @@ export default function ControlNavbar() {
     setShowExampleMovable((prev) => !prev);
   };
 
+  const [showExampleMobileMovable, setShowExampleMobileMovable] =
+    useState(false);
+  const toggleExampleMobileMovable = () => {
+    setIsMenuOpen(false);
+    setShowExampleMobileMovable((prev) => !prev);
+  };
+
   // the draggable components are grouped here and conditionally rendered depending on their state
 
-  // TODO decide what to do with the movables and smaller screens
-  // could render the movable full screen (it's easy to do, 100% on width and height + non resizable)
   return (
     <>
       {showExampleMovable &&
@@ -53,8 +58,25 @@ export default function ControlNavbar() {
           />,
           portalRef.current,
         )}
+      {showExampleMobileMovable &&
+        portalRef.current &&
+        createPortal(
+          <Movable
+            boundsSelector="main"
+            dragHandleClassName="example"
+            component={<div>Hi! I&apos;m on a mobile device.</div>}
+            coords={[0, 140]}
+            width="100%"
+            minHeight="80vh"
+            showSetter={setShowExampleMobileMovable}
+            enableResizing={false}
+            enableMovement={false}
+          />,
+          portalRef.current,
+        )}
       <Navbar
         className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-[300px] sm:border-1 sm:border-gray-200 sm:dark:bg-black"
+        isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
         <NavbarMenuToggle
@@ -72,12 +94,13 @@ export default function ControlNavbar() {
             />
           </NavbarItem>
         </NavbarContent>
-        <NavbarMenu className="z-50">
-          <NavbarMenuItem>
+        <NavbarMenu>
+          <NavbarMenuItem className="pt-6">
             <Button
               startContent={<AppWindowMac />}
               size="sm"
-              onPress={toggleExampleMovable}
+              onPress={toggleExampleMobileMovable}
+              variant="flat"
             >
               Window
             </Button>
