@@ -6,12 +6,13 @@ import { ReactElement } from "react";
 import { Rnd } from "react-rnd";
 
 interface MovableProps {
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   minWidth?: number;
   minHeight?: number;
   maxWidth?: number;
   maxHeight?: number;
+  coords?: number[];
   enableResizing?: boolean;
   boundsSelector: string;
   dragHandleClassName: string;
@@ -26,6 +27,7 @@ export default function Movable({
   minHeight = 300,
   maxWidth = 900,
   maxHeight = 600,
+  coords = [0, 0],
   enableResizing = true,
   boundsSelector,
   dragHandleClassName,
@@ -48,10 +50,10 @@ export default function Movable({
         maxHeight={maxHeight}
         enableResizing={enableResizing}
         default={{
-          x: 100,
-          y: 150,
-          width: width,
-          height: height,
+          x: coords[0],
+          y: coords[1],
+          width,
+          height,
         }}
       >
         <div className="flex h-12 border-b-1 border-gray-200 p-2 dark:border-gray-700">

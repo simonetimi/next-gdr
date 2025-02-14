@@ -35,8 +35,10 @@ export default function ControlNavbar() {
     setShowExampleMovable((prev) => !prev);
   };
 
-  // the draggable components are groupped here and conditionally rendered depending on their state
+  // the draggable components are grouped here and conditionally rendered depending on their state
 
+  // TODO decide what to do with the movables and smaller screens
+  // could render the movable full screen (it's easy to do, 100% on width and height + non resizable)
   return (
     <>
       {showExampleMovable &&
@@ -46,36 +48,39 @@ export default function ControlNavbar() {
             boundsSelector="main"
             dragHandleClassName="example"
             component={<div>Hi</div>}
+            coords={[100, 140]}
             showSetter={setShowExampleMovable}
           />,
           portalRef.current,
         )}
       <Navbar
-        className="h-14 w-[800px] rounded-2xl border-1 border-gray-200 bg-transparent dark:border-gray-800"
+        className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-[300px] sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         onMenuOpenChange={setIsMenuOpen}
       >
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="mr-auto sm:hidden"
         />
-        <NavbarContent>
+        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
           <NavbarItem>
             <Button
               isIconOnly
               startContent={<AppWindowMac />}
               size="sm"
               onPress={toggleExampleMovable}
+              color={showExampleMovable ? "primary" : "default"}
             />
           </NavbarItem>
         </NavbarContent>
-        <NavbarMenu>
+        <NavbarMenu className="z-50">
           <NavbarMenuItem>
             <Button
-              isIconOnly
               startContent={<AppWindowMac />}
               size="sm"
               onPress={toggleExampleMovable}
-            />
+            >
+              Window
+            </Button>
           </NavbarMenuItem>
         </NavbarMenu>
       </Navbar>
