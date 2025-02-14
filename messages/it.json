@@ -19,8 +19,13 @@
         "label": "Razza",
         "placeholder": "Seleziona una razza"
       },
-      "submit": "Crea!",
-      "play": "Vai al gioco!"
+      "submit": "Crea",
+      "play": "Vai al gioco"
+    }
+  },
+  "errors": {
+    "validation": {
+      "noSpacesOrPunctuationAllowed": "can only contain letters"
     }
   }
 }

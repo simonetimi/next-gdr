@@ -10,6 +10,7 @@ export const characters = pgTable("character", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   firstName: text("first_name").notNull().unique(),
+  middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   raceId: uuid("race_id")

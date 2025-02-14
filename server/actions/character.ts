@@ -7,8 +7,9 @@ import {
   characterInsertSchema,
   characterSelectSchema,
   charactersSelectSchema,
+  newCharacterFormSchema,
 } from "@/zod/schemas/character";
-import { newCharacterFormSchema } from "@/zod/schemas/new-character-form";
+
 import { eq } from "drizzle-orm";
 
 export async function createCharacter(formData: FormData) {

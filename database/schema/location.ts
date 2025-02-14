@@ -2,6 +2,7 @@ import { pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const locations = pgTable("location", {
   id: uuid().primaryKey(),
+  code: text("code").notNull().unique(),
   name: text("name").notNull().unique(),
   description: text("description"),
   locationGroupId: uuid("location_group_id").references(
