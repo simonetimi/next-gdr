@@ -1,4 +1,4 @@
-import { getRaces } from "@/server/actions/game";
+import { getAllRaces } from "@/server/actions/game";
 import NewCharacterForm from "@/components/forms/NewCharacter";
 import { auth } from "@/auth";
 
@@ -13,7 +13,7 @@ export default async function NewChacterPage() {
     if (characters.length > 0) redirect(GAME_ROUTE);
   }
 
-  const races = await getRaces();
+  const races = await getAllRaces();
 
   return <NewCharacterForm races={races} />;
 }

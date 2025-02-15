@@ -10,12 +10,15 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/react";
-import { AppWindowMac } from "lucide-react";
+import { AppWindowMac, Map } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
+import { GAME_ROUTE } from "@/utils/routes";
 
 export default function ControlNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter();
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
@@ -84,6 +87,14 @@ export default function ControlNavbar() {
           className="mr-auto sm:hidden"
         />
         <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+          <NavbarItem>
+            <Button
+              isIconOnly
+              startContent={<Map />}
+              size="sm"
+              onPress={() => router.push(GAME_ROUTE)}
+            />
+          </NavbarItem>
           <NavbarItem>
             <Button
               isIconOnly

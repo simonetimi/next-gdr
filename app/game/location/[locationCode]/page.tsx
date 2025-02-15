@@ -2,7 +2,7 @@ import { getLocation } from "@/server/actions/location";
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 
-export default async function page({
+export default async function LocationPage({
   params,
 }: {
   params: Promise<{ locationCode: string }>;

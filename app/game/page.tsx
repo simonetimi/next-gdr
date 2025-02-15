@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { NEW_CHARACTER_ROUTE } from "@/utils/routes";
 import { getCharacters } from "@/server/actions/character";
+import Map from "@/components/game/Map";
+import { getAllLocations } from "@/server/actions/location";
 
 // * Keep the client components as down as possible to the tree!
 // * Manage the state of the windows (messaging, character page, etc) in a navbar client component (with the buttons to open and close them)
@@ -15,8 +17,10 @@ export default async function GamePage() {
   const characters = await getCharacters();
   if (characters.length === 0) redirect(NEW_CHARACTER_ROUTE);
 
+  const locations = await getAllLocations();
+
   return (
-    <div className="m-8 flex flex-col gap-4">
+    <div className="m-8 flex w-screen flex-col items-center gap-4">
       <p>
         Main page of the game (protected). If you can see this, you have a
         character
@@ -24,6 +28,7 @@ export default async function GamePage() {
       <h4>
         Character name: {characters[0].firstName + " " + characters[0].lastName}
       </h4>
+      <Map locations={locations} />
     </div>
   );
 }

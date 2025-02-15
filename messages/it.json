@@ -23,6 +23,14 @@
       "play": "Vai al gioco"
     }
   },
+  "components": {
+    "map": {
+      "select": {
+        "placeholder": "Scegli un luogo",
+        "label": "Scelta del luogo"
+      }
+    }
+  },
   "errors": {
     "validation": {
       "noSpacesOrPunctuationAllowed": "can only contain letters"

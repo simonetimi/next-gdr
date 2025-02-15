@@ -4,6 +4,7 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const locationSelectSchema = createSelectSchema(locations);
+export const locationsSelectSchema = z.array(locationSelectSchema);
 
 export const locationInsertSchema = createInsertSchema(locations);
 
