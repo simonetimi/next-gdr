@@ -25,7 +25,7 @@ export default function Map({ locations }: { locations: Location[] }) {
   return (
     <div className="flex w-1/2 items-center justify-center gap-6">
       <Select
-        className="max-w-xs"
+        className="z-0 max-w-xs"
         items={locations}
         label={t("select.label")}
         placeholder={t("select.placeholder")}

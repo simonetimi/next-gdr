@@ -27,7 +27,7 @@ export default function ControlNavbar() {
     let portal = document.getElementById("portal-root");
     if (!portal) {
       portal = document.createElement("div");
-      portal.style.cssText = "width: 100%; height: 100%";
+      portal.style.cssText = "width: 100%; height: 100%;";
       document.body.prepend(portal);
     }
     portalRef.current = portal as HTMLDivElement;
@@ -69,7 +69,7 @@ export default function ControlNavbar() {
             dragHandleClassName="example"
             component={<div>Hi! I&apos;m on a mobile device.</div>}
             coords={[0, 140]}
-            width="100%"
+            width="100vw"
             minHeight="80vh"
             showSetter={setShowExampleMobileMovable}
             enableResizing={false}
@@ -106,7 +106,18 @@ export default function ControlNavbar() {
           </NavbarItem>
         </NavbarContent>
         <NavbarMenu>
-          <NavbarMenuItem className="pt-6">
+          <NavbarMenuItem className="flex flex-col gap-4 pt-6">
+            <Button
+              startContent={<Map />}
+              size="sm"
+              onPress={() => {
+                setIsMenuOpen(false);
+                router.push(GAME_ROUTE);
+              }}
+              variant="flat"
+            >
+              Main map
+            </Button>
             <Button
               startContent={<AppWindowMac />}
               size="sm"
