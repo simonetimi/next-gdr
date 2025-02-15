@@ -9,6 +9,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
+  Avatar,
 } from "@heroui/react";
 import { AppWindowMac, Map } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -17,9 +18,11 @@ import { useRouter } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSheet from "@/components/game/CharacterSheet";
 import { Character } from "@/models/characters";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 export default function ControlNavbar({ character }: { character: Character }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
   const router = useRouter();
 
   // manage portal creation and access safety
@@ -49,9 +52,9 @@ export default function ControlNavbar({ character }: { character: Character }) {
   };
 
   // the draggable components are grouped here and conditionally rendered depending on their state
-
+  // buttons on the navbar activate movables for large screens. instead, buttons on the side menu will open small screen movables
   return (
-    <>
+    <div className="flex flex-grow items-center justify-start gap-3 sm:justify-center">
       {showCharacterSheetMovable &&
         portalRef.current &&
         createPortal(
@@ -127,11 +130,21 @@ export default function ControlNavbar({ character }: { character: Character }) {
               onPress={toggleCharacterSheetMobileMovable}
               variant="flat"
             >
-              Character scheet
+              Window
             </Button>
           </NavbarMenuItem>
         </NavbarMenu>
       </Navbar>
-    </>
+      <Avatar
+        src={character.miniAvatarUrl ?? ""}
+        name={character.firstName}
+        className="mr-4 cursor-pointer"
+        onClick={
+          isSmallDevice
+            ? toggleCharacterSheetMobileMovable
+            : toggleCharacterSheetMovable
+        }
+      />
+    </div>
   );
 }
