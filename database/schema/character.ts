@@ -20,6 +20,26 @@ export const characters = pgTable("character", {
   totalExperience: integer("total_experience").default(0),
 });
 
+export const characterSheets = pgTable("character_sheet", {
+  id: uuid("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  characterId: uuid("character_id")
+    .references(() => characters.id)
+    .notNull(),
+  avatarUrl: text("avatar_url"),
+  miniAvatarUrl: text("mini_avatar_url"),
+  musicUrl: text("music_url"),
+  birthDate: timestamp("birth_date"),
+  eyeColor: text("eye_color"),
+  hairColor: text("hair_color"),
+  height: text("height"),
+  weight: text("weight"),
+  background: text("background"),
+  customHTML: text("custom_html"),
+  masterNotes: text("master_notes"),
+});
+
 export const characterFriends = pgTable("character_friend", {
   characterId: uuid("character_id")
     .notNull()

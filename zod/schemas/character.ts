@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { characters } from "@/database/schema/character";
+import { characters, characterSheets } from "@/database/schema/character";
 import { capitalize } from "@/utils/strings";
+import { raceSelectSchema } from "@/zod/schemas/race";
 
 export const characterInsertSchema = createInsertSchema(characters);
 export const characterSelectSchema = createSelectSchema(characters);
@@ -25,3 +26,19 @@ export const newCharacterFormSchema = z.object({
     .transform((val) => capitalize(val)),
   raceId: z.string().min(1).uuid(),
 });
+
+export const characterSheetSchema = createSelectSchema(characterSheets);
+
+export const characterSheetSchemaWithCharacter = characterSheetSchema
+  .extend({
+    character: characterSelectSchema.omit({
+      userId: true,
+      raceId: true,
+    }),
+    race: raceSelectSchema.pick({
+      name: true,
+    }),
+  })
+  .omit({
+    characterId: true,
+  });

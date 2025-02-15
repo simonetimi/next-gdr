@@ -39,6 +39,7 @@ Chat-based RPG app built with Next.js
 - [x] Catch 404 page without layout
 - [x] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
 - [x] Add zod validation for new character from (trim, first letter uppercase, rest lowercase, no spaces - base for the rest of the validation)
+- [ ] Create game-wide context to save user's state (like character details) so they're available everywhere
 
 ### Bugs
 

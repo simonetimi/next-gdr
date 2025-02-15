@@ -1,4 +1,10 @@
 import { z } from "zod";
-import { characterSelectSchema } from "@/zod/schemas/character";
+import {
+  characterSelectSchema,
+  characterSheetSchemaWithCharacter,
+} from "@/zod/schemas/character";
 
 export type Character = z.infer<typeof characterSelectSchema>;
+export type CharacterScheetWithCharacter = z.infer<
+  typeof characterSheetSchemaWithCharacter
+>;

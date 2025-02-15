@@ -5,6 +5,7 @@ import { NEW_CHARACTER_ROUTE } from "@/utils/routes";
 import { getCharacters } from "@/server/actions/character";
 import Map from "@/components/game/Map";
 import { getAllLocations } from "@/server/actions/location";
+import CharacterSheet from "@/components/game/CharacterSheet";
 
 // * Keep the client components as down as possible to the tree!
 // * Manage the state of the windows (messaging, character page, etc) in a navbar client component (with the buttons to open and close them)
@@ -29,6 +30,7 @@ export default async function GamePage() {
         Character name: {characters[0].firstName + " " + characters[0].lastName}
       </h4>
       <Map locations={locations} />
+      <CharacterSheet characterId={characters[0].id} />
     </div>
   );
 }
