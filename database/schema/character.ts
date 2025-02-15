@@ -12,6 +12,7 @@ export const characters = pgTable("character", {
   firstName: text("first_name").notNull().unique(),
   middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
+  miniAvatarUrl: text("mini_avatar_url"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   raceId: uuid("race_id")
     .references(() => races.id)
@@ -28,7 +29,6 @@ export const characterSheets = pgTable("character_sheet", {
     .references(() => characters.id)
     .notNull(),
   avatarUrl: text("avatar_url"),
-  miniAvatarUrl: text("mini_avatar_url"),
   musicUrl: text("music_url"),
   birthDate: timestamp("birth_date"),
   eyeColor: text("eye_color"),

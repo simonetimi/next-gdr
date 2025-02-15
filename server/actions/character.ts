@@ -74,7 +74,6 @@ export async function getCharacterSheet(characterId: string) {
     .select({
       id: characterSheets.id,
       avatarUrl: characterSheets.avatarUrl,
-      miniAvatarUrl: characterSheets.miniAvatarUrl,
       musicUrl: characterSheets.musicUrl,
       birthDate: characterSheets.birthDate,
       eyeColor: characterSheets.eyeColor,
@@ -87,6 +86,7 @@ export async function getCharacterSheet(characterId: string) {
         firstName: characters.firstName,
         middleName: characters.firstName,
         lastName: characters.lastName,
+        miniAvatarUrl: characters.miniAvatarUrl,
         createdAt: characters.createdAt,
         // only fetch experience if user is admin, master or is owner of the character
         ...(isUserOwner || hasFullPermission

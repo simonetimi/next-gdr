@@ -15,8 +15,10 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
+import CharacterSheet from "@/components/game/CharacterSheet";
+import { Character } from "@/models/characters";
 
-export default function ControlNavbar() {
+export default function ControlNavbar({ character }: { character: Character }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -33,45 +35,46 @@ export default function ControlNavbar() {
     portalRef.current = portal as HTMLDivElement;
   }, []);
 
-  const [showExampleMovable, setShowExampleMovable] = useState(false);
-  const toggleExampleMovable = () => {
-    setShowExampleMovable((prev) => !prev);
+  const [showCharacterSheetMovable, setShowCharacterSheetMovable] =
+    useState(false);
+  const toggleCharacterSheetMovable = () => {
+    setShowCharacterSheetMovable((prev) => !prev);
   };
 
-  const [showExampleMobileMovable, setShowExampleMobileMovable] =
+  const [showCharacterSheetMobileMovable, setShowCharacterSheetMobileMovable] =
     useState(false);
-  const toggleExampleMobileMovable = () => {
+  const toggleCharacterSheetMobileMovable = () => {
     setIsMenuOpen(false);
-    setShowExampleMobileMovable((prev) => !prev);
+    setShowCharacterSheetMobileMovable((prev) => !prev);
   };
 
   // the draggable components are grouped here and conditionally rendered depending on their state
 
   return (
     <>
-      {showExampleMovable &&
+      {showCharacterSheetMovable &&
         portalRef.current &&
         createPortal(
           <Movable
             boundsSelector="main"
             dragHandleClassName="example"
-            component={<div>Hi</div>}
+            component={<CharacterSheet characterId={character.id} />}
             coords={[100, 140]}
-            showSetter={setShowExampleMovable}
+            showSetter={setShowCharacterSheetMovable}
           />,
           portalRef.current,
         )}
-      {showExampleMobileMovable &&
+      {showCharacterSheetMobileMovable &&
         portalRef.current &&
         createPortal(
           <Movable
             boundsSelector="main"
             dragHandleClassName="example"
-            component={<div>Hi! I&apos;m on a mobile device.</div>}
+            component={<CharacterSheet characterId={character.id} />}
             coords={[0, 140]}
             width="100vw"
             minHeight="80vh"
-            showSetter={setShowExampleMobileMovable}
+            showSetter={setShowCharacterSheetMobileMovable}
             enableResizing={false}
             enableMovement={false}
           />,
@@ -100,8 +103,8 @@ export default function ControlNavbar() {
               isIconOnly
               startContent={<AppWindowMac />}
               size="sm"
-              onPress={toggleExampleMovable}
-              color={showExampleMovable ? "primary" : "default"}
+              onPress={toggleCharacterSheetMovable}
+              color={showCharacterSheetMovable ? "primary" : "default"}
             />
           </NavbarItem>
         </NavbarContent>
@@ -121,10 +124,10 @@ export default function ControlNavbar() {
             <Button
               startContent={<AppWindowMac />}
               size="sm"
-              onPress={toggleExampleMobileMovable}
+              onPress={toggleCharacterSheetMobileMovable}
               variant="flat"
             >
-              Window
+              Character scheet
             </Button>
           </NavbarMenuItem>
         </NavbarMenu>

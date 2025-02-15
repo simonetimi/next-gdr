@@ -3,6 +3,7 @@ export const INDEX_ROUTE = "/";
 // game
 export const GAME_ROUTE = "/game";
 export const NEW_CHARACTER_ROUTE = "/game/new-character";
+export const SELECT_CHARACTER_ROUTE = "/game/select-character";
 export const LOCATION_ROUTE = "/game/location";
 
 // admin

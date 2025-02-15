@@ -8,6 +8,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { characters } from "@/database/schema/character";
 
 export const users = pgTable("user", {
   id: uuid("id")
@@ -53,6 +54,12 @@ export const sessions = pgTable("session", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
+  selectedCharacterId: uuid("selected_character_id").references(
+    () => characters.id,
+    {
+      onDelete: "cascade",
+    },
+  ),
 });
 
 export const verificationTokens = pgTable(
