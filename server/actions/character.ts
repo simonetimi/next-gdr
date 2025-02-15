@@ -38,6 +38,9 @@ export async function createCharacter(formData: FormData) {
 
   const parsedCharacter = characterSelectSchema.parse(characterList[0]);
 
+  // creates an empty character sheet connected to the character just created
+  await db.insert(characterSheets).values({ characterId: parsedCharacter.id });
+
   return parsedCharacter;
 }
 
@@ -112,6 +115,9 @@ export async function getCharacterSheet(characterId: string) {
     .where(eq(characterSheets.characterId, characterId))
     .innerJoin(characters, eq(characterSheets.characterId, characterId))
     .innerJoin(races, eq(characters.raceId, races.id));
+
+  console.log("HERE");
+  console.log(result);
 
   const fetchedChar = result[0].character as z.infer<
     typeof characterSelectSchema

@@ -26,7 +26,7 @@ export const characterSheets = pgTable("character_sheet", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   characterId: uuid("character_id")
-    .references(() => characters.id)
+    .references(() => characters.id, { onDelete: "cascade" })
     .notNull(),
   avatarUrl: text("avatar_url"),
   musicUrl: text("music_url"),
