@@ -40,14 +40,14 @@ Chat-based RPG app built with Next.js
 - [x] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
 - [x] Add zod validation for new character from (trim, first letter uppercase, rest lowercase, no spaces - base for the rest of the validation)
 - [ ] Create game-wide context to save user's state (like character details) so they're available everywhere
-- [ ] Create logic for character selection (redirect logic already present)
+- [ ] Create logic for character selection (redirect logic already present) and second character creation in the settings
 
 ### Bugs
 
 - [x] White flashing on route navigation
 - [x] Only render the navbar when starts with "/game" but it's also valid
 - [ ] Movable will increase height and width limits when pushed on the edges
-- [ ] Fix positioning of the avatr
+- [x] Fix positioning of the avatar
 
 ### Utils and Docs
 

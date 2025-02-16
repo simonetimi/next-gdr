@@ -8,9 +8,8 @@ export default async function Header({
   character,
 }: {
   showControls?: boolean;
-  character: Character;
+  character?: Character;
 }) {
-  // TODO fix mini avatar position
   // controls are rendered only if the user is logged it, has at least a character and renderControls is true
   // multiple characters can be handled
   return (

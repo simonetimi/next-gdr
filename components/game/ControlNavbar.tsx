@@ -11,8 +11,8 @@ import {
   NavbarMenuToggle,
   Avatar,
 } from "@heroui/react";
-import { AppWindowMac, Map } from "lucide-react";
-import { useLayoutEffect, useRef, useState } from "react";
+import { AppWindowMac, Map, Settings } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
@@ -20,10 +20,18 @@ import CharacterSheet from "@/components/game/CharacterSheet";
 import { Character } from "@/models/characters";
 import { useMediaQuery } from "@uidotdev/usehooks";
 
-export default function ControlNavbar({ character }: { character: Character }) {
+import dynamic from "next/dynamic";
+
+function ControlNavbar({ character }: { character: Character }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
+  const [isSmallDevice, setIsSmallDevice] = useState(false);
   const router = useRouter();
+
+  // TODO fix rendering on ssr
+  const isMaxWidth850 = useMediaQuery("only screen and (max-width : 850px)");
+  useEffect(() => {
+    setIsSmallDevice(isMaxWidth850);
+  }, [isMaxWidth850]);
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
@@ -41,14 +49,14 @@ export default function ControlNavbar({ character }: { character: Character }) {
   const [showCharacterSheetMovable, setShowCharacterSheetMovable] =
     useState(false);
   const toggleCharacterSheetMovable = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
     setShowCharacterSheetMovable((prev) => !prev);
   };
 
-  const [showCharacterSheetMobileMovable, setShowCharacterSheetMobileMovable] =
-    useState(false);
-  const toggleCharacterSheetMobileMovable = () => {
-    setIsMenuOpen(false);
-    setShowCharacterSheetMobileMovable((prev) => !prev);
+  const [showSettingsMovable, setShowSettingsMovable] = useState(false);
+  const toggleSettingsMovable = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
+    setShowSettingsMovable((prev) => !prev);
   };
 
   // the draggable components are grouped here and conditionally rendered depending on their state
@@ -60,26 +68,34 @@ export default function ControlNavbar({ character }: { character: Character }) {
         createPortal(
           <Movable
             boundsSelector="main"
-            dragHandleClassName="example"
+            dragHandleClassName="handle"
             component={<CharacterSheet characterId={character.id} />}
-            coords={[100, 140]}
+            coords={isSmallDevice ? [0, 140] : [0, 110]}
+            width={isSmallDevice ? "100vw" : 1000}
+            minWidth={isSmallDevice ? "100vw" : 800}
+            minHeight={isSmallDevice ? "80vw" : 550}
+            height={isSmallDevice ? undefined : 600}
             showSetter={setShowCharacterSheetMovable}
+            enableResizing={!isSmallDevice}
+            enableMovement={!isSmallDevice}
           />,
           portalRef.current,
         )}
-      {showCharacterSheetMobileMovable &&
+      {showSettingsMovable &&
         portalRef.current &&
         createPortal(
           <Movable
             boundsSelector="main"
-            dragHandleClassName="example"
+            dragHandleClassName="handle"
             component={<CharacterSheet characterId={character.id} />}
-            coords={[0, 140]}
-            width="100vw"
-            minHeight="80vh"
-            showSetter={setShowCharacterSheetMobileMovable}
-            enableResizing={false}
-            enableMovement={false}
+            coords={isSmallDevice ? [0, 140] : [0, 110]}
+            width={isSmallDevice ? "100vw" : 1000}
+            minWidth={isSmallDevice ? "100vw" : 800}
+            minHeight={isSmallDevice ? "80vw" : 550}
+            height={isSmallDevice ? undefined : 600}
+            showSetter={setShowSettingsMovable}
+            enableResizing={!isSmallDevice}
+            enableMovement={!isSmallDevice}
           />,
           portalRef.current,
         )}
@@ -110,27 +126,48 @@ export default function ControlNavbar({ character }: { character: Character }) {
               color={showCharacterSheetMovable ? "primary" : "default"}
             />
           </NavbarItem>
+          <NavbarItem>
+            <Button
+              isIconOnly
+              startContent={<Settings />}
+              size="sm"
+              onPress={toggleSettingsMovable}
+              color={showSettingsMovable ? "primary" : "default"}
+            />
+          </NavbarItem>
         </NavbarContent>
-        <NavbarMenu>
-          <NavbarMenuItem className="flex flex-col gap-4 pt-6">
+        <NavbarMenu className="mt-10 flex flex-col gap-4">
+          <NavbarMenuItem className="flex flex-col">
             <Button
               startContent={<Map />}
-              size="sm"
+              size="lg"
               onPress={() => {
                 setIsMenuOpen(false);
                 router.push(GAME_ROUTE);
               }}
-              variant="flat"
+              variant="light"
             >
               Main map
             </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
             <Button
               startContent={<AppWindowMac />}
-              size="sm"
-              onPress={toggleCharacterSheetMobileMovable}
-              variant="flat"
+              size="lg"
+              onPress={toggleCharacterSheetMovable}
+              variant="light"
             >
               Window
+            </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
+            <Button
+              startContent={<Settings />}
+              size="lg"
+              onPress={toggleSettingsMovable}
+              variant="light"
+            >
+              Settings
             </Button>
           </NavbarMenuItem>
         </NavbarMenu>
@@ -139,12 +176,12 @@ export default function ControlNavbar({ character }: { character: Character }) {
         src={character.miniAvatarUrl ?? ""}
         name={character.firstName}
         className="mr-4 cursor-pointer"
-        onClick={
-          isSmallDevice
-            ? toggleCharacterSheetMobileMovable
-            : toggleCharacterSheetMovable
-        }
+        onClick={toggleCharacterSheetMovable}
       />
     </div>
   );
 }
+
+export default dynamic(() => Promise.resolve(ControlNavbar), {
+  ssr: false,
+});

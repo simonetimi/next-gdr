@@ -26,8 +26,8 @@ export default function Movable({
   height = 400,
   minWidth = 400,
   minHeight = 300,
-  maxWidth = 900,
-  maxHeight = 600,
+  maxWidth,
+  maxHeight,
   coords = [0, 0],
   enableResizing = true,
   enableMovement = true,
@@ -41,7 +41,7 @@ export default function Movable({
   };
 
   return (
-    <div className="absolute z-50">
+    <div className="absolute z-10">
       <Rnd
         className="rounded-2xl border-1 border-gray-200 bg-transparent backdrop-blur-md dark:border-gray-700"
         bounds={boundsSelector}

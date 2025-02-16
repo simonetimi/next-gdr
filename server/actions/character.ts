@@ -116,9 +116,6 @@ export async function getCharacterSheet(characterId: string) {
     .innerJoin(characters, eq(characterSheets.characterId, characterId))
     .innerJoin(races, eq(characters.raceId, races.id));
 
-  console.log("HERE");
-  console.log(result);
-
   const fetchedChar = result[0].character as z.infer<
     typeof characterSelectSchema
   >;

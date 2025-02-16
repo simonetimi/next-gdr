@@ -10,7 +10,9 @@ export default async function NewChacterPage() {
   const session = await auth();
   if (session?.user) {
     const characters = await getCharacters();
-    if (characters.length > 0) redirect(GAME_ROUTE);
+    // FIX NOT PARSING ENV VARIABLE CORRECTLY33
+    if (characters.length >= parseInt(process.env.MAX_CHARACTERS_ALLOWED!))
+      redirect(GAME_ROUTE);
   }
 
   const races = await getAllRaces();
