@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { getOnlineCharacters } from "@/server/actions/character";
 import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
-import { Avatar } from "@heroui/react";
+import { Avatar, Spinner } from "@heroui/react";
 
 export default function OnlineUsers() {
   const [onlineCharacters, setOnlineCharacters] = useState<OnlineUsersType>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const t = useTranslations("general");
 
   useEffect(() => {
@@ -15,6 +16,7 @@ export default function OnlineUsers() {
       try {
         const response = await getOnlineCharacters();
         setOnlineCharacters(response);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -33,6 +35,13 @@ export default function OnlineUsers() {
     },
     {} as Record<string, OnlineUsersType>,
   );
+
+  if (isLoading)
+    return (
+      <div className="absolute inset-0 flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="max-h-full space-y-4">
