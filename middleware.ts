@@ -1,13 +1,14 @@
 import { auth } from "@/auth";
 import {
   ADMIN_ROUTE,
+  CHARACTER_ROUTE,
   GAME_ROUTE,
   LOGIN_ROUTE,
   SIGNUP_ROUTE,
 } from "@/utils/routes";
 
 // Define protected routes
-const protectedRoutes = [GAME_ROUTE];
+const protectedRoutes = [GAME_ROUTE, CHARACTER_ROUTE];
 const authRoutes = [LOGIN_ROUTE, SIGNUP_ROUTE];
 const adminRoutes = [ADMIN_ROUTE];
 

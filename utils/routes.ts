@@ -2,9 +2,12 @@ export const INDEX_ROUTE = "/";
 
 // game
 export const GAME_ROUTE = "/game";
+export const LOCATION_ROUTE = "/game/location";
+
+// character
+export const CHARACTER_ROUTE = "/character";
 export const NEW_CHARACTER_ROUTE = "/character/new-character";
 export const SELECT_CHARACTER_ROUTE = "/character/select-character";
-export const LOCATION_ROUTE = "/game/location";
 
 // admin
 export const ADMIN_ROUTE = "/admin";
