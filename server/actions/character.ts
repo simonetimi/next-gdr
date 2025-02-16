@@ -19,6 +19,7 @@ import { CHARACTER_ROUTE, GAME_ROUTE } from "@/utils/routes";
 import { revalidatePath } from "next/cache";
 import { locations } from "@/database/schema/location";
 import { onlineUsersSchema } from "@/zod/schemas/session";
+import { isAdmin, isMaster } from "@/server/actions/roles";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
@@ -67,8 +68,7 @@ export async function getCharacterSheet(characterId: string) {
   const userId = session?.user?.id;
   if (!session || !userId) throw new Error("User not authenticated");
 
-  const hasFullPermission =
-    session.user.role === "admin" || session.user.role === "master";
+  const hasFullPermission = (await isAdmin(userId)) || (await isMaster(userId));
 
   const character = await db
     .select({ userId: characters.userId })

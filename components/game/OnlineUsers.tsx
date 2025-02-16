@@ -35,7 +35,7 @@ export default function OnlineUsers() {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="max-h-full space-y-4">
       {Object.entries(groupedByLocation)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([locationName, characters]) => (

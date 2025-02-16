@@ -19,7 +19,6 @@ const providers: Provider[] = [
       return {
         ...profile,
         id: profile.id.toString(),
-        role: (profile.role as string) ?? "user",
         image: profile.avatar_url,
       };
     },
@@ -45,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user }) {
       if (user) {
         const result = await db
-          .selectDistinct({ role: users.role, isBanned: users.isBanned })
+          .selectDistinct({ isBanned: users.isBanned })
           .from(users)
           .where(eq(users.id, user.id!))
           .limit(1);
@@ -53,8 +52,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         /// first login
         if (!result.length) return true;
 
-        const { isBanned, role } = result[0];
-        user.name = role;
+        const { isBanned } = result[0];
 
         // redirect to banned page
         if (isBanned) return BANNED_ROUTE;

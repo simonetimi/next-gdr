@@ -10,7 +10,7 @@ export default async function Header({
 }: {
   showControls?: boolean;
   character?: Character;
-  allowMultipleCharacters: boolean;
+  allowMultipleCharacters?: boolean;
 }) {
   // controls are rendered only if the user is logged it, has at least a character and renderControls is true
   // multiple characters can be handled

@@ -6,7 +6,6 @@ declare module "next-auth" {
    */
   interface Session {
     user: {
-      role?: string;
       isBanned?: boolean;
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
@@ -18,7 +17,6 @@ declare module "next-auth" {
   }
 
   interface User extends DefaultUser {
-    role?: string;
     isBanned?: boolean;
   }
 }

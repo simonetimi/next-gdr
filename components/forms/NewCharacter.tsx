@@ -1,7 +1,7 @@
 "use client";
 
 import { Character } from "@/models/characters";
-import { Races } from "@/models/race";
+import { Races } from "@/models/races";
 import { createCharacter } from "@/server/actions/character";
 import { GAME_ROUTE } from "@/utils/routes";
 import { Form } from "@heroui/form";

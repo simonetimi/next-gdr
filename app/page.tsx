@@ -17,7 +17,6 @@ export default async function Home() {
         {session ? (
           <div className="flex flex-col gap-4">
             <p>Welcome, {session.user?.name}!</p>
-            <p> Role: {session.user?.role}</p>
             <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
               {t("enter")}
             </Button>
