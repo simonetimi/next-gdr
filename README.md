@@ -25,6 +25,7 @@ Chat-based RPG app built with Next.js
 
 ### Guidelines
 
+- In vercel.json, cron jobs can be defined on the select API routes. Eg., for weather, it will be executed everyday at 5 ( "schedule": "0 5 \* \* \*") using the key CRON_SECRET in the env variables
 -
 
 ### Features to implement
@@ -42,6 +43,9 @@ Chat-based RPG app built with Next.js
 - [ ] Create game-wide context to save user's state (like character details) so they're available everywhere
 - [x] Create logic for character selection (redirect logic already present) and second character creation in the settings
 - [ ] Add labels for current pages in the dictionary (always in progress)
+- [x] Add weather logic depending on calendar
+- [x] Make database table for weather
+- [x] Set up cron jobs once a day for weather (and future cron jobs )
 
 ### Bugs
 
