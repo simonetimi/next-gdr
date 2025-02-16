@@ -1,4 +1,4 @@
-import { integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { date, integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const weatherForecasts = pgTable("weather_forecasts", {
   id: uuid()
@@ -8,4 +8,5 @@ export const weatherForecasts = pgTable("weather_forecasts", {
   condition: text("condition").notNull(),
   windSpeed: integer("wind_speed").notNull(),
   lunarPhase: text("lunar_phase").notNull(),
+  createdAt: date("createdAt").notNull().defaultNow(),
 });
