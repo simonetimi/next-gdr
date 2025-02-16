@@ -14,14 +14,19 @@ export default async function GameLayout({
 }: {
   children: ReactNode;
 }) {
+  const allowMultipleCharacters =
+    process.env.ALLOW_MULTIPLE_CHARACTERS?.toLowerCase() === "true";
   let characters: Character[] = [];
   let character;
   const session = await auth();
+
   if (session) {
     characters = await getUserCharacters();
     if (characters.length === 0) {
       // no characters, go to create new character
       return redirect(NEW_CHARACTER_ROUTE);
+    } else if (!allowMultipleCharacters) {
+      character = characters[0];
     } else {
       // if user has an active session with the selected character, render the game
       // else, go to character selection

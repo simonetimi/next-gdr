@@ -5,7 +5,11 @@ import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSelection from "@/components/forms/CharacterSelection";
 
 export default async function SelectCharacterPage() {
-  const MAX_CHARACTERS_ALLOWED =
+  const allowMultipleCharacters =
+    process.env.ALLOW_MULTIPLE_CHARACTERS?.toLowerCase() === "true";
+  if (!allowMultipleCharacters) redirect(GAME_ROUTE);
+
+  const maxCharactersAllowed =
     parseInt(process.env.MAX_CHARACTERS_ALLOWED ?? "") || 1;
   let characters: Character[] = [];
   try {
@@ -18,7 +22,7 @@ export default async function SelectCharacterPage() {
   return (
     <CharacterSelection
       characters={characters}
-      maxCharactersAllowed={MAX_CHARACTERS_ALLOWED}
+      maxCharactersAllowed={maxCharactersAllowed}
     />
   );
 }
