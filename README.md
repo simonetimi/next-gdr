@@ -45,6 +45,7 @@ Chat-based RPG app built with Next.js
 - [x] Add weather logic depending on calendar
 - [x] Make database table for weather
 - [x] Set up cron jobs once a day for weather (and future cron jobs )
+- [ ] Properly manage arriving to a location that is hidden (redirect to game)
 
 ### TODO
 

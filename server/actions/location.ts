@@ -2,7 +2,7 @@
 
 import { db } from "@/database/db";
 import { locationGroups, locations } from "@/database/schema/location";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { sessions } from "@/database/schema/auth";
 import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
@@ -21,16 +21,15 @@ export async function getAllLocationGroupedByLocationGroup() {
     .select({
       locationGroupId: locationGroups.id,
       locationGroupName: locationGroups.name,
-      locations: {
-        id: locations.id,
-        code: locations.code,
-        name: locations.name,
-        hidden: locations.hidden,
-        description: locations.description,
-      },
+      locations: sql<Location[]>`array_agg(json_build_object(
+        'code', ${locations.code},
+        'name', ${locations.name},
+        'description', ${locations.description}
+      ))`,
     })
-    .from(locations)
-    .leftJoin(locationGroups, eq(locations.locationGroupId, locationGroups.id))
+    .from(locationGroups)
+    .leftJoin(locations, eq(locations.locationGroupId, locationGroups.id))
+    .where(eq(locations.hidden, false))
     .groupBy(locationGroups.id, locationGroups.name);
 
   return groupedLocationsSelectSchema.parse(result);

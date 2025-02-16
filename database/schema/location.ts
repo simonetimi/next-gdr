@@ -17,7 +17,6 @@ export const locationGroups = pgTable("location_group", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  code: text("code").notNull().unique(),
   name: text("name").notNull().unique(),
   hidden: boolean("hidden").default(false),
   description: text("description"),

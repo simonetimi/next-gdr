@@ -21,11 +21,13 @@ export const locationGroupSelectSchema = createSelectSchema(locationGroups);
 
 export const groupedLocationsSelectSchema = z.array(
   z.object({
-    name: z.string(),
+    locationGroupName: locationGroupSelectSchema.shape.name,
+    locationGroupId: locationGroupSelectSchema.shape.id,
     locations: z.array(
-      z.object({
-        name: z.string(),
-        code: z.string(),
+      locationSelectSchema.omit({
+        locationGroupId: true,
+        id: true,
+        hidden: true,
       }),
     ),
   }),

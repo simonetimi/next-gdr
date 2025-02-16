@@ -1,6 +1,9 @@
 import { auth } from "@/auth";
 import Map from "@/components/game/Map";
-import { getAllLocations, setCurrentLocation } from "@/server/actions/location";
+import {
+  getAllLocationGroupedByLocationGroup,
+  setCurrentLocation,
+} from "@/server/actions/location";
 
 // * Keep the client components as down as possible to the tree!
 // * Manage the state of the windows (messaging, character page, etc) in a navbar client component (with the buttons to open and close them)
@@ -9,8 +12,7 @@ export default async function GamePage() {
   const session = await auth();
   if (!session) return null;
 
-  // TODO get location groups
-  const locations = await getAllLocations();
+  const locations = await getAllLocationGroupedByLocationGroup();
 
   await setCurrentLocation();
 
