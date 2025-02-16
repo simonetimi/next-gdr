@@ -11,17 +11,18 @@ import {
   NavbarMenuToggle,
   Avatar,
 } from "@heroui/react";
-import { AppWindowMac, Map, Settings } from "lucide-react";
+import { ArrowLeftRight, Map, Settings } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { GAME_ROUTE } from "@/utils/routes";
+import { GAME_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
 import CharacterSheet from "@/components/game/CharacterSheet";
 import { Character } from "@/models/characters";
 import { useMediaQuery } from "@uidotdev/usehooks";
 
 import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
+import { resetCurrentCharacter } from "@/server/actions/character";
 
 function ControlNavbar({ character }: { character: Character }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,6 +60,13 @@ function ControlNavbar({ character }: { character: Character }) {
     setShowSettingsMovable((prev) => !prev);
   };
 
+  const handleOnPressResetCharacter = async () => {
+    const success = await resetCurrentCharacter();
+    if (success) {
+      router.push(SELECT_CHARACTER_ROUTE);
+    }
+  };
+
   // the draggable components are grouped here and conditionally rendered depending on their state
   // buttons on the navbar activate movables for large screens. instead, buttons on the side menu will open small screen movables
   return (
@@ -87,7 +95,7 @@ function ControlNavbar({ character }: { character: Character }) {
           <Movable
             boundsSelector="main"
             dragHandleClassName="handle"
-            component={<CharacterSheet characterId={character.id} />}
+            component={<div>Settings</div>}
             coords={isSmallDevice ? [0, 140] : [0, 110]}
             width={isSmallDevice ? "100vw" : 1000}
             minWidth={isSmallDevice ? "100vw" : 800}
@@ -110,30 +118,36 @@ function ControlNavbar({ character }: { character: Character }) {
         />
         <NavbarContent className="hidden gap-4 sm:flex" justify="center">
           <NavbarItem>
-            <Button
-              isIconOnly
-              startContent={<Map />}
-              size="sm"
-              onPress={() => router.push(GAME_ROUTE)}
-            />
+            <Tooltip content="Map">
+              <Button
+                isIconOnly
+                startContent={<Map />}
+                size="sm"
+                onPress={() => router.push(GAME_ROUTE)}
+              />
+            </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Button
-              isIconOnly
-              startContent={<AppWindowMac />}
-              size="sm"
-              onPress={toggleCharacterSheetMovable}
-              color={showCharacterSheetMovable ? "primary" : "default"}
-            />
+            <Tooltip content="Settings">
+              <Button
+                isIconOnly
+                startContent={<Settings />}
+                size="sm"
+                onPress={toggleSettingsMovable}
+                color={showSettingsMovable ? "primary" : "default"}
+              />
+            </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Button
-              isIconOnly
-              startContent={<Settings />}
-              size="sm"
-              onPress={toggleSettingsMovable}
-              color={showSettingsMovable ? "primary" : "default"}
-            />
+            <Tooltip content="Switch character">
+              <Button
+                isIconOnly
+                startContent={<ArrowLeftRight />}
+                size="sm"
+                onPress={handleOnPressResetCharacter}
+                className="hover:bg-warning"
+              />
+            </Tooltip>
           </NavbarItem>
         </NavbarContent>
         <NavbarMenu className="mt-10 flex flex-col gap-4">
@@ -152,22 +166,22 @@ function ControlNavbar({ character }: { character: Character }) {
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">
             <Button
-              startContent={<AppWindowMac />}
-              size="lg"
-              onPress={toggleCharacterSheetMovable}
-              variant="light"
-            >
-              Window
-            </Button>
-          </NavbarMenuItem>
-          <NavbarMenuItem className="flex flex-col">
-            <Button
               startContent={<Settings />}
               size="lg"
               onPress={toggleSettingsMovable}
               variant="light"
             >
               Settings
+            </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
+            <Button
+              startContent={<ArrowLeftRight />}
+              size="lg"
+              onPress={handleOnPressResetCharacter}
+              variant="light"
+            >
+              Switch characters
             </Button>
           </NavbarMenuItem>
         </NavbarMenu>

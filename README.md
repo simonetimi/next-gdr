@@ -40,7 +40,8 @@ Chat-based RPG app built with Next.js
 - [x] Build more robust logic for "hasCharacter", maybe linking the property with the character table instead of a boolean
 - [x] Add zod validation for new character from (trim, first letter uppercase, rest lowercase, no spaces - base for the rest of the validation)
 - [ ] Create game-wide context to save user's state (like character details) so they're available everywhere
-- [ ] Create logic for character selection (redirect logic already present) and second character creation in the settings
+- [x] Create logic for character selection (redirect logic already present) and second character creation in the settings
+- [ ] Add labels for current pages in the dictionary (always in progress)
 
 ### Bugs
 

@@ -19,27 +19,19 @@ export default async function GameLayout({
   const session = await auth();
   if (session) {
     characters = await getUserCharacters();
-    switch (characters.length) {
-      case 0:
-        // no characters, go to create new character
-        return redirect(NEW_CHARACTER_ROUTE);
-      case 1:
-        // only one character, use that
-        character = characters[0];
-        break;
-      default: {
-        // if user has multiple characters:
-        // retrieves session that is not expired, with the selected character
-        // if the characterId in the session is null, go to the selection route
-        const sessionWithCharacter = await getCurrentCharacter();
-        if (sessionWithCharacter.selectedCharacterId) {
-          character = characters.find(
-            (char) => char.id === sessionWithCharacter.selectedCharacterId,
-          );
-        } else {
-          redirect(SELECT_CHARACTER_ROUTE);
-        }
-        break;
+    if (characters.length === 0) {
+      // no characters, go to create new character
+      return redirect(NEW_CHARACTER_ROUTE);
+    } else {
+      // if user has an active session with the selected character, render the game
+      // else, go to character selection
+      const sessionWithCharacter = await getCurrentCharacter();
+      if (sessionWithCharacter.selectedCharacterId) {
+        character = characters.find(
+          (char) => char.id === sessionWithCharacter.selectedCharacterId,
+        );
+      } else {
+        redirect(SELECT_CHARACTER_ROUTE);
       }
     }
   }
