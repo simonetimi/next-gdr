@@ -21,13 +21,13 @@ import { Character } from "@/models/characters";
 import { useMediaQuery } from "@uidotdev/usehooks";
 
 import dynamic from "next/dynamic";
+import { Tooltip } from "@heroui/tooltip";
 
 function ControlNavbar({ character }: { character: Character }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const router = useRouter();
 
-  // TODO fix rendering on ssr
   const isMaxWidth850 = useMediaQuery("only screen and (max-width : 850px)");
   useEffect(() => {
     setIsSmallDevice(isMaxWidth850);
@@ -172,12 +172,14 @@ function ControlNavbar({ character }: { character: Character }) {
           </NavbarMenuItem>
         </NavbarMenu>
       </Navbar>
-      <Avatar
-        src={character.miniAvatarUrl ?? ""}
-        name={character.firstName}
-        className="mr-4 cursor-pointer"
-        onClick={toggleCharacterSheetMovable}
-      />
+      <Tooltip content={character.firstName}>
+        <Avatar
+          src={character.miniAvatarUrl ?? ""}
+          name={character.firstName}
+          className="mr-4 h-12 w-12 cursor-pointer"
+          onClick={toggleCharacterSheetMovable}
+        />
+      </Tooltip>
     </div>
   );
 }

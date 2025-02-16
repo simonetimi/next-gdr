@@ -11,9 +11,12 @@ import {
   newCharacterFormSchema,
 } from "@/zod/schemas/character";
 
-import { eq } from "drizzle-orm";
+import { and, desc, eq, gt } from "drizzle-orm";
 import { races } from "@/database/schema/race";
 import { z } from "zod";
+import { sessions } from "@/database/schema/auth";
+import { CHARACTER_ROUTE, GAME_ROUTE } from "@/utils/routes";
+import { revalidatePath } from "next/cache";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
@@ -44,7 +47,7 @@ export async function createCharacter(formData: FormData) {
   return parsedCharacter;
 }
 
-export async function getCharacters() {
+export async function getUserCharacters() {
   const session = await auth();
   const userId = session?.user?.id;
   if (!session || !userId) throw new Error("User not authenticated");
@@ -68,10 +71,13 @@ export async function getCharacterSheet(characterId: string) {
   const character = await db
     .select({ userId: characters.userId })
     .from(characters)
-    .where(eq(characters.userId, userId));
+    .where(eq(characters.id, characterId))
+    .limit(1);
+
+  if (!character.length) throw new Error("Character not found");
 
   // handles possible multiple characters
-  const isUserOwner = character.some((char) => char.userId === userId);
+  const isUserOwner = character[0].userId === userId;
 
   const result = await db
     .select({
@@ -113,7 +119,7 @@ export async function getCharacterSheet(characterId: string) {
     })
     .from(characterSheets)
     .where(eq(characterSheets.characterId, characterId))
-    .innerJoin(characters, eq(characterSheets.characterId, characterId))
+    .innerJoin(characters, eq(characters.id, characterSheets.characterId))
     .innerJoin(races, eq(characters.raceId, races.id));
 
   const fetchedChar = result[0].character as z.infer<
@@ -133,4 +139,60 @@ export async function getCharacterSheet(characterId: string) {
   return characterSheetSchemaWithCharacter.parse(result[0]);
 }
 
-// TODO make granular functions for specific things (eg. recover all the mini avatars for the "online" list)
+export async function getCurrentCharacter() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const now = new Date();
+
+  // retrieves the last non-expired session
+  const results = await db
+    .select()
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)))
+    .orderBy(desc(sessions.expires))
+    .limit(1);
+
+  return results[0];
+}
+
+export async function setCurrentCharacter(characterId: string) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const now = new Date();
+
+  // updates non expired-sessions
+  const result = await db
+    .update(sessions)
+    .set({ selectedCharacterId: characterId })
+    .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)));
+
+  revalidatePath(GAME_ROUTE);
+  revalidatePath(CHARACTER_ROUTE);
+
+  // returns a boolean (true if success)
+  return result?.rowCount > 0;
+}
+
+export async function resetCurrentCharacter() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const now = new Date();
+
+  // updates non expired-sessions
+  const result = await db
+    .update(sessions)
+    .set({ selectedCharacterId: null })
+    .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)));
+
+  revalidatePath(GAME_ROUTE);
+  revalidatePath(CHARACTER_ROUTE);
+
+  // returns a boolean (true if success)
+  return result?.rowCount > 0;
+}

@@ -2,10 +2,12 @@ import Header from "@/components/ui/Header";
 import { ReactNode } from "react";
 import { Character } from "@/models/characters";
 import { auth } from "@/auth";
-import { getCharacters } from "@/server/actions/character";
+import {
+  getCurrentCharacter,
+  getUserCharacters,
+} from "@/server/actions/character";
 import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
-import { getCurrentCharacter } from "@/server/actions/app";
 
 export default async function GameLayout({
   children,
@@ -16,7 +18,7 @@ export default async function GameLayout({
   let character;
   const session = await auth();
   if (session) {
-    characters = await getCharacters();
+    characters = await getUserCharacters();
     switch (characters.length) {
       case 0:
         // no characters, go to create new character

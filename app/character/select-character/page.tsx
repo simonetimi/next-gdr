@@ -1,11 +1,16 @@
-export default function SelectCharacterPage() {
-  return (
-    <div>
-      <p>
-        Logic to select the character (fetch the characters available and show
-        the avatar)
-      </p>
-      <p>When selected, send to server and redirect to GAME_ROUTE</p>
-    </div>
-  );
+import { Character } from "@/models/characters";
+import { getUserCharacters } from "@/server/actions/character";
+import { redirect } from "next/navigation";
+import { GAME_ROUTE } from "@/utils/routes";
+import CharacterSelection from "@/components/forms/CharacterSelection";
+
+export default async function SelectCharacterPage() {
+  let characters: Character[] = [];
+  try {
+    characters = await getUserCharacters();
+  } catch (error) {
+    // handle error
+    redirect(GAME_ROUTE);
+  }
+  return <CharacterSelection characters={characters} />;
 }
