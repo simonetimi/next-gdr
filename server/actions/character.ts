@@ -17,7 +17,7 @@ import { z } from "zod";
 import { sessions } from "@/database/schema/auth";
 import { CHARACTER_ROUTE, GAME_ROUTE } from "@/utils/routes";
 import { revalidatePath } from "next/cache";
-import { locations } from "@/database/schema/location";
+import { locationGroups, locations } from "@/database/schema/location";
 import { onlineUsersSchema } from "@/zod/schemas/session";
 import { isAdmin, isMaster } from "@/server/actions/roles";
 
@@ -214,23 +214,30 @@ export async function getOnlineCharacters() {
         lastName: characters.lastName,
         miniAvatarUrl: characters.miniAvatarUrl,
       },
+      // location might be null
       location: {
         name: locations.name,
         code: locations.code,
       },
+      // location group might be null
+      locationGroup: {
+        name: locationGroups.name,
+      },
+
       race: {
         name: races.name,
         id: races.id,
       },
     })
     .from(sessions)
-    // not expired session with at least a character currently selected
     .where(
       and(gt(sessions.expires, now), isNotNull(sessions.selectedCharacterId)),
     )
     .innerJoin(characters, eq(characters.id, sessions.selectedCharacterId))
+    .innerJoin(races, eq(races.id, characters.raceId))
+    // change these to left outer joins to handle null cases
     .leftJoin(locations, eq(locations.id, sessions.currentLocationId))
-    .innerJoin(races, eq(races.id, characters.raceId));
+    .leftJoin(locationGroups, eq(locationGroups.id, locations.locationGroupId));
 
   return onlineUsersSchema.parse(results);
 }

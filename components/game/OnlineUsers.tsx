@@ -23,29 +23,77 @@ export default function OnlineUsers() {
     })();
   }, []);
 
-  // Group characters by location
-  const groupedByLocation = onlineCharacters.reduce(
+  const groupedByLocationGroup = onlineCharacters.reduce(
     (acc, char) => {
-      const locationName = char.location?.name ?? t("entryLocationName");
-      if (!acc[locationName]) {
-        acc[locationName] = [];
+      if (!char.location && !char.locationGroup) {
+        // Characters with no location and no group go to entry location
+        const entryLocation = t("entryLocationName");
+        if (!acc["entry"]) {
+          acc["entry"] = {};
+        }
+        if (!acc["entry"][entryLocation]) {
+          acc["entry"][entryLocation] = [];
+        }
+        acc["entry"][entryLocation].push(char);
+        return acc;
       }
-      acc[locationName].push(char);
+
+      const locationName = char.location?.name ?? t("entryLocationName");
+      const groupName = char.locationGroup?.name ?? "";
+
+      if (!acc[groupName]) {
+        acc[groupName] = {};
+      }
+      if (!acc[groupName][locationName]) {
+        acc[groupName][locationName] = [];
+      }
+      acc[groupName][locationName].push(char);
       return acc;
     },
-    {} as Record<string, OnlineUsersType>,
+    {} as Record<string, Record<string, OnlineUsersType>>,
   );
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <Spinner />
       </div>
     );
+  }
+
+  // Sort groups to ensure "map" appears first, then alphabetically
+  const sortedGroups = Object.entries(groupedByLocationGroup).sort(
+    ([a], [b]) => {
+      if (a === "entry") return -1;
+      if (b === "entry") return 1;
+      return a.localeCompare(b);
+    },
+  );
 
   return (
-    <div className="max-h-full space-y-4">
-      {Object.entries(groupedByLocation)
+    <div className="max-h-full space-y-8">
+      {sortedGroups.map(([groupName, locations]) => (
+        <LocationGroupSection
+          key={groupName}
+          name={groupName === "entry" ? "" : groupName} // No group name for entry location
+          locations={locations}
+        />
+      ))}
+    </div>
+  );
+}
+
+const LocationGroupSection = ({
+  name,
+  locations,
+}: {
+  name: string;
+  locations: Record<string, OnlineUsersType>;
+}) => (
+  <div className="space-y-4">
+    {name && <h2 className="border-b pb-2 text-xl font-bold">{name}</h2>}
+    <div className="space-y-4 pl-4">
+      {Object.entries(locations)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([locationName, characters]) => (
           <LocationGroup
@@ -55,8 +103,8 @@ export default function OnlineUsers() {
           />
         ))}
     </div>
-  );
-}
+  </div>
+);
 
 // sorts characters alphabetically and renders them
 const LocationGroup = ({

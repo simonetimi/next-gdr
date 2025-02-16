@@ -9,6 +9,7 @@ export default async function GamePage() {
   const session = await auth();
   if (!session) return null;
 
+  // TODO get location groups
   const locations = await getAllLocations();
 
   await setCurrentLocation();

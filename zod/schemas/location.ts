@@ -1,4 +1,4 @@
-import { locations } from "@/database/schema/location";
+import { locationGroups, locations } from "@/database/schema/location";
 import { toKebabCase } from "@/utils/strings";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -16,3 +16,17 @@ export const newLocationSchema = z.object({
     .transform((val) => toKebabCase(val)), // transforms to kebab case
   description: z.string().trim(),
 });
+
+export const locationGroupSelectSchema = createSelectSchema(locationGroups);
+
+export const groupedLocationsSelectSchema = z.array(
+  z.object({
+    name: z.string(),
+    locations: z.array(
+      z.object({
+        name: z.string(),
+        code: z.string(),
+      }),
+    ),
+  }),
+);

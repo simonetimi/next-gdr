@@ -2,7 +2,10 @@ import { sessions } from "@/database/schema/auth";
 import { createSelectSchema } from "drizzle-zod";
 import { raceSelectSchema } from "@/zod/schemas/race";
 import { characterSelectSchema } from "@/zod/schemas/character";
-import { locationSelectSchema } from "@/zod/schemas/location";
+import {
+  locationGroupSelectSchema,
+  locationSelectSchema,
+} from "@/zod/schemas/location";
 import { z } from "zod";
 
 export const sessionSelectSchema = createSelectSchema(sessions);
@@ -25,7 +28,14 @@ export const onlineUsersSchema = z.array(
           name: true,
           code: true,
         })
-        .nullable(),
+        .optional()
+        .nullable(), // allow location to be undefined
+      locationGroup: locationGroupSelectSchema
+        .pick({
+          name: true,
+        })
+        .optional()
+        .nullable(), // allow locationGroup to be undefined
     })
     .omit({
       userId: true,
