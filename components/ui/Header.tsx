@@ -6,9 +6,11 @@ import { Character } from "@/models/characters";
 export default async function Header({
   showControls = false,
   character,
+  allowMultipleCharacters,
 }: {
   showControls?: boolean;
   character?: Character;
+  allowMultipleCharacters: boolean;
 }) {
   // controls are rendered only if the user is logged it, has at least a character and renderControls is true
   // multiple characters can be handled
@@ -17,7 +19,12 @@ export default async function Header({
       <h1 className="absolute inset-0 flex items-center justify-center sm:static sm:flex sm:items-center sm:justify-start">
         Next GdR
       </h1>
-      {character && showControls && <ControlNavbar character={character!} />}
+      {character && showControls && (
+        <ControlNavbar
+          character={character!}
+          allowMultipleCharacters={allowMultipleCharacters}
+        />
+      )}
       <div className="flex flex-shrink-0 items-center gap-4">
         <ThemeSwitcher className="mt-1" />
         {character && <Logout />}

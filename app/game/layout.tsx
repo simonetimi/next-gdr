@@ -42,7 +42,11 @@ export default async function GameLayout({
   }
   return (
     <>
-      <Header showControls character={character!} />
+      <Header
+        showControls
+        character={character!}
+        allowMultipleCharacters={allowMultipleCharacters}
+      />
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {children}
       </main>

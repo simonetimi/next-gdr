@@ -12,7 +12,6 @@ function CharacterSheet({ characterId }: { characterId: string }) {
     (async () => {
       try {
         const result = await getCharacterSheet(characterId);
-        console.log(result);
         setCharacterSheet(result);
       } catch (error) {
         // handle error

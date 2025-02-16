@@ -24,7 +24,13 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 
-function ControlNavbar({ character }: { character: Character }) {
+function ControlNavbar({
+  character,
+  allowMultipleCharacters,
+}: {
+  character: Character;
+  allowMultipleCharacters?: boolean;
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const router = useRouter();
@@ -138,17 +144,19 @@ function ControlNavbar({ character }: { character: Character }) {
               />
             </Tooltip>
           </NavbarItem>
-          <NavbarItem>
-            <Tooltip content="Switch character">
-              <Button
-                isIconOnly
-                startContent={<ArrowLeftRight />}
-                size="sm"
-                onPress={handleOnPressResetCharacter}
-                className="hover:bg-warning"
-              />
-            </Tooltip>
-          </NavbarItem>
+          {allowMultipleCharacters && (
+            <NavbarItem>
+              <Tooltip content="Switch character">
+                <Button
+                  isIconOnly
+                  startContent={<ArrowLeftRight />}
+                  size="sm"
+                  onPress={handleOnPressResetCharacter}
+                  className="hover:bg-warning"
+                />
+              </Tooltip>
+            </NavbarItem>
+          )}
         </NavbarContent>
         <NavbarMenu className="mt-10 flex flex-col gap-4">
           <NavbarMenuItem className="flex flex-col">
@@ -174,16 +182,18 @@ function ControlNavbar({ character }: { character: Character }) {
               Settings
             </Button>
           </NavbarMenuItem>
-          <NavbarMenuItem className="flex flex-col">
-            <Button
-              startContent={<ArrowLeftRight />}
-              size="lg"
-              onPress={handleOnPressResetCharacter}
-              variant="light"
-            >
-              Switch characters
-            </Button>
-          </NavbarMenuItem>
+          {allowMultipleCharacters && (
+            <NavbarMenuItem className="flex flex-col">
+              <Button
+                startContent={<ArrowLeftRight />}
+                size="lg"
+                onPress={handleOnPressResetCharacter}
+                variant="light"
+              >
+                Switch characters
+              </Button>
+            </NavbarMenuItem>
+          )}
         </NavbarMenu>
       </Navbar>
       <Tooltip content={character.firstName}>
