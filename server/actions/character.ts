@@ -11,12 +11,14 @@ import {
   newCharacterFormSchema,
 } from "@/zod/schemas/character";
 
-import { and, desc, eq, gt } from "drizzle-orm";
+import { and, desc, eq, gt, isNotNull } from "drizzle-orm";
 import { races } from "@/database/schema/race";
 import { z } from "zod";
 import { sessions } from "@/database/schema/auth";
 import { CHARACTER_ROUTE, GAME_ROUTE } from "@/utils/routes";
 import { revalidatePath } from "next/cache";
+import { locations } from "@/database/schema/location";
+import { onlineUsersSchema } from "@/zod/schemas/session";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
@@ -195,4 +197,40 @@ export async function resetCurrentCharacter() {
 
   // returns a boolean (true if success)
   return result?.rowCount > 0;
+}
+
+export async function getOnlineCharacters() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const now = new Date();
+
+  const results = await db
+    .select({
+      character: {
+        firstName: characters.firstName,
+        middleName: characters.middleName,
+        lastName: characters.lastName,
+        miniAvatarUrl: characters.miniAvatarUrl,
+      },
+      location: {
+        name: locations.name,
+        code: locations.code,
+      },
+      race: {
+        name: races.name,
+        id: races.id,
+      },
+    })
+    .from(sessions)
+    // not expired session with at least a character currently selected
+    .where(
+      and(gt(sessions.expires, now), isNotNull(sessions.selectedCharacterId)),
+    )
+    .innerJoin(characters, eq(characters.id, sessions.selectedCharacterId))
+    .leftJoin(locations, eq(locations.id, sessions.currentLocationId))
+    .innerJoin(races, eq(races.id, characters.raceId));
+
+  return onlineUsersSchema.parse(results);
 }

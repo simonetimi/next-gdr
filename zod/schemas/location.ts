@@ -1,5 +1,5 @@
 import { locations } from "@/database/schema/location";
-import { createLocationCode } from "@/utils/strings";
+import { toKebabCase } from "@/utils/strings";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -13,6 +13,6 @@ export const newLocationSchema = z.object({
   code: z
     .string()
     .trim()
-    .transform((val) => createLocationCode(val)), // transforms to kebab case
+    .transform((val) => toKebabCase(val)), // transforms to kebab case
   description: z.string().trim(),
 });

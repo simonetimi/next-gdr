@@ -2,7 +2,9 @@ import { characters } from "@/database/schema/character";
 import { integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const attributes = pgTable("attribute", {
-  id: uuid().primaryKey(),
+  id: uuid()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull().unique(),
 });
 

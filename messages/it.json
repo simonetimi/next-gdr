@@ -1,4 +1,7 @@
 {
+  "general": {
+    "entryLocationName": "Mappa"
+  },
   "pages": {
     "index": {
       "enter": "Entra"

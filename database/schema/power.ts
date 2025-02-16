@@ -3,7 +3,9 @@ import { characters } from "@/database/schema/character";
 import { integer, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const powers = pgTable("power", {
-  id: uuid().primaryKey(),
+  id: uuid()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull().unique(),
   description: text("description").notNull(),
   cost: integer("cost").default(0),

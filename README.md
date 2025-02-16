@@ -42,10 +42,15 @@ Chat-based RPG app built with Next.js
 - [x] Add zod validation for new character from (trim, first letter uppercase, rest lowercase, no spaces - base for the rest of the validation)
 - [ ] Create game-wide context to save user's state (like character details) so they're available everywhere
 - [x] Create logic for character selection (redirect logic already present) and second character creation in the settings
-- [ ] Add labels for current pages in the dictionary (always in progress)
 - [x] Add weather logic depending on calendar
 - [x] Make database table for weather
 - [x] Set up cron jobs once a day for weather (and future cron jobs )
+
+### TODO
+
+- [ ] Update labels in messages/it.json (permanent)
+- [ ] Add cron job to clear weather table every 30 days
+- [ ] Put translation labels of weather
 
 ### Bugs
 

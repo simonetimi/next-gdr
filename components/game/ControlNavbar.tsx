@@ -11,7 +11,7 @@ import {
   NavbarMenuToggle,
   Avatar,
 } from "@heroui/react";
-import { ArrowLeftRight, Map, Settings } from "lucide-react";
+import { ArrowLeftRight, Map, Settings, Users } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -23,6 +23,7 @@ import { useMediaQuery } from "@uidotdev/usehooks";
 import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
+import OnlineUsers from "@/components/game/OnlineUsers";
 
 function ControlNavbar({
   character,
@@ -60,6 +61,12 @@ function ControlNavbar({
     setShowCharacterSheetMovable((prev) => !prev);
   };
 
+  const [showOnlineUsersMovable, setOnlineUsersMovable] = useState(false);
+  const toggleOnlineUsersMovable = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
+    setOnlineUsersMovable((prev) => !prev);
+  };
+
   const [showSettingsMovable, setShowSettingsMovable] = useState(false);
   const toggleSettingsMovable = () => {
     if (isMenuOpen) setIsMenuOpen(false);
@@ -90,6 +97,24 @@ function ControlNavbar({
             minHeight={isSmallDevice ? "80vw" : 550}
             height={isSmallDevice ? undefined : 600}
             showSetter={setShowCharacterSheetMovable}
+            enableResizing={!isSmallDevice}
+            enableMovement={!isSmallDevice}
+          />,
+          portalRef.current,
+        )}
+      {showOnlineUsersMovable &&
+        portalRef.current &&
+        createPortal(
+          <Movable
+            boundsSelector="main"
+            dragHandleClassName="handle"
+            component={<OnlineUsers />}
+            coords={isSmallDevice ? [0, 140] : [0, 110]}
+            width={isSmallDevice ? "100vw" : 1000}
+            minWidth={isSmallDevice ? "100vw" : 800}
+            minHeight={isSmallDevice ? "80vw" : 550}
+            height={isSmallDevice ? undefined : 600}
+            showSetter={setOnlineUsersMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
           />,
@@ -134,6 +159,16 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
+            <Tooltip content="Online users">
+              <Button
+                isIconOnly
+                startContent={<Users />}
+                size="sm"
+                onPress={toggleOnlineUsersMovable}
+              />
+            </Tooltip>
+          </NavbarItem>
+          <NavbarItem>
             <Tooltip content="Settings">
               <Button
                 isIconOnly
@@ -170,6 +205,16 @@ function ControlNavbar({
               variant="light"
             >
               Main map
+            </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
+            <Button
+              startContent={<Users />}
+              size="lg"
+              onPress={toggleOnlineUsersMovable}
+              variant="light"
+            >
+              Online users
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">

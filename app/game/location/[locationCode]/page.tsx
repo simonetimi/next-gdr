@@ -1,4 +1,4 @@
-import { getLocation } from "@/server/actions/location";
+import { getLocation, setCurrentLocation } from "@/server/actions/location";
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 
@@ -14,8 +14,9 @@ export default async function LocationPage({
   } catch (error) {
     console.log(error);
   }
-
   if (!location) redirect(GAME_ROUTE);
+
+  await setCurrentLocation(location.id);
 
   return (
     <div className="flex h-full w-full flex-grow flex-row border">
