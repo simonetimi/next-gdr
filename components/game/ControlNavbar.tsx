@@ -38,7 +38,7 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
-import { toggleInvisible } from "@/server/actions/game";
+import { isInvisible, toggleInvisible } from "@/server/actions/game";
 
 function ControlNavbar({
   character,
@@ -66,6 +66,16 @@ function ControlNavbar({
     await toggleInvisible(isInvisibleSelected);
     setIsInvisibleSelected((prev) => !prev);
   };
+  // fix component error with heroui
+
+  useEffect(() => {
+    if (isMaster) {
+      (async () => {
+        const isUserInvisible = await isInvisible();
+        setIsInvisibleSelected(isUserInvisible ?? false);
+      })();
+    }
+  }, [isMaster]);
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
@@ -164,14 +174,16 @@ function ControlNavbar({
           />,
           portalRef.current,
         )}
-      <Tooltip content="Toggle invisible">
-        <Checkbox
-          icon={<EyeOff />}
-          size="lg"
-          isSelected={isInvisibleSelected}
-          onValueChange={handleOnCheckInvisible}
-        ></Checkbox>
-      </Tooltip>
+      {isMaster && (
+        <Tooltip content="Toggle invisible">
+          <Checkbox
+            icon={<EyeOff />}
+            size="lg"
+            isSelected={isInvisibleSelected}
+            onValueChange={handleOnCheckInvisible}
+          ></Checkbox>
+        </Tooltip>
+      )}
       <Navbar
         className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         isMenuOpen={isMenuOpen}

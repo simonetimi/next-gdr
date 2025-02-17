@@ -6,11 +6,16 @@ import { racesSelectSchema } from "@/zod/schemas/race";
 import { auth } from "@/auth";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { sessions } from "@/database/schema/auth";
+import { isMaster } from "@/server/actions/roles";
 
 export async function toggleInvisible(isInvisibleActive: boolean) {
   const session = await auth();
   const userId = session?.user?.id;
   if (!session || !userId) throw new Error("User not authenticated");
+
+  const isUsermaster = await isMaster(userId);
+
+  if (!isUsermaster) throw new Error("User not authorized");
 
   await db
     .update(sessions)

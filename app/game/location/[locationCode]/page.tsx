@@ -18,7 +18,6 @@ export default async function LocationPage({
   if (!location) redirect(GAME_ROUTE);
 
   const isUserInvisible = await isInvisible();
-  console.log(isUserInvisible);
   if (!isUserInvisible) {
     await setCurrentLocation(location.id);
   }
