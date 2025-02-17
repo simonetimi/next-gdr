@@ -10,11 +10,11 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Avatar,
-  Checkbox,
 } from "@heroui/react";
 import {
   ArrowLeftRight,
   BadgeCheck,
+  Eye,
   EyeOff,
   Map,
   Settings,
@@ -62,7 +62,7 @@ function ControlNavbar({
 
   const [isInvisibleSelected, setIsInvisibleSelected] =
     useState<boolean>(false);
-  const handleOnCheckInvisible = async () => {
+  const handleToggleInvisible = async () => {
     await toggleInvisible(isInvisibleSelected);
     setIsInvisibleSelected((prev) => !prev);
   };
@@ -119,12 +119,12 @@ function ControlNavbar({
   // the draggable components are grouped here and conditionally rendered depending on their state
   // buttons on the navbar activate movables for large screens. instead, buttons on the side menu will open small screen movables
   return (
-    <div className="flex flex-grow items-center justify-start gap-3 sm:justify-center">
+    <div className="flex flex-grow items-center justify-start gap-0 sm:justify-center sm:gap-3">
       {showCharacterSheetMovable &&
         portalRef.current &&
         createPortal(
           <Movable
-            boundsSelector="main"
+            boundsSelector="body"
             dragHandleClassName="handle"
             component={<CharacterSheet characterId={character.id} />}
             coords={isSmallDevice ? [0, 140] : [0, 110]}
@@ -142,7 +142,7 @@ function ControlNavbar({
         portalRef.current &&
         createPortal(
           <Movable
-            boundsSelector="main"
+            boundsSelector="body"
             dragHandleClassName="handle"
             component={<OnlineUsers />}
             coords={isSmallDevice ? [0, 140] : [0, 110]}
@@ -160,7 +160,7 @@ function ControlNavbar({
         portalRef.current &&
         createPortal(
           <Movable
-            boundsSelector="main"
+            boundsSelector="body"
             dragHandleClassName="handle"
             component={<div>Settings</div>}
             coords={isSmallDevice ? [0, 140] : [0, 110]}
@@ -174,16 +174,6 @@ function ControlNavbar({
           />,
           portalRef.current,
         )}
-      {isMaster && (
-        <Tooltip content="Toggle invisible">
-          <Checkbox
-            icon={<EyeOff />}
-            size="lg"
-            isSelected={isInvisibleSelected}
-            onValueChange={handleOnCheckInvisible}
-          ></Checkbox>
-        </Tooltip>
-      )}
       <Navbar
         className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         isMenuOpen={isMenuOpen}
@@ -193,7 +183,7 @@ function ControlNavbar({
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="mr-auto sm:hidden"
         />
-        <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+        <NavbarContent className="hidden sm:flex sm:gap-4" justify="center">
           <NavbarItem>
             <Tooltip content="Map">
               <Button
@@ -201,6 +191,7 @@ function ControlNavbar({
                 startContent={<Map />}
                 size="sm"
                 onPress={() => router.push(GAME_ROUTE)}
+                variant="light"
               />
             </Tooltip>
           </NavbarItem>
@@ -211,6 +202,7 @@ function ControlNavbar({
                 startContent={<Users />}
                 size="sm"
                 onPress={toggleOnlineUsersMovable}
+                variant="light"
               />
             </Tooltip>
           </NavbarItem>
@@ -222,6 +214,7 @@ function ControlNavbar({
                 size="sm"
                 onPress={toggleSettingsMovable}
                 color={showSettingsMovable ? "primary" : "default"}
+                variant="light"
               />
             </Tooltip>
           </NavbarItem>
@@ -234,6 +227,7 @@ function ControlNavbar({
                   size="sm"
                   onPress={handleOnPressResetCharacter}
                   className="hover:bg-warning"
+                  variant="light"
                 />
               </Tooltip>
             </NavbarItem>
@@ -246,6 +240,7 @@ function ControlNavbar({
                   startContent={<BadgeCheck />}
                   size="sm"
                   onPress={() => router.push(MODERATION_ROUTE)}
+                  variant="light"
                 />
               </Tooltip>
             </NavbarItem>
@@ -258,6 +253,7 @@ function ControlNavbar({
                   startContent={<Shield />}
                   size="sm"
                   onPress={() => router.push(ADMIN_ROUTE)}
+                  variant="light"
                 />
               </Tooltip>
             </NavbarItem>
@@ -339,6 +335,19 @@ function ControlNavbar({
               </Button>
             </NavbarMenuItem>
           )}
+          {isMaster && (
+            <NavbarMenuItem className="flex flex-col">
+              <Button
+                startContent={isInvisibleSelected ? <EyeOff /> : <Eye />}
+                size="lg"
+                onPress={handleToggleInvisible}
+                color={isInvisibleSelected ? "primary" : "default"}
+                variant="light"
+              >
+                Invisible mode
+              </Button>
+            </NavbarMenuItem>
+          )}
         </NavbarMenu>
       </Navbar>
       <Tooltip content={character.firstName}>
@@ -349,6 +358,18 @@ function ControlNavbar({
           onClick={toggleCharacterSheetMovable}
         />
       </Tooltip>
+      {isMaster && !isSmallDevice && (
+        <Tooltip content="Toggle invisible">
+          <Button
+            isIconOnly
+            startContent={isInvisibleSelected ? <EyeOff /> : <Eye />}
+            size="sm"
+            onPress={handleToggleInvisible}
+            color={isInvisibleSelected ? "primary" : "default"}
+            variant="flat"
+          ></Button>
+        </Tooltip>
+      )}
     </div>
   );
 }

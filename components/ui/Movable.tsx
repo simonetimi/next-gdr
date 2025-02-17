@@ -43,7 +43,7 @@ export default function Movable({
   return (
     <div className="absolute z-10">
       <Rnd
-        className="rounded-2xl border-1 border-gray-200 bg-transparent backdrop-blur-md dark:border-gray-700"
+        className="rounded-2xl border-1 border-gray-200 bg-white/20 backdrop-blur-md dark:border-gray-700 dark:bg-black/20"
         bounds={boundsSelector}
         dragHandleClassName={dragHandleClassName}
         minWidth={minWidth}

@@ -17,7 +17,7 @@ export async function toggleInvisible(isInvisibleActive: boolean) {
 
   if (!isUsermaster) throw new Error("User not authorized");
 
-  // logic to turn if on (also removes current location)
+  // logic to turn it on (also removes current location)
   if (!isInvisibleActive) {
     await db
       .update(sessions)
@@ -33,7 +33,7 @@ export async function toggleInvisible(isInvisibleActive: boolean) {
       );
   }
 
-  // logic to turn if off
+  // logic to turn it off
   if (isInvisibleActive) {
     await db
       .update(sessions)
