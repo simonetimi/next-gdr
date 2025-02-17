@@ -17,6 +17,38 @@ export async function toggleInvisible(isInvisibleActive: boolean) {
 
   if (!isUsermaster) throw new Error("User not authorized");
 
+  // logic to turn if on (also removes current location)
+  if (!isInvisibleActive) {
+    await db
+      .update(sessions)
+      .set({ invisibleMode: !isInvisibleActive, currentLocationId: null })
+      .where(
+        and(
+          eq(sessions.userId, userId),
+          eq(
+            sessions.expires,
+            sql`(SELECT MAX(expires) FROM ${sessions} WHERE user_id = ${userId})`,
+          ),
+        ),
+      );
+  }
+
+  // logic to turn if off
+  if (isInvisibleActive) {
+    await db
+      .update(sessions)
+      .set({ invisibleMode: !isInvisibleActive })
+      .where(
+        and(
+          eq(sessions.userId, userId),
+          eq(
+            sessions.expires,
+            sql`(SELECT MAX(expires) FROM ${sessions} WHERE user_id = ${userId})`,
+          ),
+        ),
+      );
+  }
+
   await db
     .update(sessions)
     .set({ invisibleMode: !isInvisibleActive })
