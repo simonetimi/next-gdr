@@ -10,7 +10,8 @@ export const NEW_CHARACTER_ROUTE = "/character/new-character";
 export const SELECT_CHARACTER_ROUTE = "/character/select-character";
 
 // admin
-export const ADMIN_ROUTE = "/admin";
+export const ADMIN_ROUTE = "/game/admin";
+export const MODERATION_ROUTE = "/game/moderation";
 
 // auth
 export const LOGIN_ROUTE = "/login";

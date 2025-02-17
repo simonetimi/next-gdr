@@ -7,10 +7,14 @@ export default async function Header({
   showControls = false,
   character,
   allowMultipleCharacters,
+  isAdmin,
+  isMaster,
 }: {
   showControls?: boolean;
   character?: Character;
   allowMultipleCharacters?: boolean;
+  isAdmin?: boolean;
+  isMaster?: boolean;
 }) {
   // controls are rendered only if the user is logged it, has at least a character and renderControls is true
   // multiple characters can be handled
@@ -23,6 +27,8 @@ export default async function Header({
         <ControlNavbar
           character={character!}
           allowMultipleCharacters={allowMultipleCharacters}
+          isAdmin={isAdmin}
+          isMaster={isMaster}
         />
       )}
       <div className="flex flex-shrink-0 items-center gap-4">

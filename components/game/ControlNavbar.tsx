@@ -11,11 +11,23 @@ import {
   NavbarMenuToggle,
   Avatar,
 } from "@heroui/react";
-import { ArrowLeftRight, Map, Settings, Users } from "lucide-react";
+import {
+  ArrowLeftRight,
+  BadgeCheck,
+  Map,
+  Settings,
+  Shield,
+  Users,
+} from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { GAME_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
+import {
+  ADMIN_ROUTE,
+  GAME_ROUTE,
+  MODERATION_ROUTE,
+  SELECT_CHARACTER_ROUTE,
+} from "@/utils/routes";
 import CharacterSheet from "@/components/game/CharacterSheet";
 import { Character } from "@/models/characters";
 import { useMediaQuery } from "@uidotdev/usehooks";
@@ -28,9 +40,13 @@ import OnlineUsers from "@/components/game/OnlineUsers";
 function ControlNavbar({
   character,
   allowMultipleCharacters,
+  isAdmin,
+  isMaster,
 }: {
   character: Character;
   allowMultipleCharacters?: boolean;
+  isAdmin?: boolean;
+  isMaster?: boolean;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
@@ -139,7 +155,7 @@ function ControlNavbar({
           portalRef.current,
         )}
       <Navbar
-        className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-[300px] sm:border-1 sm:border-gray-200 sm:dark:bg-black"
+        className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
@@ -192,6 +208,30 @@ function ControlNavbar({
               </Tooltip>
             </NavbarItem>
           )}
+          {isMaster && (
+            <NavbarItem>
+              <Tooltip content="Moderation">
+                <Button
+                  isIconOnly
+                  startContent={<BadgeCheck />}
+                  size="sm"
+                  onPress={() => router.push(MODERATION_ROUTE)}
+                />
+              </Tooltip>
+            </NavbarItem>
+          )}
+          {isAdmin && (
+            <NavbarItem>
+              <Tooltip content="Admin settings">
+                <Button
+                  isIconOnly
+                  startContent={<Shield />}
+                  size="sm"
+                  onPress={() => router.push(ADMIN_ROUTE)}
+                />
+              </Tooltip>
+            </NavbarItem>
+          )}
         </NavbarContent>
         <NavbarMenu className="mt-10 flex flex-col gap-4">
           <NavbarMenuItem className="flex flex-col">
@@ -236,6 +276,36 @@ function ControlNavbar({
                 variant="light"
               >
                 Switch characters
+              </Button>
+            </NavbarMenuItem>
+          )}
+          {isMaster && (
+            <NavbarMenuItem className="flex flex-col">
+              <Button
+                startContent={<BadgeCheck />}
+                size="lg"
+                onPress={() => {
+                  setIsMenuOpen(false);
+                  router.push(MODERATION_ROUTE);
+                }}
+                variant="light"
+              >
+                Moderation
+              </Button>
+            </NavbarMenuItem>
+          )}
+          {isAdmin && (
+            <NavbarMenuItem className="flex flex-col">
+              <Button
+                startContent={<Shield />}
+                size="lg"
+                onPress={() => {
+                  setIsMenuOpen(false);
+                  router.push(ADMIN_ROUTE);
+                }}
+                variant="light"
+              >
+                Admin settings
               </Button>
             </NavbarMenuItem>
           )}

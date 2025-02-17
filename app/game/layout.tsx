@@ -8,6 +8,7 @@ import {
 } from "@/server/actions/character";
 import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
+import { isAdmin, isMaster } from "@/server/actions/roles";
 
 export default async function GameLayout({
   children,
@@ -39,13 +40,16 @@ export default async function GameLayout({
         redirect(SELECT_CHARACTER_ROUTE);
       }
     }
-  }
+  } else return;
+
   return (
     <>
       <Header
         showControls
         character={character!}
         allowMultipleCharacters={allowMultipleCharacters}
+        isAdmin={await isAdmin(session.user.id ?? "")}
+        isMaster={await isMaster(session.user.id ?? "")}
       />
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {children}
