@@ -1,6 +1,7 @@
 import { getLocation, setCurrentLocation } from "@/server/actions/location";
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
+import { isInvisible } from "@/server/actions/game";
 
 export default async function LocationPage({
   params,
@@ -16,7 +17,11 @@ export default async function LocationPage({
   }
   if (!location) redirect(GAME_ROUTE);
 
-  await setCurrentLocation(location.id);
+  const isUserInvisible = await isInvisible();
+  console.log(isUserInvisible);
+  if (!isUserInvisible) {
+    await setCurrentLocation(location.id);
+  }
 
   return (
     <div className="flex h-full w-full flex-grow flex-row border">

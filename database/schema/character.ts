@@ -1,6 +1,13 @@
 import { users } from "@/database/schema/auth";
 import { races } from "@/database/schema/race";
-import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 export const characters = pgTable("character", {
   id: uuid("id")

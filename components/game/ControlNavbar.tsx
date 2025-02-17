@@ -10,10 +10,12 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
   Avatar,
+  Checkbox,
 } from "@heroui/react";
 import {
   ArrowLeftRight,
   BadgeCheck,
+  EyeOff,
   Map,
   Settings,
   Shield,
@@ -36,6 +38,7 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
+import { toggleInvisible } from "@/server/actions/game";
 
 function ControlNavbar({
   character,
@@ -56,6 +59,13 @@ function ControlNavbar({
   useEffect(() => {
     setIsSmallDevice(isMaxWidth850);
   }, [isMaxWidth850]);
+
+  const [isInvisibleSelected, setIsInvisibleSelected] =
+    useState<boolean>(false);
+  const handleOnCheckInvisible = async () => {
+    await toggleInvisible(isInvisibleSelected);
+    setIsInvisibleSelected((prev) => !prev);
+  };
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
@@ -154,6 +164,14 @@ function ControlNavbar({
           />,
           portalRef.current,
         )}
+      <Tooltip content="Toggle invisible">
+        <Checkbox
+          icon={<EyeOff />}
+          size="lg"
+          isSelected={isInvisibleSelected}
+          onValueChange={handleOnCheckInvisible}
+        ></Checkbox>
+      </Tooltip>
       <Navbar
         className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         isMenuOpen={isMenuOpen}

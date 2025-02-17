@@ -43,5 +43,6 @@ export const onlineUsersSchema = z.array(
       selectedCharacterId: true,
       currentLocationId: true,
       sessionToken: true,
+      invisibleMode: true,
     }),
 );

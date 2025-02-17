@@ -66,6 +66,7 @@ export const sessions = pgTable("session", {
       onDelete: "cascade",
     },
   ),
+  invisibleMode: boolean("invisible_mode").default(false),
 });
 
 export const verificationTokens = pgTable(
