@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const characters = pgTable("character", {
@@ -16,10 +17,10 @@ export const characters = pgTable("character", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  firstName: text("first_name").notNull().unique(),
-  middleName: text("middle_name"),
-  lastName: text("last_name").notNull(),
-  miniAvatarUrl: text("mini_avatar_url"),
+  firstName: varchar("first_name", { length: 50 }).notNull().unique(),
+  middleName: varchar("middle_name", { length: 50 }),
+  lastName: varchar("last_name", { length: 50 }).notNull(),
+  miniAvatarUrl: varchar("mini_avatar_url", { length: 200 }),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
   raceId: uuid("race_id")
     .references(() => races.id)
@@ -35,13 +36,13 @@ export const characterSheets = pgTable("character_sheet", {
   characterId: uuid("character_id")
     .references(() => characters.id, { onDelete: "cascade" })
     .notNull(),
-  avatarUrl: text("avatar_url"),
-  musicUrl: text("music_url"),
+  avatarUrl: varchar("avatar_url", { length: 50 }),
+  musicUrl: varchar("music_url", { length: 50 }),
   birthDate: timestamp("birth_date"),
-  eyeColor: text("eye_color"),
-  hairColor: text("hair_color"),
-  height: text("height"),
-  weight: text("weight"),
+  eyeColor: varchar("eye_color", { length: 20 }),
+  hairColor: varchar("hair_color", { length: 20 }),
+  height: varchar("height", { length: 10 }),
+  weight: varchar("weight", { length: 10 }),
   background: text("background"),
   customHTML: text("custom_html"),
   masterNotes: text("master_notes"),
@@ -54,5 +55,5 @@ export const characterFriends = pgTable("character_friend", {
   friendId: uuid("friend_id")
     .notNull()
     .references(() => characters.id, { onDelete: "cascade" }),
-  relationshipType: text("relationship_type").notNull(),
+  relationshipType: varchar("relationship_type", { length: 20 }).notNull(),
 });

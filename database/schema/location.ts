@@ -1,11 +1,11 @@
-import { pgTable, text, uuid, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, boolean, varchar } from "drizzle-orm/pg-core";
 
 export const locations = pgTable("location", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  code: text("code").notNull().unique(),
-  name: text("name").notNull().unique(),
+  code: varchar("code", { length: 50 }).notNull().unique(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
   hidden: boolean("hidden").default(false),
   description: text("description"),
   locationGroupId: uuid("location_group_id").references(
@@ -17,7 +17,7 @@ export const locationGroups = pgTable("location_group", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull().unique(),
+  name: varchar("name", { length: 50 }).notNull().unique(),
   hidden: boolean("hidden").default(false),
   description: text("description"),
 });

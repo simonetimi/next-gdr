@@ -1,11 +1,11 @@
-import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, varchar } from "drizzle-orm/pg-core";
 import { users } from "@/database/schema/auth";
 
 export const roles = pgTable("role", {
   id: uuid("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  type: text("type"),
+  type: varchar("type", { length: 50, enum: ["admin", "master"] }),
 });
 
 export const userRoles = pgTable("user_roles", {

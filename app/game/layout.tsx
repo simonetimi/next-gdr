@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { Character } from "@/models/characters";
 import { auth } from "@/auth";
 import {
-  getCurrentCharacter,
+  getCurrentCharacterIdOnly,
   getUserCharacters,
 } from "@/server/actions/character";
 import { redirect } from "next/navigation";
@@ -31,10 +31,10 @@ export default async function GameLayout({
     } else {
       // if user has an active session with the selected character, render the game
       // else, go to character selection
-      const sessionWithCharacter = await getCurrentCharacter();
-      if (sessionWithCharacter.selectedCharacterId) {
+      const sessionWithCharacter = await getCurrentCharacterIdOnly();
+      if (sessionWithCharacter.id) {
         character = characters.find(
-          (char) => char.id === sessionWithCharacter.selectedCharacterId,
+          (char) => char.id === sessionWithCharacter.id,
         );
       } else {
         redirect(SELECT_CHARACTER_ROUTE);

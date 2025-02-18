@@ -46,6 +46,7 @@ Chat-based RPG app built with Next.js
 - [x] Make database table for weather
 - [x] Set up cron jobs once a day for weather (and future cron jobs )
 - [ ] Properly manage arriving to a location that is hidden (redirect to game)
+- [ ] Game documentation (Wiki-like system, admins can add or modify pages)
 
 ### TODO
 
@@ -59,6 +60,12 @@ Chat-based RPG app built with Next.js
 - [x] Only render the navbar when starts with "/game" but it's also valid
 - [ ] Movable will increase height and width limits when pushed on the edges
 - [x] Fix positioning of the avatar
+
+### Cron jobs to implement
+- [x] Weather
+- [ ] Delete chat logs (older than x
+- [ ] Delete sessions older than a week
+- [ ] Delete messages older than x
 
 ### Utils and Docs
 

@@ -141,7 +141,7 @@ export async function getCharacterSheet(characterId: string) {
   return characterSheetSchemaWithCharacter.parse(result[0]);
 }
 
-export async function getCurrentCharacter() {
+export async function getCurrentCharacterIdOnly() {
   const session = await auth();
   const userId = session?.user?.id;
   if (!session || !userId) throw new Error("User not authenticated");
@@ -150,7 +150,7 @@ export async function getCurrentCharacter() {
 
   // retrieves the last non-expired session
   const results = await db
-    .select()
+    .select({ id: sessions.selectedCharacterId })
     .from(sessions)
     .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)))
     .orderBy(desc(sessions.expires))
