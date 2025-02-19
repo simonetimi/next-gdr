@@ -2,9 +2,56 @@
 
 import { fetchAllLocationMessagesWithCharacters } from "@/server/actions/locationMessages";
 import useFetchInterval from "@/hooks/useFetchInterval";
-import { Spinner, ScrollShadow, Avatar } from "@heroui/react";
+import { Spinner, ScrollShadow } from "@heroui/react";
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { useEffect, useState } from "react";
+import {
+  ActionMessage,
+  MasterMessage,
+  WhisperAllMessage,
+  WhisperMessage,
+} from "@/components/ui/LocationChatMessages";
+
+function messageRender(
+  currentMessage: LocationMessageWithCharacter,
+  currentUserCharacterId: string,
+) {
+  const type = currentMessage.message.type;
+  switch (type) {
+    case "action":
+      return (
+        <ActionMessage
+          currentMessage={currentMessage}
+          key={currentMessage.message.id}
+        />
+      );
+    case "whisper":
+      return (
+        <WhisperMessage
+          currentMessage={currentMessage}
+          currentUserCharacterId={currentUserCharacterId}
+          key={currentMessage.message.id}
+        />
+      );
+    case "whisperAll":
+      return (
+        <WhisperAllMessage
+          currentMessage={currentMessage}
+          currentUserCharacterId={currentUserCharacterId}
+          key={currentMessage.message.id}
+        />
+      );
+    case "master":
+      return (
+        <MasterMessage
+          currentMessage={currentMessage}
+          key={currentMessage.message.id}
+        />
+      );
+    case "system":
+      return "TO IMPLEMENT";
+  }
+}
 
 export default function LocationChat({
   locationId,
@@ -65,14 +112,11 @@ export default function LocationChat({
       ) : (
         <div className="relative h-full w-full border border-black">
           <ScrollShadow className="absolute inset-0 overflow-y-auto">
-            <div className="flex flex-col gap-2 p-5">
+            <div className="flex flex-col gap-2 p-5 text-sm">
               {allMessages &&
-                allMessages.map((chatMessage) => (
-                  <ActionMessage
-                    key={chatMessage.message.id}
-                    currentMessage={chatMessage}
-                  />
-                ))}
+                allMessages.map((chatMessage) =>
+                  messageRender(chatMessage, characterId),
+                )}
             </div>
           </ScrollShadow>
         </div>
@@ -81,45 +125,4 @@ export default function LocationChat({
   );
 }
 
-// TODO one component for every type of message. it will handle the logic internally (what to render depending
-//  on the recipientId, senderId, if userIsmaster ("for example he will see 'susan whispers to marc")
-//  make a diagram to handle all the cases
-
 // TODO movable component to render characters' sheets
-
-function ActionMessage({
-  currentMessage,
-}: {
-  currentMessage: LocationMessageWithCharacter;
-}) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-  return (
-    <div className="flex gap-3 p-2">
-      <div className="flex flex-shrink-0 flex-col items-center gap-1">
-        <Avatar
-          size="lg"
-          src={currentMessage.character?.miniAvatarUrl ?? ""}
-          name={currentMessage.character?.miniAvatarUrl ?? ""}
-        />
-        <span className="text-xs">{timeString}</span>
-      </div>
-      <div className="flex flex-col text-justify">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold">
-            {`${currentMessage.character?.firstName} ${currentMessage.character?.lastName}`}
-          </span>
-          <span className="italic text-gray-600">
-            {currentMessage.action?.tag}
-          </span>
-        </div>
-        <span>{currentMessage.message.content}</span>
-      </div>
-    </div>
-  );
-}

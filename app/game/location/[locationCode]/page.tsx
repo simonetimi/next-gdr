@@ -4,7 +4,10 @@ import { redirect } from "next/navigation";
 import { isInvisible } from "@/server/actions/game";
 import LocationChat from "@/components/game/LocationChat";
 import LocationControls from "@/components/game/LocationControls";
-import { getCurrentCharacterIdOnly } from "@/server/actions/character";
+import {
+  getCurrentCharacterIdOnly,
+  getMinimalCurrentUser,
+} from "@/server/actions/character";
 
 export default async function LocationPage({
   params,
@@ -22,7 +25,7 @@ export default async function LocationPage({
   }
   if (!location) redirect(GAME_ROUTE);
   if (!character || !character?.id)
-    throw new Error("Could not find character!"); // toast or some other
+    throw new Error("Could not find character!"); // toast or some other form of error handling
 
   const isUserInvisible = await isInvisible();
   if (!isUserInvisible) {

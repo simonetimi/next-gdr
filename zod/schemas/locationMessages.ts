@@ -20,7 +20,9 @@ export const fullLocationMessageSchema = z.object({
   message: locationMessageSchema.extend({}),
   action: actionMessageSchema.pick({ tag: true }).nullable(),
   whisper: whisperMessageSchema.pick({ recipientCharacterId: true }).nullable(),
-  system: systemMessageSchema.pick({ systemType: true }).nullable(),
+  system: systemMessageSchema
+    .pick({ systemType: true, additionalData: true })
+    .nullable(),
 });
 
 export const fullLocationMessagesSchema = z.array(fullLocationMessageSchema);
@@ -30,7 +32,13 @@ export const fullLocationMessageWithCharacterSchema = z.object({
   message: locationMessageSchema.extend({}).omit({ characterId: true }),
   action: actionMessageSchema.pick({ tag: true }).nullable(),
   whisper: whisperMessageSchema.pick({ recipientCharacterId: true }).nullable(),
-  system: systemMessageSchema.pick({ systemType: true }).nullable(),
+  system: systemMessageSchema
+    .pick({
+      systemType: true,
+      recipientCharacterId: true,
+      additionalData: true,
+    })
+    .nullable(),
   character: characterSelectSchema
     .pick({
       id: true,
@@ -39,6 +47,15 @@ export const fullLocationMessageWithCharacterSchema = z.object({
       lastName: true,
       miniAvatarUrl: true,
       raceId: true,
+    })
+    .nullable(),
+  recipientCharacter: characterSelectSchema
+    .pick({
+      id: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      miniAvatarUrl: true,
     })
     .nullable(),
 });

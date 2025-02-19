@@ -41,6 +41,7 @@ export const locationSystemMessages = pgTable("location_system_message", {
     .primaryKey()
     .references(() => locationMessages.id, { onDelete: "cascade" }),
   systemType: varchar("system_type", { length: 50 }).notNull(),
+  additionalData: text("additional_data"),
   recipientCharacterId: uuid("recipient_character_id").references(
     () => characters.id,
     { onDelete: "cascade" },

@@ -194,6 +194,7 @@ export async function fetchAllLocationMessagesWithCharacters(
       system: {
         systemType: locationSystemMessages.systemType,
         recipientCharacterId: locationSystemMessages.recipientCharacterId,
+        additionalData: locationSystemMessages.additionalData,
       },
       character: {
         id: locationMessages.characterId,
@@ -202,6 +203,13 @@ export async function fetchAllLocationMessagesWithCharacters(
         lastName: characters.lastName,
         miniAvatarUrl: characters.miniAvatarUrl,
         raceId: characters.raceId,
+      },
+      recipientCharacter: {
+        id: locationWhispers.recipientCharacterId,
+        firstName: sql`recipientCharacters.first_name`,
+        middleName: sql`recipientCharacters.middle_name`,
+        lastName: sql`recipientCharacters.last_name`,
+        miniAvatarUrl: sql`recipientCharacters.mini_avatar_url`,
       },
     })
     .from(locationMessages)
@@ -218,6 +226,10 @@ export async function fetchAllLocationMessagesWithCharacters(
     .leftJoin(
       locationSystemMessages,
       eq(locationMessages.id, locationSystemMessages.messageId),
+    )
+    .leftJoin(
+      sql`${characters} as recipientCharacters`,
+      eq(locationWhispers.recipientCharacterId, characters.id),
     )
     // desc, from the newest to the oldest
     .orderBy(desc(locationMessages.createdAt));

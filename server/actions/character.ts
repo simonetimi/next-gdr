@@ -8,6 +8,7 @@ import {
   characterSelectSchema,
   characterSheetSchemaWithCharacter,
   charactersSelectSchema,
+  minimalCharacterSchema,
   newCharacterFormSchema,
 } from "@/zod/schemas/character";
 
@@ -20,6 +21,7 @@ import { revalidatePath } from "next/cache";
 import { locationGroups, locations } from "@/database/schema/location";
 import { onlineUsersSchema } from "@/zod/schemas/session";
 import { isAdmin, isMaster } from "@/server/actions/roles";
+import { MinimalCharacter } from "@/models/characters";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
@@ -159,6 +161,31 @@ export async function getCurrentCharacterIdOnly() {
   return results[0];
 }
 
+export async function getMinimalCurrentUser() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const now = new Date();
+
+  // retrieves the last non-expired session and joins with characters table
+  const results = await db
+    .select({
+      id: sessions.selectedCharacterId,
+      firstName: characters.firstName,
+      middleName: characters.middleName,
+      lastName: characters.lastName,
+      miniAvatarUrl: characters.miniAvatarUrl,
+    })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)))
+    .innerJoin(characters, eq(sessions.selectedCharacterId, characters.id))
+    .orderBy(desc(sessions.expires))
+    .limit(1);
+
+  return minimalCharacterSchema.parse(results[0]);
+}
+
 export async function setCurrentCharacter(characterId: string) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -223,7 +250,6 @@ export async function getOnlineCharacters() {
       locationGroup: {
         name: locationGroups.name,
       },
-
       race: {
         name: races.name,
         id: races.id,

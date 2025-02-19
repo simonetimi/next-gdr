@@ -42,3 +42,11 @@ export const characterSheetSchemaWithCharacter = characterSheetSchema
   .omit({
     characterId: true,
   });
+
+export const minimalCharacterSchema = characterSelectSchema.pick({
+  id: true,
+  firstName: true,
+  lastName: true,
+  middleName: true,
+  miniAvatarUrl: true,
+});
