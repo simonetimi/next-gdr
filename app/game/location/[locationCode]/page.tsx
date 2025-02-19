@@ -3,11 +3,9 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import { isInvisible } from "@/server/actions/game";
 import LocationChat from "@/components/game/LocationChat";
-import LocationControls from "@/components/game/LocationControls";
-import {
-  getCurrentCharacterIdOnly,
-  getMinimalCurrentUser,
-} from "@/server/actions/character";
+import { getCurrentCharacterIdOnly } from "@/server/actions/character";
+import { isMaster } from "@/server/actions/roles";
+import { auth } from "@/auth";
 
 export default async function LocationPage({
   params,
@@ -15,11 +13,17 @@ export default async function LocationPage({
   params: Promise<{ locationCode: string }>;
 }) {
   const locationCode = (await params).locationCode;
+
+  const session = await auth();
+  const userId = session?.user.id;
+
   let location;
   let character;
+  let isUserMaster = false;
   try {
     location = await getLocation(locationCode);
     character = await getCurrentCharacterIdOnly();
+    isUserMaster = await isMaster(userId ?? "");
   } catch (error) {
     console.log(error);
   }
@@ -38,10 +42,11 @@ export default async function LocationPage({
           <p>{location.description}</p>
           Weather, chat description, location image
         </aside>
-        <section className="align-center flex w-full flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700">
-          <LocationChat locationId={location.id} characterId={character.id} />
-          <LocationControls />
-        </section>
+        <LocationChat
+          locationId={location.id}
+          characterId={character.id}
+          isUserMaster={isUserMaster}
+        />
       </div>
     );
   }

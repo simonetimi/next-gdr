@@ -41,7 +41,7 @@ export default function Movable({
   };
 
   return (
-    <div className="absolute z-10">
+    <div className="absolute z-20">
       <Rnd
         className="rounded-2xl border-1 border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-700 dark:bg-black/80"
         bounds={boundsSelector}

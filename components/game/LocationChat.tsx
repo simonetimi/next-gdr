@@ -11,6 +11,7 @@ import {
   WhisperAllMessage,
   WhisperMessage,
 } from "@/components/ui/LocationChatMessages";
+import LocationControls from "@/components/game/LocationControls";
 
 function messageRender(
   currentMessage: LocationMessageWithCharacter,
@@ -56,9 +57,11 @@ function messageRender(
 export default function LocationChat({
   locationId,
   characterId,
+  isUserMaster,
 }: {
   locationId: string;
   characterId: string;
+  isUserMaster: boolean;
 }) {
   const [allMessages, setAllMessages] = useState<
     LocationMessageWithCharacter[]
@@ -96,7 +99,6 @@ export default function LocationChat({
 
   // update messages when new ones arrive
   useEffect(() => {
-    console.log(newMessages);
     if (newMessages && newMessages.length > 0) {
       setAllMessages((prev) => [...newMessages, ...prev]);
       setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
@@ -104,24 +106,27 @@ export default function LocationChat({
   }, [newMessages]);
 
   return (
-    <div className="flex h-full flex-[3]">
-      {loading ? (
-        <div className="flex h-full w-full items-center justify-center">
-          <Spinner />
-        </div>
-      ) : (
-        <div className="relative h-full w-full border border-black">
-          <ScrollShadow className="absolute inset-0 overflow-y-auto">
-            <div className="flex flex-col gap-2 p-5 text-sm">
-              {allMessages &&
-                allMessages.map((chatMessage) =>
-                  messageRender(chatMessage, characterId),
-                )}
-            </div>
-          </ScrollShadow>
-        </div>
-      )}
-    </div>
+    <section className="align-center flex w-full flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700">
+      <div className="flex h-full flex-[3]">
+        {loading ? (
+          <div className="flex h-full w-full items-center justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="relative h-full w-full border border-black">
+            <ScrollShadow className="absolute inset-0 overflow-y-auto">
+              <div className="flex flex-col gap-2 p-5 text-sm">
+                {allMessages &&
+                  allMessages.map((chatMessage) =>
+                    messageRender(chatMessage, characterId),
+                  )}
+              </div>
+            </ScrollShadow>
+          </div>
+        )}
+      </div>
+      <LocationControls isUserMaster={isUserMaster} />
+    </section>
   );
 }
 
