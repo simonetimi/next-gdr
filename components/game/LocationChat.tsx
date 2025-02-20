@@ -145,7 +145,7 @@ export default function LocationChat({
         ) : (
           <div className="relative h-full w-full">
             <ScrollShadow className="absolute inset-0 overflow-y-auto">
-              <div className="flex flex-col gap-2 p-5 text-sm">
+              <div className="flex flex-col p-5 text-sm">
                 {allMessages &&
                   allMessages.map((chatMessage) =>
                     messageRender(chatMessage, characterId),

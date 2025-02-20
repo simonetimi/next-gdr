@@ -18,7 +18,7 @@ export function ActionMessage({
     hour12: false,
   });
   return (
-    <div className="flex gap-3 p-2">
+    <div className="flex gap-3 py-1">
       <div className="flex flex-shrink-0 flex-col items-center gap-1">
         <Avatar
           size="lg"
@@ -59,7 +59,7 @@ export function WhisperMessage({
   // executes when the current user is the recipient of the whisper
   if (currentMessage.whisper?.recipientCharacterId === currentUserCharacterId) {
     return (
-      <div className="flex gap-3 p-2">
+      <div className="flex items-center gap-3 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="font-semibold">
@@ -78,7 +78,7 @@ export function WhisperMessage({
     currentMessage.character?.id === currentUserCharacterId
   ) {
     return (
-      <div className="flex gap-3 p-2">
+      <div className="flex items-center gap-3 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="italic text-gray-600">Dici a </span>
@@ -94,7 +94,7 @@ export function WhisperMessage({
 
   // executes when the user is the master (they can see all whispers - so their id isn't there)
   return (
-    <div className="flex gap-3 p-2">
+    <div className="flex items-center gap-3 py-1">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="font-semibold">
@@ -128,11 +128,10 @@ export function WhisperAllMessage({
   // current user whispers to all
   if (currentMessage.character?.id === currentUserCharacterId) {
     return (
-      <div className="flex gap-3 p-2">
+      <div className="flex items-center gap-3 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="italic text-gray-600">Dici a tutti: </span>
-          <span className="italic text-gray-600">: </span>
           <span>{currentMessage.message.content}</span>
         </div>
       </div>
@@ -141,7 +140,7 @@ export function WhisperAllMessage({
 
   // some user whispers to all
   return (
-    <div className="flex gap-3 p-2">
+    <div className="flex items-center gap-3 py-1">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="font-semibold">
@@ -167,9 +166,12 @@ export function MasterMessage({
     hour12: false,
   });
   return (
-    <div className="flex flex-col gap-3 p-2">
-      <span className="text-center text-xs">{timeString}</span>
-      <div className="text-justify">
+    <div className="flex flex-col gap-3 py-1">
+      <div className="flex flex-col justify-center">
+        <span className="text-center text-xs">{timeString}</span>
+        <span className="text-center">Master screen</span>
+      </div>
+      <div className="w-full rounded-3xl border border-gray-200 p-2 text-justify dark:border-b-neutral-700">
         <span>{currentMessage.message.content}</span>
       </div>
     </div>

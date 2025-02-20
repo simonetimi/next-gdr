@@ -53,7 +53,8 @@ Chat-based RPG app built with Next.js
 - [ ] Update labels in messages/it.json (evergoing)
 - [ ] Add cron job to clear weather table every 30 days
 - [ ] Put translation labels of weather
-- [ ] Investigate on a way to save location chats (generating html or similar, with a specific call)
+- [ ] Investigate on a way to save location chats (generating html or similar, with a specific call
+- [ ] Make labels for error messages to call in server functions
 
 ### Bugs
 

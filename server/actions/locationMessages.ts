@@ -17,6 +17,7 @@ import {
 } from "@/zod/schemas/locationMessages";
 import { revalidatePath } from "next/cache";
 import { LOCATION_ROUTE } from "@/utils/routes";
+import { sessions } from "@/database/schema/auth";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -278,6 +279,92 @@ export async function postActionMessage(
       .where(eq(locationMessages.id, message.id));
     throw error;
   }
+  return !!message.id;
+}
+
+export async function postWhisper(
+  locationId: string,
+  characterId: string,
+  recipientCharacterName: string,
+  content: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const [recipientCharacter] = await db
+    .select({ id: characters.id })
+    .from(characters)
+    .where(eq(characters.firstName, recipientCharacterName));
+
+  if (!recipientCharacter) throw new Error("Character not found");
+
+  if (recipientCharacter.id === characterId)
+    throw new Error("You can't send a whisper to yourself.");
+
+  const recipientInSession = await db
+    .select()
+    .from(sessions)
+    .where(
+      and(
+        eq(sessions.selectedCharacterId, recipientCharacter.id),
+        eq(sessions.currentLocationId, locationId),
+      ),
+    )
+    .orderBy(desc(sessions.expires))
+    .limit(1);
+
+  if (recipientInSession.length === 0)
+    throw new Error("Recipient is not present");
+
+  const [message] = await db
+    .insert(locationMessages)
+    .values({
+      locationId,
+      characterId,
+      content,
+      type: "whisper",
+    })
+    .returning({
+      id: locationMessages.id,
+    });
+
+  try {
+    await db.insert(locationWhispers).values({
+      messageId: message.id,
+      recipientCharacterId: recipientCharacter.id,
+    });
+  } catch (error) {
+    // if the second one fails, delete the first entry
+    await db
+      .delete(locationMessages)
+      .where(eq(locationMessages.id, message.id));
+    throw error;
+  }
+  return !!message.id;
+}
+
+export async function postWhisperForAll(
+  locationId: string,
+  characterId: string,
+  content: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const [message] = await db
+    .insert(locationMessages)
+    .values({
+      locationId,
+      characterId,
+      content,
+      type: "whisperAll",
+    })
+    .returning({
+      id: locationMessages.id,
+    });
+
   return !!message.id;
 }
 

@@ -15,9 +15,11 @@ import {
 } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { CircleHelp, Dices, Save, Send } from "lucide-react";
-import { postActionMessage } from "@/server/actions/locationMessages";
-
-// TODO trigger re-fetch when submitting a message (maybe pass a state setter from parent component
+import {
+  postActionMessage,
+  postWhisper,
+  postWhisperForAll,
+} from "@/server/actions/locationMessages";
 
 export default function LocationControls({
   locationId,
@@ -37,6 +39,10 @@ export default function LocationControls({
   const [messageType, setMessageType] = useState<string>("action");
   const [localMessage, setLocalMessage] = useState<string>("");
   const [tag, setTag] = useState<string>("");
+  const [recipientCharacter, setRecipientCharacter] = useState<string>("");
+
+  // tag and recipientCharacter change depending on the select state
+  // tag is saved in the local storage, along with localMessage
 
   useEffect(() => {
     const savedMessage = localStorage.getItem(
@@ -45,7 +51,11 @@ export default function LocationControls({
     if (savedMessage) {
       setLocalMessage(savedMessage);
     }
-  }, []);
+    const savedTag = localStorage.getItem("locationTag-" + locationCode);
+    if (savedTag) {
+      setTag(savedTag);
+    }
+  }, [locationCode]);
 
   const handleMessageChange = (value: string) => {
     setLocalMessage(value);
@@ -57,7 +67,11 @@ export default function LocationControls({
   };
 
   const handleTagChange = (value: string) => {
-    setTag(value);
+    if (messageType === "whisper") setRecipientCharacter(value);
+    else {
+      setTag(value);
+      localStorage.setItem("locationTag-" + locationCode, value);
+    }
   };
 
   const handleSubmitMessage = async () => {
@@ -71,14 +85,18 @@ export default function LocationControls({
           tag,
         );
       } else if (messageType === "whisper") {
-        // post to make whisper to a specific character
-        if (tag) {
-        }
-        // post to make whisper to all
-        if (!tag) {
+        if (recipientCharacter) {
+          await postWhisper(
+            locationId,
+            currentCharacterId,
+            recipientCharacter,
+            localMessage,
+          );
+        } else {
+          await postWhisperForAll(locationId, currentCharacterId, localMessage);
         }
       } else if (messageType === "master") {
-        // post to master
+        // TODO master
       }
 
       // success!
@@ -134,7 +152,7 @@ export default function LocationControls({
         </Select>
         <Input
           onValueChange={handleTagChange}
-          value={tag}
+          value={messageType === "whisper" ? recipientCharacter : tag}
           label={messageType === "whisper" ? "Destinatario" : "Tag"}
         />
       </div>
