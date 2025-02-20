@@ -60,6 +60,7 @@ Chat-based RPG app built with Next.js
 - [x] Only render the navbar when starts with "/game" but it's also valid
 - [ ] Movable will increase height and width limits when pushed on the edges
 - [x] Fix positioning of the avatar
+- [ ] When in a location and mobile mode, the movable will not take full screen
 
 ### Cron jobs to implement
 - [x] Weather

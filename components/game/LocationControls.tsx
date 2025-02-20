@@ -1,7 +1,19 @@
 "use client";
 
-import { Input, Select, SelectItem, Textarea } from "@heroui/react";
+import {
+  Input,
+  Navbar,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+  Select,
+  SelectItem,
+  Textarea,
+} from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
+import { CircleHelp, Dices, Save } from "lucide-react";
 
 // TODO either fetch all users online in the cat and put it in the select
 //  or check in the db
@@ -13,6 +25,8 @@ export default function LocationControls({
 }: {
   isUserMaster: boolean;
 }) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [messageType, setMessageType] = useState<string>("action");
   const [message, setMessage] = useState<string>("");
 
@@ -34,9 +48,36 @@ export default function LocationControls({
   };
 
   return (
-    <div className="flex flex-[1] items-center gap-4 border border-black px-4">
-      <div className="w-36">Pulsantini</div>
-      <div className="align-items flex w-36 flex-col gap-2">
+    <div className="flex flex-[1] items-center gap-2 border border-black px-2 sm:gap-4 sm:px-4">
+      <div className="w-10 sm:w-28">
+        <Navbar
+          isBlurred={false}
+          isMenuOpen={isMenuOpen}
+          onMenuOpenChange={setIsMenuOpen}
+        >
+          <NavbarContent className="sm:hidden">
+            <NavbarMenuToggle
+              className="-ml-2 h-6 w-6"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            />
+          </NavbarContent>
+          <NavbarContent className="hidden gap-4 sm:flex sm:flex-wrap">
+            <NavbarItem>
+              <Dices />
+            </NavbarItem>
+            <NavbarItem>
+              <Save />
+            </NavbarItem>
+            <NavbarItem>
+              <CircleHelp />
+            </NavbarItem>
+          </NavbarContent>
+          <NavbarMenu>
+            <NavbarMenuItem></NavbarMenuItem>
+          </NavbarMenu>
+        </Navbar>
+      </div>
+      <div className="align-items flex w-24 flex-col gap-2 sm:w-36">
         <Select
           onChange={handleSelectionChange}
           selectedKeys={[messageType]}
@@ -54,6 +95,7 @@ export default function LocationControls({
           isClearable
           fullWidth={true}
           minRows={5}
+          maxRows={7}
           value={message}
           onValueChange={handleMessageChange}
           placeholder="Scrivi il tuo testo qui"
