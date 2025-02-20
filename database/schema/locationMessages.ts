@@ -27,7 +27,7 @@ export const locationActionMessages = pgTable("location_action_message", {
   tag: varchar("tag", { length: 50 }),
 });
 
-export const locationWhispers = pgTable("location_whisper", {
+export const locationWhispers = pgTable("location_whisper_message", {
   messageId: uuid("message_id")
     .primaryKey()
     .references(() => locationMessages.id, { onDelete: "cascade" }),

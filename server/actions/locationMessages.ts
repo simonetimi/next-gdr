@@ -368,6 +368,29 @@ export async function postWhisperForAll(
   return !!message.id;
 }
 
+export async function postMasterScreen(
+  locationId: string,
+  characterId: string,
+  content: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const isUserMaster = isMaster(userId);
+
+  if (!isUserMaster) throw new Error("User is not a master");
+
+  const result = await db.insert(locationMessages).values({
+    locationId,
+    characterId,
+    content,
+    type: "master",
+  });
+
+  return !!result;
+}
+
 // TODO action to fetch them all (single location) regardless of time (for the admins)
 
 // TODO action to fetch them all for one specific character, regardless of time (for the admins)

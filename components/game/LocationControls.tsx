@@ -17,6 +17,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { CircleHelp, Dices, Save, Send } from "lucide-react";
 import {
   postActionMessage,
+  postMasterScreen,
   postWhisper,
   postWhisperForAll,
 } from "@/server/actions/locationMessages";
@@ -96,10 +97,9 @@ export default function LocationControls({
           await postWhisperForAll(locationId, currentCharacterId, localMessage);
         }
       } else if (messageType === "master") {
-        // TODO master
+        await postMasterScreen(locationId, currentCharacterId, localMessage);
       }
 
-      // success!
       // empty the fields and remove from locale storage
       setLocalMessage("");
       setTag("");
