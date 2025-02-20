@@ -23,14 +23,12 @@ Chat-based RPG app built with Next.js
 - Run `npx auth secret` to generate an auth secret in .env
 - Additional setup for the auth providers
 
-### Guidelines
+### Guidelines
 
 - In vercel.json, cron jobs can be defined on the select API routes. Eg., for weather, it will be executed everyday at 5 ( "schedule": "0 5 \* \* \*") using the key CRON_SECRET in the env variables
--
 
 ### Features to implement
 
-- [ ] SWR for fetching data
 - [x] Zod for validation (should be configurable with drizzle)
 - [x] Configurable dictionary
 - [ ] More Auth options
@@ -47,6 +45,13 @@ Chat-based RPG app built with Next.js
 - [x] Set up cron jobs once a day for weather (and future cron jobs )
 - [ ] Properly manage arriving to a location that is hidden (redirect to game)
 - [ ] Game documentation (Wiki-like system, admins can add or modify pages)
+- [ ] Character sheets (find a system to parse custom HTML/CSS)
+- [ ] Weather icons / labels
+- [ ] Game system (stats, abilities, powers) and logics
+- [ ] Private chats (on and off game)
+- [ ] Forum
+- [ ] Internal market
+- [ ] Admin and master controls (especially for managing users, banning, locations, forum, docs)
 
 ### TODO
 
