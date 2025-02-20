@@ -34,21 +34,21 @@ export default async function LocationPage({
   const isUserInvisible = await isInvisible();
   if (!isUserInvisible) {
     await setCurrentLocation(location.id);
-
-    return (
-      <div className="flex h-full w-full flex-grow flex-row">
-        <aside className="hidden w-[320px] flex-col gap-8 p-6 md:flex">
-          <h1>{location.name}</h1>
-          <p>{location.description}</p>
-          Weather, chat description, location image
-        </aside>
-        <LocationChat
-          locationId={location.id}
-          characterId={character.id}
-          isUserMaster={isUserMaster}
-          locationCode={locationCode}
-        />
-      </div>
-    );
   }
+
+  return (
+    <div className="flex h-full w-full flex-grow flex-row">
+      <aside className="hidden w-[320px] flex-col gap-8 p-6 md:flex">
+        <h1>{location.name}</h1>
+        <p>{location.description}</p>
+        Weather, chat description, location image
+      </aside>
+      <LocationChat
+        locationId={location.id}
+        characterId={character.id}
+        isUserMaster={isUserMaster}
+        locationCode={locationCode}
+      />
+    </div>
+  );
 }
