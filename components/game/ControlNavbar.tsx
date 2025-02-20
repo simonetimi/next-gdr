@@ -181,7 +181,7 @@ function ControlNavbar({
       >
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="mr-auto sm:hidden"
+          className="-ml-5 mr-auto h-6 w-6 sm:hidden"
         />
         <NavbarContent className="hidden sm:flex sm:gap-4" justify="center">
           <NavbarItem>

@@ -85,6 +85,17 @@ export default function LocationChat({
     fetchInitialMessages();
   }, [locationId]);
 
+  const fetchAndAppendMessages = async () => {
+    const newMessages = await fetchAllLocationMessagesWithCharacters(
+      locationId,
+      lastMessageTimestamp,
+    );
+    if (newMessages.length > 0) {
+      setAllMessages((prev) => [...newMessages, ...prev]);
+      setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
+    }
+  };
+
   // periodic fetch of new messages using the hook
   const { data: newMessages, loading } = useFetchInterval(
     () =>
@@ -113,7 +124,7 @@ export default function LocationChat({
             <Spinner />
           </div>
         ) : (
-          <div className="relative h-full w-full border border-black">
+          <div className="relative h-full w-full">
             <ScrollShadow className="absolute inset-0 overflow-y-auto">
               <div className="flex flex-col gap-2 p-5 text-sm">
                 {allMessages &&
@@ -125,7 +136,10 @@ export default function LocationChat({
           </div>
         )}
       </div>
-      <LocationControls isUserMaster={isUserMaster} />
+      <LocationControls
+        isUserMaster={isUserMaster}
+        fetchMessages={fetchAndAppendMessages}
+      />
     </section>
   );
 }
