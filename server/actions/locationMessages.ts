@@ -18,6 +18,7 @@ import {
 import { revalidatePath } from "next/cache";
 import { LOCATION_ROUTE } from "@/utils/routes";
 import { sessions } from "@/database/schema/auth";
+import { increaseCharacterExperience } from "@/server/actions/character";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -279,6 +280,12 @@ export async function postActionMessage(
       .where(eq(locationMessages.id, message.id));
     throw error;
   }
+
+  const experiencePerAction = parseInt(
+    process.env.EXPERIENCE_PER_ACTION ?? "1",
+  );
+  await increaseCharacterExperience(experiencePerAction, characterId);
+
   return !!message.id;
 }
 

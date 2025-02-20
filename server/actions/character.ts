@@ -266,3 +266,39 @@ export async function getOnlineCharacters() {
 
   return onlineUsersSchema.parse(results);
 }
+
+export async function increaseCharacterExperience(
+  amount: number,
+  characterId: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const character = await db
+    .select({
+      currentExperience: characters.currentExperience,
+      totalExperience: characters.totalExperience,
+    })
+    .from(characters)
+    .where(eq(characters.id, characterId))
+    .limit(1);
+
+  if (!character.length) throw new Error("Character not found");
+
+  const newCurrentExperience = (character[0].currentExperience || 0) + amount;
+  const newTotalExperience = (character[0].totalExperience || 0) + amount;
+
+  await db
+    .update(characters)
+    .set({
+      currentExperience: newCurrentExperience,
+      totalExperience: newTotalExperience,
+    })
+    .where(eq(characters.id, characterId));
+
+  return {
+    currentExperience: newCurrentExperience,
+    totalExperience: newTotalExperience,
+  };
+}
