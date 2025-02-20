@@ -12,7 +12,7 @@ import {
   newCharacterFormSchema,
 } from "@/zod/schemas/character";
 
-import { and, desc, eq, gt, isNotNull } from "drizzle-orm";
+import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
 import { races } from "@/database/schema/race";
 import { z } from "zod";
 import { sessions } from "@/database/schema/auth";
@@ -232,6 +232,18 @@ export async function getOnlineCharacters() {
 
   const now = new Date();
 
+  // subquery to get the latest session for each user
+  const latestSessions = db
+    .select({
+      userId: sessions.userId,
+      maxExpires: sql`MAX(${sessions.expires})`.as("maxExpires"),
+    })
+    .from(sessions)
+    .where(
+      and(gt(sessions.expires, now), isNotNull(sessions.selectedCharacterId)),
+    )
+    .groupBy(sessions.userId)
+    .as("latestSessions");
   const results = await db
     .select({
       character: {
@@ -240,12 +252,10 @@ export async function getOnlineCharacters() {
         lastName: characters.lastName,
         miniAvatarUrl: characters.miniAvatarUrl,
       },
-      // location might be null
       location: {
         name: locations.name,
         code: locations.code,
       },
-      // location group might be null
       locationGroup: {
         name: locationGroups.name,
       },
@@ -255,15 +265,12 @@ export async function getOnlineCharacters() {
       },
     })
     .from(sessions)
-    .where(
-      and(gt(sessions.expires, now), isNotNull(sessions.selectedCharacterId)),
-    )
+    .innerJoin(latestSessions, eq(sessions.userId, latestSessions.userId))
     .innerJoin(characters, eq(characters.id, sessions.selectedCharacterId))
     .innerJoin(races, eq(races.id, characters.raceId))
-    // change these to left outer joins to handle null cases
     .leftJoin(locations, eq(locations.id, sessions.currentLocationId))
-    .leftJoin(locationGroups, eq(locationGroups.id, locations.locationGroupId));
-
+    .leftJoin(locationGroups, eq(locationGroups.id, locations.locationGroupId))
+    .where(eq(sessions.expires, latestSessions.maxExpires));
   return onlineUsersSchema.parse(results);
 }
 

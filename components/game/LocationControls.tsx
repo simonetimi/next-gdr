@@ -116,7 +116,6 @@ export default function LocationControls({
 
       // empty the fields and remove from locale storage
       setLocalMessage("");
-      setTag("");
       localStorage.removeItem("locationMessage-" + locationCode);
 
       // refresh chat
