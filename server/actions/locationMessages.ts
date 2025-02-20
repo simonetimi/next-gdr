@@ -391,8 +391,47 @@ export async function postMasterScreen(
   return !!result;
 }
 
+export async function postSystemMessage(
+  locationId: string,
+  content: string,
+  systemType: string,
+  characterId?: string,
+  recipientCharacterId?: string,
+  additionalData?: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
+
+  const [message] = await db
+    .insert(locationMessages)
+    .values({
+      locationId,
+      characterId,
+      content,
+      type: "system",
+    })
+    .returning({
+      id: locationMessages.id,
+    });
+
+  try {
+    await db.insert(locationSystemMessages).values({
+      messageId: message.id,
+      recipientCharacterId,
+      additionalData,
+      systemType,
+    });
+  } catch (error) {
+    // if the second one fails, delete the first entry
+    await db
+      .delete(locationMessages)
+      .where(eq(locationMessages.id, message.id));
+    throw error;
+  }
+  return !!message.id;
+}
+
 // TODO action to fetch them all (single location) regardless of time (for the admins)
 
 // TODO action to fetch them all for one specific character, regardless of time (for the admins)
-
-// TODO system messages (start aftering finishing abilities, dices, etc.)

@@ -9,9 +9,9 @@ export const locationMessages = pgTable("location_message", {
   locationId: uuid("location_id")
     .notNull()
     .references(() => locations.id, { onDelete: "cascade" }),
-  characterId: uuid("character_id")
-    .notNull()
-    .references(() => characters.id, { onDelete: "cascade" }),
+  characterId: uuid("character_id").references(() => characters.id, {
+    onDelete: "cascade",
+  }),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   type: varchar("type", {

@@ -8,6 +8,7 @@ import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import {
   ActionMessage,
   MasterMessage,
+  SystemMessage,
   WhisperAllMessage,
   WhisperMessage,
 } from "@/components/ui/LocationChatMessages";
@@ -50,7 +51,12 @@ function messageRender(
         />
       );
     case "system":
-      return "TO IMPLEMENT";
+      return (
+        <SystemMessage
+          currentMessage={currentMessage}
+          key={currentMessage.message.id}
+        />
+      );
   }
 }
 

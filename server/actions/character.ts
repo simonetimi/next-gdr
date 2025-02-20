@@ -21,7 +21,6 @@ import { revalidatePath } from "next/cache";
 import { locationGroups, locations } from "@/database/schema/location";
 import { onlineUsersSchema } from "@/zod/schemas/session";
 import { isAdmin, isMaster } from "@/server/actions/roles";
-import { MinimalCharacter } from "@/models/characters";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();

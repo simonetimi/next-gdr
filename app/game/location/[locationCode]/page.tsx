@@ -1,7 +1,7 @@
 import { getLocation, setCurrentLocation } from "@/server/actions/location";
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
-import { isInvisible } from "@/server/actions/game";
+import { isInvisible } from "@/server/actions/app";
 import LocationChat from "@/components/game/LocationChat";
 import { getCurrentCharacterIdOnly } from "@/server/actions/character";
 import { isMaster } from "@/server/actions/roles";

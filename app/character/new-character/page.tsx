@@ -1,4 +1,4 @@
-import { getAllRaces } from "@/server/actions/game";
+import { getAllRaces } from "@/server/actions/app";
 import NewCharacterForm from "@/components/forms/NewCharacter";
 import { auth } from "@/auth";
 

@@ -178,4 +178,30 @@ export function MasterMessage({
   );
 }
 
-// TODO system message (with the ability to get additionalData, maybe an accordion or a big tooltip)
+export function SystemMessage({
+  currentMessage,
+}: {
+  currentMessage: LocationMessageWithCharacter;
+}) {
+  const timeString = new Date(
+    currentMessage.message.createdAt,
+  ).toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  if (currentMessage.system?.systemType === "dice") {
+    return (
+      <div className="flex items-center gap-3 py-1">
+        <span className="text-center text-xs">{timeString}</span>
+        <div>
+          <span className="font-semibold">
+            {currentMessage.character?.firstName}
+          </span>
+          <span> {currentMessage.message.content}</span>
+        </div>
+      </div>
+    );
+  }
+}

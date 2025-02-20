@@ -38,7 +38,7 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
-import { isInvisible, toggleInvisible } from "@/server/actions/game";
+import { isInvisible, toggleInvisible } from "@/server/actions/app";
 
 function ControlNavbar({
   character,

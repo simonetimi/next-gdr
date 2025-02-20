@@ -21,6 +21,7 @@ import {
   postWhisper,
   postWhisperForAll,
 } from "@/server/actions/locationMessages";
+import { rollDice } from "@/server/actions/game";
 
 export default function LocationControls({
   locationId,
@@ -41,6 +42,7 @@ export default function LocationControls({
   const [localMessage, setLocalMessage] = useState<string>("");
   const [tag, setTag] = useState<string>("");
   const [recipientCharacter, setRecipientCharacter] = useState<string>("");
+  const [messageCharCount, setMessageCharCount] = useState<number>(0);
 
   // tag and recipientCharacter change depending on the select state
   // tag is saved in the local storage, along with localMessage
@@ -51,6 +53,7 @@ export default function LocationControls({
     );
     if (savedMessage) {
       setLocalMessage(savedMessage);
+      setMessageCharCount(savedMessage.length);
     }
     const savedTag = localStorage.getItem("locationTag-" + locationCode);
     if (savedTag) {
@@ -59,8 +62,10 @@ export default function LocationControls({
   }, [locationCode]);
 
   const handleMessageChange = (value: string) => {
-    setLocalMessage(value);
-    localStorage.setItem("locationMessage-" + locationCode, value);
+    const truncatedValue = value.length >= 4000 ? value.slice(0, 4000) : value;
+    setLocalMessage(truncatedValue);
+    setMessageCharCount(truncatedValue.length);
+    localStorage.setItem("locationMessage-" + locationCode, truncatedValue);
   };
 
   const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -68,10 +73,13 @@ export default function LocationControls({
   };
 
   const handleTagChange = (value: string) => {
-    if (messageType === "whisper") setRecipientCharacter(value);
-    else {
-      setTag(value);
-      localStorage.setItem("locationTag-" + locationCode, value);
+    if (messageType === "whisper") {
+      const truncatedValue = value.length > 50 ? value.slice(0, 50) : value;
+      setRecipientCharacter(truncatedValue);
+    } else {
+      const truncatedValue = value.length > 30 ? value.slice(0, 30) : value;
+      setTag(truncatedValue);
+      localStorage.setItem("locationTag-" + locationCode, truncatedValue);
     }
   };
 
@@ -79,12 +87,18 @@ export default function LocationControls({
     if (!localMessage) return;
     try {
       if (messageType === "action") {
-        await postActionMessage(
-          locationId,
-          currentCharacterId,
-          localMessage,
-          tag,
-        );
+        if (localMessage.startsWith("#")) {
+          const dice = parseInt(localMessage.trim().slice(1));
+          if (Number.isNaN(dice)) throw new Error("Invalid dice roll");
+          await rollDice(dice, locationId, currentCharacterId);
+        } else {
+          await postActionMessage(
+            locationId,
+            currentCharacterId,
+            localMessage,
+            tag,
+          );
+        }
       } else if (messageType === "whisper") {
         if (recipientCharacter) {
           await postWhisper(
@@ -122,17 +136,20 @@ export default function LocationControls({
           <NavbarMenuToggle
             className="-ml-2 h-6 w-6 sm:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          />
-          <NavbarContent className="hidden gap-4 sm:flex sm:min-w-24 sm:flex-wrap">
-            <NavbarItem>
-              <Dices />
-            </NavbarItem>
-            <NavbarItem>
-              <Save />
-            </NavbarItem>
-            <NavbarItem>
-              <CircleHelp />
-            </NavbarItem>
+          ></NavbarMenuToggle>
+          <NavbarContent className="hidden gap-3 pr-5 sm:flex sm:min-w-24 sm:flex-col sm:items-center">
+            <div className="hidden gap-4 sm:flex sm:flex-wrap sm:justify-center">
+              <NavbarItem>
+                <Dices />
+              </NavbarItem>
+              <NavbarItem>
+                <Save />
+              </NavbarItem>
+              <NavbarItem>
+                <CircleHelp />
+              </NavbarItem>
+            </div>
+            <span className="text-center">{messageCharCount}</span>
           </NavbarContent>
           <NavbarMenu>
             <NavbarMenuItem></NavbarMenuItem>
