@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { fetchAllLocationMessagesWithCharacters } from "@/server/actions/locationMessages";
 import useFetchInterval from "@/hooks/useFetchInterval";
 import { Spinner, ScrollShadow } from "@heroui/react";
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
-import { useEffect, useState } from "react";
 import {
   ActionMessage,
   MasterMessage,
@@ -58,10 +58,12 @@ export default function LocationChat({
   locationId,
   characterId,
   isUserMaster,
+  locationCode,
 }: {
   locationId: string;
   characterId: string;
   isUserMaster: boolean;
+  locationCode: string;
 }) {
   const [allMessages, setAllMessages] = useState<
     LocationMessageWithCharacter[]
@@ -69,6 +71,14 @@ export default function LocationChat({
   const [lastMessageTimestamp, setLastMessageTimestamp] = useState<Date | null>(
     null,
   );
+
+  // keeps the state of the fetching and a reference for the hook
+  const [isFetching, setIsFetching] = useState(false);
+  const isFetchingRef = useRef(isFetching);
+  useEffect(() => {
+    isFetchingRef.current = isFetching;
+  }, [isFetching]);
+
   const fetchingInterval = 30 * 1000; // 30 seconds
 
   // initial fetch of all messages
@@ -85,27 +95,36 @@ export default function LocationChat({
     fetchInitialMessages();
   }, [locationId]);
 
+  // manual fetch
   const fetchAndAppendMessages = async () => {
-    const newMessages = await fetchAllLocationMessagesWithCharacters(
-      locationId,
-      lastMessageTimestamp,
-    );
-    if (newMessages.length > 0) {
-      setAllMessages((prev) => [...newMessages, ...prev]);
-      setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
+    if (isFetching) return; // prevent multiple fetches
+    setIsFetching(true);
+    try {
+      const newMessages = await fetchAllLocationMessagesWithCharacters(
+        locationId,
+        lastMessageTimestamp,
+      );
+      if (newMessages.length > 0) {
+        setAllMessages((prev) => [...newMessages, ...prev]);
+        setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
+      }
+    } finally {
+      setIsFetching(false);
     }
   };
 
   // periodic fetch of new messages using the hook
   const { data: newMessages, loading } = useFetchInterval(
     () =>
-      lastMessageTimestamp
+      lastMessageTimestamp && !isFetching
         ? fetchAllLocationMessagesWithCharacters(
             locationId,
             lastMessageTimestamp,
           )
         : Promise.resolve([]),
     fetchingInterval,
+    isFetchingRef,
+    setIsFetching,
   );
 
   // update messages when new ones arrive
@@ -137,8 +156,11 @@ export default function LocationChat({
         )}
       </div>
       <LocationControls
+        locationId={locationId}
         isUserMaster={isUserMaster}
+        currentCharacterId={characterId}
         fetchMessages={fetchAndAppendMessages}
+        locationCode={locationCode}
       />
     </section>
   );

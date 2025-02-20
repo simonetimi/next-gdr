@@ -1,14 +1,16 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, RefObject } from "react";
 
 /*
- * React hook to fetch every n milliseconds
- * It saves the state internally and cancels on dismount
- * Loading is true only during the first fetch
+ * React hook to fetch data at specified intervals.
+ * Manages internal state and cleans up on unmount.
+ * Loading is true only during the first fetch.
  */
 
 function useFetchInterval<T>(
   fetchFunction: () => Promise<T>,
   interval: number,
+  isFetchingRef: RefObject<boolean>,
+  setIsFetching: (fetching: boolean) => void,
 ) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -24,10 +26,16 @@ function useFetchInterval<T>(
   // sets up the interval
   useEffect(() => {
     const fetchData = async () => {
+      if (isFetchingRef.current) return; // skip if already fetching
+
       try {
+        isFetchingRef.current = true;
+        setIsFetching(true);
+
         if (!initialFetchDone.current) {
           setLoading(true);
         }
+
         const result = await savedCallback.current();
         setData(result);
         setError(null);
@@ -37,6 +45,8 @@ function useFetchInterval<T>(
           err instanceof Error ? err : new Error("An unknown error occurred"),
         );
       } finally {
+        isFetchingRef.current = false;
+        setIsFetching(false);
         setLoading(false);
       }
     };
@@ -48,7 +58,7 @@ function useFetchInterval<T>(
 
     const id = setInterval(fetchData, interval);
     return () => clearInterval(id);
-  }, [interval]);
+  }, [interval, setIsFetching, isFetchingRef]);
 
   return { data, loading, error };
 }

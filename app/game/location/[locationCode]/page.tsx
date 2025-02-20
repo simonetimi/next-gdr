@@ -46,6 +46,7 @@ export default async function LocationPage({
           locationId={location.id}
           characterId={character.id}
           isUserMaster={isUserMaster}
+          locationCode={locationCode}
         />
       </div>
     );

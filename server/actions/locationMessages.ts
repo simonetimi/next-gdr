@@ -15,6 +15,8 @@ import {
   fullLocationMessagesSchema,
   fullLocationMessagesWithCharactersSchema,
 } from "@/zod/schemas/locationMessages";
+import { revalidatePath } from "next/cache";
+import { LOCATION_ROUTE } from "@/utils/routes";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -113,7 +115,7 @@ export async function fetchAllLocationMessages(locationId: string) {
 
 export async function fetchAllLocationMessagesWithCharacters(
   locationId: string,
-  lastMessageTimestamp?: Date,
+  lastMessageTimestamp?: Date | null,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -145,9 +147,14 @@ export async function fetchAllLocationMessagesWithCharacters(
 
   // if timestamp is provided, add it to base conditions. used to fetch only the newest
   if (lastMessageTimestamp) {
+    // convert both timestamps to UTC for comparison (otherwise gets timezone mismatch)
+    lastMessageTimestamp.setMilliseconds(
+      lastMessageTimestamp.getMilliseconds() + 1,
+    );
+    const utcTimestamp = new Date(lastMessageTimestamp).toISOString();
     conditions = and(
       conditions,
-      sql`${locationMessages.createdAt} > ${lastMessageTimestamp}`,
+      sql`${locationMessages.createdAt} > ${utcTimestamp}::timestamp`,
     );
   }
 
@@ -237,8 +244,45 @@ export async function fetchAllLocationMessagesWithCharacters(
   return fullLocationMessagesWithCharactersSchema.parse(result);
 }
 
-// TODO action to fetch them all regardless of time
+export async function postActionMessage(
+  locationId: string,
+  characterId: string,
+  content: string,
+  tag: string,
+) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!session || !userId) throw new Error("User not authenticated");
 
-// TODO action to fetch them all for one specific character, regardless of time
+  const [message] = await db
+    .insert(locationMessages)
+    .values({
+      locationId,
+      characterId,
+      content,
+      type: "action",
+    })
+    .returning({
+      id: locationMessages.id,
+    });
 
-// TODO other actions (to post actions depending on the type)
+  try {
+    await db.insert(locationActionMessages).values({
+      messageId: message.id,
+      tag,
+    });
+  } catch (error) {
+    // if the second one fails, delete the first entry
+    await db
+      .delete(locationMessages)
+      .where(eq(locationMessages.id, message.id));
+    throw error;
+  }
+  return !!message.id;
+}
+
+// TODO action to fetch them all (single location) regardless of time (for the admins)
+
+// TODO action to fetch them all for one specific character, regardless of time (for the admins)
+
+// TODO system messages (start aftering finishing abilities, dices, etc.)

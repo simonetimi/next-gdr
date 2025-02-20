@@ -15,15 +15,22 @@ import {
 } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { CircleHelp, Dices, Save, Send } from "lucide-react";
+import { postActionMessage } from "@/server/actions/locationMessages";
 
 // TODO trigger re-fetch when submitting a message (maybe pass a state setter from parent component
 
 export default function LocationControls({
+  locationId,
   isUserMaster,
+  currentCharacterId,
   fetchMessages,
+  locationCode,
 }: {
+  locationId: string;
   isUserMaster: boolean;
+  currentCharacterId: string;
   fetchMessages: () => void;
+  locationCode: string;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -32,7 +39,9 @@ export default function LocationControls({
   const [tag, setTag] = useState<string>("");
 
   useEffect(() => {
-    const savedMessage = localStorage.getItem("locationMessage");
+    const savedMessage = localStorage.getItem(
+      "locationMessage-" + locationCode,
+    );
     if (savedMessage) {
       setLocalMessage(savedMessage);
     }
@@ -40,7 +49,7 @@ export default function LocationControls({
 
   const handleMessageChange = (value: string) => {
     setLocalMessage(value);
-    localStorage.setItem("locationMessage", value);
+    localStorage.setItem("locationMessage-" + locationCode, value);
   };
 
   const handleSelectionChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -51,34 +60,38 @@ export default function LocationControls({
     setTag(value);
   };
 
-  const handleSubmitMessage = () => {
-    // TODO send to POST endpoint all the info
-    //  make different calls depending on the emptiness of the strings
+  const handleSubmitMessage = async () => {
+    if (!localMessage) return;
+    try {
+      if (messageType === "action") {
+        await postActionMessage(
+          locationId,
+          currentCharacterId,
+          localMessage,
+          tag,
+        );
+      } else if (messageType === "whisper") {
+        // post to make whisper to a specific character
+        if (tag) {
+        }
+        // post to make whisper to all
+        if (!tag) {
+        }
+      } else if (messageType === "master") {
+        // post to master
+      }
 
-    if (messageType === "action") {
-      // post to make action
-    } else if (messageType === "whisper") {
-      // post to make whisper to a specific character
-      if (tag) {
-      }
-      // post to make whisper to all
-      if (!tag) {
-      }
-    } else if (messageType === "master") {
-      // post to master
+      // success!
+      // empty the fields and remove from locale storage
+      setLocalMessage("");
+      setTag("");
+      localStorage.removeItem("locationMessage-" + locationCode);
+
+      // refresh chat
+      fetchMessages();
+    } catch (error) {
+      //handle error (toast)
     }
-
-    console.log(messageType);
-    console.log(localMessage);
-    console.log(tag);
-
-    // error handle with tost
-
-    // only in case of success:
-    setLocalMessage("");
-    setTag("");
-    // this will refresh the chat
-    fetchMessages();
   };
   return (
     <div className="flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:px-4">
