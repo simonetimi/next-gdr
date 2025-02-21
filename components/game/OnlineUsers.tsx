@@ -16,7 +16,8 @@ export default function OnlineUsers() {
       const response = await fetch("/api/game/characters/online");
 
       if (!response.ok) {
-        addToast({
+        setIsLoading(false);
+        return addToast({
           title: t("errors.title"),
           description: (await response.text()) || t("errors.generic"),
           color: "danger",

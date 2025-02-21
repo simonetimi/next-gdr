@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { fetchAllLocationMessagesWithCharacters } from "@/server/actions/locationMessages";
 import useFetchInterval from "@/hooks/useFetchInterval";
-import { Spinner, ScrollShadow } from "@heroui/react";
+import { Spinner, ScrollShadow, addToast } from "@heroui/react";
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import {
   ActionMessage,
@@ -14,6 +13,7 @@ import {
 } from "@/components/ui/LocationChatMessages";
 import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
+import { useTranslations } from "next-intl";
 
 function messageRender(
   currentMessage: LocationMessageWithCharacter,
@@ -79,6 +79,7 @@ export default function LocationChat({
   const [lastMessageTimestamp, setLastMessageTimestamp] = useState<Date | null>(
     null,
   );
+  const t = useTranslations();
 
   // keeps the state of the fetching and a reference for the hook
   const [isFetching, setIsFetching] = useState(false);
@@ -92,8 +93,18 @@ export default function LocationChat({
   // initial fetch of all messages
   useEffect(() => {
     const fetchInitialMessages = async () => {
-      const initialMessages =
-        await fetchAllLocationMessagesWithCharacters(locationId);
+      const response = await fetch(
+        `/api/game/location-messages/${locationId}?timestamp=}`,
+      );
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        return addToast({
+          title: t("errors.title"),
+          description: errorMessage || t("errors.generic"),
+          color: "danger",
+        });
+      }
+      const initialMessages = await response.json();
       setAllMessages(initialMessages);
       // set the timestamp of the newest message
       if (initialMessages.length > 0) {
@@ -107,28 +118,43 @@ export default function LocationChat({
   const fetchAndAppendMessages = async () => {
     if (isFetching) return; // prevent multiple fetches
     setIsFetching(true);
-    try {
-      const newMessages = await fetchAllLocationMessagesWithCharacters(
-        locationId,
-        lastMessageTimestamp,
-      );
-      if (newMessages.length > 0) {
-        setAllMessages((prev) => [...newMessages, ...prev]);
-        setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
-      }
-    } finally {
+    const response = await fetch(
+      `/api/game/location-messages/${locationId}?timestamp=${lastMessageTimestamp?.toISOString()}`,
+    );
+    if (!response.ok) {
+      const errorMessage = await response.text();
       setIsFetching(false);
+      return addToast({
+        title: t("errors.title"),
+        description: errorMessage || t("errors.generic"),
+        color: "danger",
+      });
     }
+    const newMessages = await response.json();
+    if (newMessages.length > 0) {
+      setAllMessages((prev) => [...newMessages, ...prev]);
+      setLastMessageTimestamp(new Date(newMessages[0].message.createdAt));
+    }
+    setIsFetching(false);
   };
 
   // periodic fetch of new messages using the hook
   const { data: newMessages, loading } = useFetchInterval(
-    () =>
+    async () =>
       lastMessageTimestamp && !isFetching
-        ? fetchAllLocationMessagesWithCharacters(
-            locationId,
-            lastMessageTimestamp,
-          )
+        ? fetch(
+            `/api/game/location-messages/${locationId}?timestamp=${lastMessageTimestamp.toISOString()}`,
+          ).then(async (response) => {
+            if (!response.ok) {
+              const errorMessage = await response.text();
+              return addToast({
+                title: t("errors.title"),
+                description: errorMessage || t("errors.generic"),
+                color: "danger",
+              });
+            }
+            return response.json();
+          })
         : Promise.resolve([]),
     fetchingInterval,
     isFetchingRef,

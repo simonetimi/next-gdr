@@ -16,7 +16,7 @@ function CharacterSheet({ characterId }: { characterId: string }) {
       );
 
       if (!response.ok) {
-        addToast({
+        return addToast({
           title: t("errors.title"),
           description: (await response.text()) || t("errors.generic"),
           color: "danger",

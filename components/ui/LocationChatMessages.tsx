@@ -214,7 +214,7 @@ export function SystemMessage({
           <span className="font-semibold">
             {currentMessage.character?.firstName}
           </span>
-          <span> {currentMessage.message.content}</span>
+          <span> {currentMessage.message.content}.</span>
         </div>
       </div>
     );
