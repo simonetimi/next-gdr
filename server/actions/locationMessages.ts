@@ -7,19 +7,17 @@ import {
   locationSystemMessages,
   locationWhispers,
 } from "@/database/schema/locationMessages";
-import { and, desc, eq, gt, gte, isNull, or, sql } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, or, sql } from "drizzle-orm";
 import { auth } from "@/auth";
-import { isMaster } from "@/server/actions/roles";
 import { characters } from "@/database/schema/character";
 import {
   fullLocationMessagesSchema,
   fullLocationMessagesWithCharactersSchema,
 } from "@/zod/schemas/locationMessages";
-import { revalidatePath } from "next/cache";
-import { LOCATION_ROUTE } from "@/utils/routes";
 import { sessions } from "@/database/schema/auth";
 import { increaseCharacterExperience } from "@/server/actions/character";
 import { getTranslations } from "next-intl/server";
+import { isMaster } from "@/server/role";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -447,6 +445,6 @@ export async function postSystemMessage(
   return !!message.id;
 }
 
-// TODO action to fetch them all (single location) regardless of time (for the admins)
+// TODO method to fetch them all (single location) regardless of time (for the admins)
 
-// TODO action to fetch them all for one specific character, regardless of time (for the admins)
+// TODO method to fetch them all for one specific character, regardless of time (for the admins)

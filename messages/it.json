@@ -58,7 +58,7 @@
       "rollAtLeastTwoDice": "Devi lanciare almeno un dado d2",
       "rollAtMostOneHundredDice": "Devi lanciare al massimo un dado d100",
       "invalidRoll": "Lancio non valido",
-      "invalidRollDescription": "Scrivi # seguito da un numero tra 2 e 100. Es: #10"
+      "invalidRollDescription": "Scrivi #d seguito da un numero tra 2 e 100. Es: #d10"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "can only contain letters"

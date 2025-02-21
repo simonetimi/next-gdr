@@ -26,6 +26,9 @@ Chat-based RPG app built with Next.js
 ### Guidelines
 
 - In vercel.json, cron jobs can be defined on the select API routes. Eg., for weather, it will be executed everyday at 5 ( "schedule": "0 5 \* \* \*") using the key CRON_SECRET in the env variables
+- Fetch is mostly made on server (directory @/server). When it's need to fetch client side, use an API route. The API route can call the functions inside the @/server directory (not the actions!). Server actions (@server/actions) are only used for mutations, both server and client side.
+- Error messages are set with NextIntl on the server (server action or server function). Client-side, it will be catched (try/catch) if it's a server action (mutation) or catched in the API route and handled with the response.ok condition if it's a GET request.
+- If the data validation (Zod - parse) is made server side and we check there are no errors, we can assert the type.
 
 ### Features to implement
 
@@ -61,6 +64,7 @@ Chat-based RPG app built with Next.js
 - [x] Investigate on a way to save location chats (generating html or similar, with a specific call)
 - [x] Make labels for error messages to call in server functions
 - [x] Implement string sanitization in the chat (Interweave)
+- [ ] Make locations in the online characters menu clickable (links to location)
 - [ ] Add all cron jobs
 - [ ] Evaluate to migrate all get requests to API routes
 - [ ] Investigate a way to cache information you don't want to fetch too often (like weather)

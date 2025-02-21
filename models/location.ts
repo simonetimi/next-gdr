@@ -5,6 +5,7 @@ export interface Location {
   id: string;
   code: string;
   name: string;
+  imageUrl: string | null;
   hidden: boolean | null;
   description: string | null;
   locationGroupId: string | null;

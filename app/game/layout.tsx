@@ -5,10 +5,10 @@ import { auth } from "@/auth";
 import {
   getCurrentCharacterIdOnly,
   getUserCharacters,
-} from "@/server/actions/character";
+} from "@/server/character";
 import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
-import { isAdmin, isMaster } from "@/server/actions/roles";
+import { isAdmin, isMaster } from "@/server/role";
 
 export default async function GameLayout({
   children,
@@ -42,14 +42,17 @@ export default async function GameLayout({
     }
   } else return;
 
+  const isUserAdmin = await isAdmin(session.user.id ?? "");
+  const isUserMaster = await isMaster(session.user.id ?? "");
+
   return (
     <>
       <Header
         showControls
         character={character!}
         allowMultipleCharacters={allowMultipleCharacters}
-        isAdmin={await isAdmin(session.user.id ?? "")}
-        isMaster={await isMaster(session.user.id ?? "")}
+        isAdmin={isUserAdmin}
+        isMaster={isUserMaster}
       />
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {children}

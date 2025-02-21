@@ -1,13 +1,11 @@
 "use server";
 
 import { db } from "@/database/db";
-import { races } from "@/database/schema/race";
-import { racesSelectSchema } from "@/zod/schemas/race";
 import { auth } from "@/auth";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { sessions } from "@/database/schema/auth";
-import { isMaster } from "@/server/actions/roles";
 import { getTranslations } from "next-intl/server";
+import { isMaster } from "@/server/role";
 
 export async function toggleInvisible(isInvisibleActive: boolean) {
   const session = await auth();
@@ -63,30 +61,4 @@ export async function toggleInvisible(isInvisibleActive: boolean) {
         ),
       ),
     );
-}
-
-export async function isInvisible() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
-
-  const results = await db
-    .select({ invisibleMode: sessions.invisibleMode })
-    .from(sessions)
-    .where(eq(sessions.userId, userId))
-    .orderBy(desc(sessions.expires))
-    .limit(1);
-
-  return results[0].invisibleMode;
-}
-
-export async function getAllRaces() {
-  const fetchedRaces = await db
-    .select({ name: races.name, id: races.id })
-    .from(races);
-
-  racesSelectSchema.parse(fetchedRaces);
-
-  return fetchedRaces;
 }

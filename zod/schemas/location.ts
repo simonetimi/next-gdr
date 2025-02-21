@@ -28,6 +28,7 @@ export const groupedLocationsSelectSchema = z.array(
         locationGroupId: true,
         id: true,
         hidden: true,
+        imageUrl: true,
       }),
     ),
   }),

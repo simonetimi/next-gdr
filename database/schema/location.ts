@@ -8,6 +8,7 @@ export const locations = pgTable("location", {
   name: varchar("name", { length: 50 }).notNull().unique(),
   hidden: boolean("hidden").default(false),
   description: text("description"),
+  imageUrl: text("image_url"),
   locationGroupId: uuid("location_group_id").references(
     () => locationGroups.id,
   ),

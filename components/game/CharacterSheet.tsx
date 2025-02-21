@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getCharacterSheet } from "@/server/actions/character";
 import { CharacterScheetWithCharacter } from "@/models/characters";
 import { addToast, Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
@@ -12,20 +11,22 @@ function CharacterSheet({ characterId }: { characterId: string }) {
     useState<CharacterScheetWithCharacter | null>(null);
   useEffect(() => {
     (async () => {
-      try {
-        const result = await getCharacterSheet(characterId);
-        setCharacterSheet(result);
-      } catch (error) {
-        let errorMessage = t("errors.generic");
-        if (error instanceof Error) errorMessage = error.message;
+      const response = await fetch(
+        `/api/game/character/character-sheet/${characterId}`,
+      );
+
+      if (!response.ok) {
         addToast({
           title: t("errors.title"),
-          description: errorMessage,
+          description: (await response.text()) || t("errors.generic"),
           color: "danger",
         });
       }
+
+      const data = await response.json();
+      setCharacterSheet(data);
     })();
-  }, [characterId]);
+  }, [characterId, t]);
 
   if (!characterSheet)
     return (

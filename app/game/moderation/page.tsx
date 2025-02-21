@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { GAME_ROUTE, INDEX_ROUTE } from "@/utils/routes";
-import { isMaster } from "@/server/actions/roles";
+import { isMaster } from "@/server/role";
 import ModerationControls from "@/components/admin/ModerationControls";
 
 export default async function ModerationPage() {

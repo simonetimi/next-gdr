@@ -97,12 +97,12 @@ export default function LocationControls({
 
     try {
       if (messageType === "action") {
-        if (localMessage.startsWith("#")) {
-          const dice = parseInt(localMessage.trim().slice(1));
+        if (localMessage.startsWith("#d")) {
+          const dice = parseInt(localMessage.trim().slice(2));
           if (Number.isNaN(dice)) {
             addToast({
-              title: t("errors.game.chat.invalidRoll"),
-              description: t("errors.game.chat.invalidRollDescription"),
+              title: t("errors.chat.invalidRoll"),
+              description: t("errors.chat.invalidRollDescription"),
               color: "warning",
             });
             return;

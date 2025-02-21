@@ -1,5 +1,5 @@
 import { Character } from "@/models/characters";
-import { getUserCharacters } from "@/server/actions/character";
+import { getUserCharacters } from "@/server/character";
 import { redirect } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSelection from "@/components/forms/CharacterSelection";

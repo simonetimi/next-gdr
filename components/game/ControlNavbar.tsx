@@ -38,7 +38,7 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
-import { isInvisible, toggleInvisible } from "@/server/actions/app";
+import { toggleInvisible } from "@/server/actions/app";
 
 function ControlNavbar({
   character,
@@ -71,7 +71,9 @@ function ControlNavbar({
   useEffect(() => {
     if (isMaster) {
       (async () => {
-        const isUserInvisible = await isInvisible();
+        const response = await fetch("/api/character/invisible");
+        const isUserInvisible = await response.json();
+        console.log(isUserInvisible);
         setIsInvisibleSelected(isUserInvisible ?? false);
       })();
     }

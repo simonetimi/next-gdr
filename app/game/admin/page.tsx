@@ -2,7 +2,7 @@ import AdminControls from "@/components/admin/AdminControls";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { GAME_ROUTE, INDEX_ROUTE } from "@/utils/routes";
-import { isAdmin } from "@/server/actions/roles";
+import { isAdmin } from "@/server/role";
 
 export default async function AdminPage() {
   const session = await auth();

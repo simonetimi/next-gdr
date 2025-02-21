@@ -39,9 +39,7 @@ export default function Map({ locations }: { locations: GroupedLocations }) {
             key={group.locationGroupId}
           >
             {group.locations.map((location) => (
-              <SelectItem key={location.code} value={location.code}>
-                {location.name}
-              </SelectItem>
+              <SelectItem key={location.code}>{location.name}</SelectItem>
             ))}
           </SelectSection>
         )}

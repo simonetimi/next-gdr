@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getOnlineCharacters } from "@/server/actions/character";
+import { getOnlineCharacters } from "@/server/character";
 import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
 import { addToast, Avatar, Spinner } from "@heroui/react";
@@ -13,19 +13,19 @@ export default function OnlineUsers() {
 
   useEffect(() => {
     (async () => {
-      try {
-        const response = await getOnlineCharacters();
-        setOnlineCharacters(response);
-        setIsLoading(false);
-      } catch (error) {
-        let errorMessage = t("errors.generic");
-        if (error instanceof Error) errorMessage = error.message;
+      const response = await fetch("/api/game/characters/online");
+
+      if (!response.ok) {
         addToast({
           title: t("errors.title"),
-          description: errorMessage,
+          description: (await response.text()) || t("errors.generic"),
           color: "danger",
         });
       }
+
+      const data = await response.json();
+      setOnlineCharacters(data);
+      setIsLoading(false);
     })();
   }, [t]);
 
@@ -140,6 +140,7 @@ const LocationGroup = ({
   </div>
 );
 
+// TODO movable to open character sheet
 const CharacterItem = ({
   character,
   race,

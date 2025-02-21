@@ -1,10 +1,10 @@
-import { getAllRaces } from "@/server/actions/app";
+import { getAllRaces } from "@/server/race";
 import NewCharacterForm from "@/components/forms/NewCharacter";
 import { auth } from "@/auth";
 
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
-import { getUserCharacters } from "@/server/actions/character";
+import { getUserCharacters } from "@/server/character";
 
 export default async function NewChacterPage() {
   const session = await auth();
