@@ -13,6 +13,10 @@ export const toCamelCase = (str: string) => {
     );
 };
 
+export const fromKebabCase = (str: string) => {
+  return str.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export const enhanceTextWithSquareBrackets = (text: string) => {
   // makes text in square brackets bold
   return text.replace(/\[(.*?)\]/g, '<span class="font-bold">$1</span>');

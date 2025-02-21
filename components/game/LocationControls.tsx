@@ -22,6 +22,8 @@ import {
   postWhisperForAll,
 } from "@/server/actions/locationMessages";
 import { rollDice } from "@/server/actions/game";
+import { fromKebabCase } from "@/utils/strings";
+import { downloadComponent } from "@/utils/download";
 
 export default function LocationControls({
   locationId,
@@ -36,6 +38,7 @@ export default function LocationControls({
   fetchMessages: () => void;
   locationCode: string;
 }) {
+  const locale = process.env.LOCALE;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [messageType, setMessageType] = useState<string>("action");
@@ -125,6 +128,11 @@ export default function LocationControls({
       //handle error (toast)
     }
   };
+
+  function onDownloadChat() {
+    downloadComponent(locale ?? "en-US", locationCode);
+  }
+
   return (
     <div className="flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:pr-3">
       <div className="w-10 sm:w-28">
@@ -142,7 +150,13 @@ export default function LocationControls({
               <Dices />
             </NavbarItem>
             <NavbarItem>
-              <Save />
+              <Button
+                isIconOnly
+                size="sm"
+                className="min-h-2 min-w-2"
+                startContent={<Save />}
+                onPress={onDownloadChat}
+              />
             </NavbarItem>
             <NavbarItem>
               <CircleHelp />

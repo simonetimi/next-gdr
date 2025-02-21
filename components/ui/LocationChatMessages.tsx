@@ -31,7 +31,7 @@ export function ActionMessage({
         <Avatar
           size="lg"
           src={currentMessage.character?.miniAvatarUrl ?? ""}
-          name={currentMessage.character?.miniAvatarUrl ?? ""}
+          name={currentMessage.character?.firstName ?? ""}
         />
         <span className="text-xs">{timeString}</span>
       </div>

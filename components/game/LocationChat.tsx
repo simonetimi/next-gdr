@@ -151,7 +151,7 @@ export default function LocationChat({
             <Spinner />
           </div>
         ) : (
-          <div className="relative h-full w-full">
+          <div className="relative h-full w-full" id="chat-messages">
             <ScrollShadow className="absolute inset-0 overflow-y-auto">
               <div className="flex flex-col p-5 text-sm">
                 {allMessages &&
