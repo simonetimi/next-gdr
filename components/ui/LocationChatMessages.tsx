@@ -1,5 +1,10 @@
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { Avatar } from "@heroui/react";
+import {
+  enchanceCharacterName,
+  enhanceTextWithSquareBrackets,
+} from "@/utils/strings";
+import { MinimalCharacter } from "@/models/characters";
 
 // TODO insert labels text to be translated
 
@@ -7,8 +12,10 @@ const locale = process.env.LOCALE;
 
 export function ActionMessage({
   currentMessage,
+  character,
 }: {
   currentMessage: LocationMessageWithCharacter;
+  character: MinimalCharacter;
 }) {
   const timeString = new Date(
     currentMessage.message.createdAt,
@@ -36,7 +43,16 @@ export function ActionMessage({
             {currentMessage.action?.tag}
           </span>
         </div>
-        <span>{currentMessage.message.content}</span>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: enhanceTextWithSquareBrackets(
+              enchanceCharacterName(
+                currentMessage.message.content,
+                character.firstName,
+              ),
+            ),
+          }}
+        />
       </div>
     </div>
   );

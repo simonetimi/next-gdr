@@ -116,6 +116,7 @@ export default function LocationControls({
 
       // empty the fields and remove from locale storage
       setLocalMessage("");
+      setMessageCharCount(0);
       localStorage.removeItem("locationMessage-" + locationCode);
 
       // refresh chat
@@ -125,7 +126,7 @@ export default function LocationControls({
     }
   };
   return (
-    <div className="flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:px-4">
+    <div className="flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:pr-3">
       <div className="w-10 sm:w-28">
         <Navbar
           isBlurred={false}
@@ -133,22 +134,19 @@ export default function LocationControls({
           onMenuOpenChange={setIsMenuOpen}
         >
           <NavbarMenuToggle
-            className="-ml-2 h-6 w-6 sm:hidden"
+            className="-ml-3 sm:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           ></NavbarMenuToggle>
-          <NavbarContent className="hidden gap-3 pr-5 sm:flex sm:min-w-24 sm:flex-col sm:items-center">
-            <div className="hidden gap-4 sm:flex sm:flex-wrap sm:justify-center">
-              <NavbarItem>
-                <Dices />
-              </NavbarItem>
-              <NavbarItem>
-                <Save />
-              </NavbarItem>
-              <NavbarItem>
-                <CircleHelp />
-              </NavbarItem>
-            </div>
-            <span className="text-center">{messageCharCount}</span>
+          <NavbarContent className="ml-1 hidden gap-3 sm:flex sm:min-w-8 sm:flex-wrap sm:items-center sm:justify-center">
+            <NavbarItem>
+              <Dices />
+            </NavbarItem>
+            <NavbarItem>
+              <Save />
+            </NavbarItem>
+            <NavbarItem>
+              <CircleHelp />
+            </NavbarItem>
           </NavbarContent>
           <NavbarMenu>
             <NavbarMenuItem></NavbarMenuItem>
@@ -180,14 +178,23 @@ export default function LocationControls({
           maxRows={7}
           value={localMessage}
           onValueChange={handleMessageChange}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              await handleSubmitMessage();
+            }
+          }}
           placeholder="Scrivi il tuo testo qui"
         />
-        <Button
-          isIconOnly
-          startContent={<Send />}
-          variant="light"
-          onPress={handleSubmitMessage}
-        />
+        <div className="flex flex-col gap-3 pl-2">
+          <Button
+            isIconOnly
+            startContent={<Send />}
+            variant="light"
+            onPress={handleSubmitMessage}
+          />
+          <span className="text-center text-sm">{messageCharCount}</span>
+        </div>
       </div>
     </div>
   );

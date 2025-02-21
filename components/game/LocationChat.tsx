@@ -13,10 +13,11 @@ import {
   WhisperMessage,
 } from "@/components/ui/LocationChatMessages";
 import LocationControls from "@/components/game/LocationControls";
+import { MinimalCharacter } from "@/models/characters";
 
 function messageRender(
   currentMessage: LocationMessageWithCharacter,
-  currentUserCharacterId: string,
+  character: MinimalCharacter,
 ) {
   const type = currentMessage.message.type;
   switch (type) {
@@ -24,6 +25,7 @@ function messageRender(
       return (
         <ActionMessage
           currentMessage={currentMessage}
+          character={character}
           key={currentMessage.message.id}
         />
       );
@@ -31,7 +33,7 @@ function messageRender(
       return (
         <WhisperMessage
           currentMessage={currentMessage}
-          currentUserCharacterId={currentUserCharacterId}
+          currentUserCharacterId={character.id}
           key={currentMessage.message.id}
         />
       );
@@ -39,7 +41,7 @@ function messageRender(
       return (
         <WhisperAllMessage
           currentMessage={currentMessage}
-          currentUserCharacterId={currentUserCharacterId}
+          currentUserCharacterId={character.id}
           key={currentMessage.message.id}
         />
       );
@@ -62,12 +64,12 @@ function messageRender(
 
 export default function LocationChat({
   locationId,
-  characterId,
+  character,
   isUserMaster,
   locationCode,
 }: {
   locationId: string;
-  characterId: string;
+  character: MinimalCharacter;
   isUserMaster: boolean;
   locationCode: string;
 }) {
@@ -154,7 +156,7 @@ export default function LocationChat({
               <div className="flex flex-col p-5 text-sm">
                 {allMessages &&
                   allMessages.map((chatMessage) =>
-                    messageRender(chatMessage, characterId),
+                    messageRender(chatMessage, character),
                   )}
               </div>
             </ScrollShadow>
@@ -164,7 +166,7 @@ export default function LocationChat({
       <LocationControls
         locationId={locationId}
         isUserMaster={isUserMaster}
-        currentCharacterId={characterId}
+        currentCharacterId={character.id}
         fetchMessages={fetchAndAppendMessages}
         locationCode={locationCode}
       />

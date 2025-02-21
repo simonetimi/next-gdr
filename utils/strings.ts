@@ -12,3 +12,15 @@ export const toCamelCase = (str: string) => {
       (s: string, c: string) => s + (c.charAt(0).toUpperCase() + c.slice(1)),
     );
 };
+
+export const enhanceTextWithSquareBrackets = (text: string) => {
+  // makes text in square brackets bold
+  return text.replace(/\[(.*?)\]/g, '<span class="font-bold">$1</span>');
+};
+
+export const enchanceCharacterName = (text: string, name: string) => {
+  return text.replaceAll(
+    name,
+    `<span class="font-bold underline">${name}</span>`,
+  );
+};

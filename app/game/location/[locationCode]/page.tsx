@@ -3,7 +3,7 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import { isInvisible } from "@/server/actions/app";
 import LocationChat from "@/components/game/LocationChat";
-import { getCurrentCharacterIdOnly } from "@/server/actions/character";
+import { getMinimalCurrentCharacter } from "@/server/actions/character";
 import { isMaster } from "@/server/actions/roles";
 import { auth } from "@/auth";
 
@@ -22,7 +22,7 @@ export default async function LocationPage({
   let isUserMaster = false;
   try {
     location = await getLocation(locationCode);
-    character = await getCurrentCharacterIdOnly();
+    character = await getMinimalCurrentCharacter();
     isUserMaster = await isMaster(userId ?? "");
   } catch (error) {
     console.log(error);
@@ -45,7 +45,7 @@ export default async function LocationPage({
       </aside>
       <LocationChat
         locationId={location.id}
-        characterId={character.id}
+        character={character}
         isUserMaster={isUserMaster}
         locationCode={locationCode}
       />

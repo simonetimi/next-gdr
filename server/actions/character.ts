@@ -160,7 +160,7 @@ export async function getCurrentCharacterIdOnly() {
   return results[0];
 }
 
-export async function getMinimalCurrentUser() {
+export async function getMinimalCurrentCharacter() {
   const session = await auth();
   const userId = session?.user?.id;
   if (!session || !userId) throw new Error("User not authenticated");
