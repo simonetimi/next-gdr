@@ -2,9 +2,12 @@ import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
 import { z } from "zod";
 
 export interface Location {
-  name: string;
-  description: string | null;
+  id: string;
   code: string;
+  name: string;
+  hidden: boolean | null;
+  description: string | null;
+  locationGroupId: string | null;
 }
 
 export type GroupedLocations = z.infer<typeof groupedLocationsSelectSchema>;

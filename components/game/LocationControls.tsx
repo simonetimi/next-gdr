@@ -43,6 +43,9 @@ export default function LocationControls({
   const t = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const COOLDOWN_TIME = 3000; // 3 sec
+
   const [messageType, setMessageType] = useState<string>("action");
   const [localMessage, setLocalMessage] = useState<string>("");
   const [tag, setTag] = useState<string>("");
@@ -89,7 +92,9 @@ export default function LocationControls({
   };
 
   const handleSubmitMessage = async () => {
-    if (!localMessage) return;
+    if (!localMessage || isSubmitting) return;
+    setIsSubmitting(true);
+
     try {
       if (messageType === "action") {
         if (localMessage.startsWith("#")) {
@@ -141,6 +146,10 @@ export default function LocationControls({
         description: errorMessage,
         color: "danger",
       });
+    } finally {
+      setTimeout(() => {
+        setIsSubmitting(false);
+      }, COOLDOWN_TIME);
     }
   };
 
@@ -236,6 +245,7 @@ export default function LocationControls({
             startContent={<Send />}
             variant="light"
             onPress={handleSubmitMessage}
+            disabled={isSubmitting}
           />
           <span className="text-center text-sm">{messageCharCount}</span>
         </div>
@@ -243,3 +253,5 @@ export default function LocationControls({
     </div>
   );
 }
+
+// TODO implement movables for: sidebar (only menu), dices, help (3)

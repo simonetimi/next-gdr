@@ -57,11 +57,13 @@ Chat-based RPG app built with Next.js
 ### TODO
 
 - [ ] Update labels in messages/it.json (evergoing)
-- [ ] Add cron job to clear weather table every 30 days
 - [ ] Put translation labels of weather
-- [ ] Investigate on a way to save location chats (generating html or similar, with a specific call
-- [ ] Make labels for error messages to call in server functions
+- [x] Investigate on a way to save location chats (generating html or similar, with a specific call)
+- [x] Make labels for error messages to call in server functions
 - [x] Implement string sanitization in the chat (Interweave)
+- [ ] Add all cron jobs
+- [ ] Evaluate to migrate all get requests to API routes
+- [ ] Investigate a way to cache information you don't want to fetch too often (like weather)
 
 ### Bugs
 
@@ -69,7 +71,7 @@ Chat-based RPG app built with Next.js
 - [x] Only render the navbar when starts with "/game" but it's also valid
 - [ ] Movable will increase height and width limits when pushed on the edges
 - [x] Fix positioning of the avatar
-- [ ] When in a location and mobile mode, the movable will not take full screen
+- [x] When in a location and mobile mode, the movable will not take full screen
 
 ### Cron jobs to implement
 - [x] Weather

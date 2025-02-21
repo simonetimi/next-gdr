@@ -6,6 +6,8 @@ import LocationChat from "@/components/game/LocationChat";
 import { getMinimalCurrentCharacter } from "@/server/actions/character";
 import { isMaster } from "@/server/actions/roles";
 import { auth } from "@/auth";
+import LocationChatSidebar from "@/components/game/LocationChatSidebar";
+import { fetchWeather } from "@/server/actions/game";
 
 export default async function LocationPage({
   params,
@@ -19,13 +21,16 @@ export default async function LocationPage({
 
   let location;
   let character;
+  let weather;
   let isUserMaster = false;
   try {
     location = await getLocation(locationCode);
     character = await getMinimalCurrentCharacter();
     isUserMaster = await isMaster(userId ?? "");
+    weather = await fetchWeather();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    console.log(error);
     redirect(GAME_ROUTE);
   }
   if (!location || !character || !character?.id) redirect(GAME_ROUTE);
@@ -36,15 +41,11 @@ export default async function LocationPage({
   }
 
   // TODO sidebar with weather and location description
-  // TODO finish the menu for char actions on mobile and fix the movables
+  // TODO finish the menu for char actions on mobile and fix the movables not taking full page
 
   return (
     <div className="flex h-full w-full flex-grow flex-row">
-      <aside className="hidden w-[320px] flex-col gap-8 p-6 md:flex">
-        <h1>{location.name}</h1>
-        <p>{location.description}</p>
-        Weather, chat description, location image
-      </aside>
+      <LocationChatSidebar location={location} />
       <LocationChat
         locationId={location.id}
         character={character}
