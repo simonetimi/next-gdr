@@ -5,14 +5,19 @@ import { Races } from "@/models/races";
 import { createCharacter } from "@/server/actions/character";
 import { GAME_ROUTE } from "@/utils/routes";
 import { Form } from "@heroui/form";
-import { Button, Input, Link, Select, SelectItem } from "@heroui/react";
+import {
+  addToast,
+  Button,
+  Input,
+  Link,
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 
 export default function NewCharacterForm({ races }: { races: Races }) {
   const [character, setCharacter] = useState<Character | null>(null);
-  // TODO state for error not needed if it's handles with toast
-  const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations("pages.newCharacter");
 
@@ -23,9 +28,14 @@ export default function NewCharacterForm({ races }: { races: Races }) {
     try {
       const response = await createCharacter(formData);
       setCharacter(response);
-      setError("null");
-    } catch (err) {
-      if (err instanceof Error) setError(err.message);
+    } catch (error) {
+      let errorMessage = t("errors.generic");
+      if (error instanceof Error) errorMessage = error.message;
+      addToast({
+        title: t("errors.title"),
+        description: errorMessage,
+        color: "danger",
+      });
       setCharacter(null);
     } finally {
       setIsLoading(false);

@@ -24,17 +24,19 @@ export default async function LocationPage({
     location = await getLocation(locationCode);
     character = await getMinimalCurrentCharacter();
     isUserMaster = await isMaster(userId ?? "");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.log(error);
+    redirect(GAME_ROUTE);
   }
-  if (!location) redirect(GAME_ROUTE);
-  if (!character || !character?.id)
-    throw new Error("Could not find character!"); // toast or some other form of error handling
+  if (!location || !character || !character?.id) redirect(GAME_ROUTE);
 
   const isUserInvisible = await isInvisible();
   if (!isUserInvisible) {
     await setCurrentLocation(location.id);
   }
+
+  // TODO sidebar with weather and location description
+  // TODO finish the menu for char actions on mobile and fix the movables
 
   return (
     <div className="flex h-full w-full flex-grow flex-row">

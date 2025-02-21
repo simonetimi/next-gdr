@@ -6,6 +6,7 @@ import { eq, sql } from "drizzle-orm";
 import { auth } from "@/auth";
 import { sessions } from "@/database/schema/auth";
 import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
+import { getTranslations } from "next-intl/server";
 
 export async function getLocation(locationCode: string) {
   const result = await db
@@ -48,7 +49,8 @@ export async function getAllLocations() {
 export async function setCurrentLocation(locationId?: string) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   await db
     .update(sessions)

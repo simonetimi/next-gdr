@@ -40,9 +40,11 @@ function useFetchInterval<T>(
         setData(result);
         setError(null);
         initialFetchDone.current = true;
-      } catch (err) {
+      } catch (error) {
         setError(
-          err instanceof Error ? err : new Error("An unknown error occurred"),
+          error instanceof Error
+            ? error
+            : new Error("An unknown error occurred"),
         );
       } finally {
         isFetchingRef.current = false;

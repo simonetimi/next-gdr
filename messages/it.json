@@ -34,7 +34,32 @@
       }
     }
   },
+  "game": {
+    "dices": {
+      "rolled": "ha lanciato un dado {dice} e ottenuto {diceRoll}"
+    }
+  },
   "errors": {
+    "title": "Errore",
+    "generic": "Errore generico",
+    "auth": {
+      "unauthorized": "Utente non autorizzato",
+      "unauthenticated": "Utente non autenticato",
+      "chaarcterNotFound": "Personaggio non trovato"
+    },
+    "game": {
+      "characters": {
+        "notFound": "Personaggio non trovato",
+        "notFoundInLocation": "Personaggio non trovato tra i presenti"
+      }
+    },
+    "chat": {
+      "whisperSelf": "Non puoi sussurrare a te stesso",
+      "rollAtLeastTwoDice": "Devi lanciare almeno un dado d2",
+      "rollAtMostOneHundredDice": "Devi lanciare al massimo un dado d100",
+      "invalidRoll": "Lancio non valido",
+      "invalidRollDescription": "Scrivi # seguito da un numero tra 2 e 100. Es: #10"
+    },
     "validation": {
       "noSpacesOrPunctuationAllowed": "can only contain letters"
     }

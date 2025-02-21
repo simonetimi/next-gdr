@@ -21,11 +21,13 @@ import { revalidatePath } from "next/cache";
 import { locationGroups, locations } from "@/database/schema/location";
 import { onlineUsersSchema } from "@/zod/schemas/session";
 import { isAdmin, isMaster } from "@/server/actions/roles";
+import { getTranslations } from "next-intl/server";
 
 export async function createCharacter(formData: FormData) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const validatedForm = newCharacterFormSchema.parse({
     firstName: formData.get("firstName"),
@@ -54,7 +56,8 @@ export async function createCharacter(formData: FormData) {
 export async function getUserCharacters() {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const charactersList = await db
     .select()
@@ -67,7 +70,8 @@ export async function getUserCharacters() {
 export async function getCharacterSheet(characterId: string) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const hasFullPermission = (await isAdmin(userId)) || (await isMaster(userId));
 
@@ -77,7 +81,7 @@ export async function getCharacterSheet(characterId: string) {
     .where(eq(characters.id, characterId))
     .limit(1);
 
-  if (!character.length) throw new Error("Character not found");
+  if (!character.length) throw new Error(t("game.character.notFound"));
 
   // handles possible multiple characters
   const isUserOwner = character[0].userId === userId;
@@ -145,7 +149,8 @@ export async function getCharacterSheet(characterId: string) {
 export async function getCurrentCharacterIdOnly() {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const now = new Date();
 
@@ -163,7 +168,8 @@ export async function getCurrentCharacterIdOnly() {
 export async function getMinimalCurrentCharacter() {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const now = new Date();
 
@@ -188,7 +194,8 @@ export async function getMinimalCurrentCharacter() {
 export async function setCurrentCharacter(characterId: string) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const now = new Date();
 
@@ -208,7 +215,8 @@ export async function setCurrentCharacter(characterId: string) {
 export async function resetCurrentCharacter() {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const now = new Date();
 
@@ -228,7 +236,8 @@ export async function resetCurrentCharacter() {
 export async function getOnlineCharacters() {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const now = new Date();
 
@@ -280,7 +289,8 @@ export async function increaseCharacterExperience(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const character = await db
     .select({
@@ -291,7 +301,7 @@ export async function increaseCharacterExperience(
     .where(eq(characters.id, characterId))
     .limit(1);
 
-  if (!character.length) throw new Error("Character not found");
+  if (!character.length) throw new Error(t("game.character.notFound"));
 
   const newCurrentExperience = (character[0].currentExperience || 0) + amount;
   const newTotalExperience = (character[0].totalExperience || 0) + amount;

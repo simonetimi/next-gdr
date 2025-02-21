@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import { getCharacterSheet } from "@/server/actions/character";
 import { CharacterScheetWithCharacter } from "@/models/characters";
-import { Avatar, Spinner } from "@heroui/react";
+import { addToast, Avatar, Spinner } from "@heroui/react";
+import { useTranslations } from "next-intl";
 
 function CharacterSheet({ characterId }: { characterId: string }) {
+  const t = useTranslations();
   const [characterSheet, setCharacterSheet] =
     useState<CharacterScheetWithCharacter | null>(null);
   useEffect(() => {
@@ -14,7 +16,13 @@ function CharacterSheet({ characterId }: { characterId: string }) {
         const result = await getCharacterSheet(characterId);
         setCharacterSheet(result);
       } catch (error) {
-        // handle error
+        let errorMessage = t("errors.generic");
+        if (error instanceof Error) errorMessage = error.message;
+        addToast({
+          title: t("errors.title"),
+          description: errorMessage,
+          color: "danger",
+        });
       }
     })();
   }, [characterId]);

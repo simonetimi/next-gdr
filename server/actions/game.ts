@@ -1,18 +1,22 @@
 "use server";
 
 import { postSystemMessage } from "@/server/actions/locationMessages";
+import { getTranslations } from "next-intl/server";
 
 export async function rollDice(
   dice: number,
   locationId: string,
   characterId: string,
 ) {
-  if (dice < 2) throw new Error("Must roll at least 2 dice");
-  if (dice > 100) throw new Error("Cannot roll more than 100 dice");
+  const tErrors = await getTranslations("errors.game.chat");
+
+  if (dice < 2) throw new Error(tErrors("rollAtLeastTwoDice"));
+  if (dice > 100) throw new Error("rollAtMostOneHundredDice");
   const diceRoll = Math.floor(Math.random() * dice) + 1;
 
-  // TODO import translation
-  const content = `rolled a ${diceRoll} on a d${dice}.`;
+  const tDice = await getTranslations("game.dice");
+
+  const content = tDice("rolled", { dice, diceRoll });
 
   return await postSystemMessage(locationId, content, "dice", characterId);
 }

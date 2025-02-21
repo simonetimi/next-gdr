@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { getOnlineCharacters } from "@/server/actions/character";
 import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
-import { Avatar, Spinner } from "@heroui/react";
+import { addToast, Avatar, Spinner } from "@heroui/react";
 
 export default function OnlineUsers() {
   const [onlineCharacters, setOnlineCharacters] = useState<OnlineUsersType>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const t = useTranslations("general");
+  const t = useTranslations();
 
   useEffect(() => {
     (async () => {
@@ -18,16 +18,22 @@ export default function OnlineUsers() {
         setOnlineCharacters(response);
         setIsLoading(false);
       } catch (error) {
-        console.log(error);
+        let errorMessage = t("errors.generic");
+        if (error instanceof Error) errorMessage = error.message;
+        addToast({
+          title: t("errors.title"),
+          description: errorMessage,
+          color: "danger",
+        });
       }
     })();
-  }, []);
+  }, [t]);
 
   const groupedByLocationGroup = onlineCharacters.reduce(
     (acc, char) => {
       if (!char.location && !char.locationGroup) {
         // Characters with no location and no group go to entry location
-        const entryLocation = t("entryLocationName");
+        const entryLocation = t("general.entryLocationName");
         if (!acc["entry"]) {
           acc["entry"] = {};
         }

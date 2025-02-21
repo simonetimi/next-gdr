@@ -23,8 +23,8 @@ import {
   postWhisperForAll,
 } from "@/server/actions/locationMessages";
 import { rollDice } from "@/server/actions/game";
-import { fromKebabCase } from "@/utils/strings";
 import { downloadComponent } from "@/utils/download";
+import { useTranslations } from "next-intl";
 
 export default function LocationControls({
   locationId,
@@ -40,6 +40,7 @@ export default function LocationControls({
   locationCode: string;
 }) {
   const locale = process.env.LOCALE;
+  const t = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [messageType, setMessageType] = useState<string>("action");
@@ -93,7 +94,14 @@ export default function LocationControls({
       if (messageType === "action") {
         if (localMessage.startsWith("#")) {
           const dice = parseInt(localMessage.trim().slice(1));
-          if (Number.isNaN(dice)) throw new Error("Invalid dice roll");
+          if (Number.isNaN(dice)) {
+            addToast({
+              title: t("errors.game.chat.invalidRoll"),
+              description: t("errors.game.chat.invalidRollDescription"),
+              color: "warning",
+            });
+            return;
+          }
           await rollDice(dice, locationId, currentCharacterId);
         } else {
           await postActionMessage(
@@ -126,10 +134,10 @@ export default function LocationControls({
       // refresh chat
       fetchMessages();
     } catch (error) {
-      let errorMessage = "Errore generico";
+      let errorMessage = t("errors.generic");
       if (error instanceof Error) errorMessage = error.message;
       addToast({
-        title: "Error",
+        title: t("errors.title"),
         description: errorMessage,
         color: "danger",
       });

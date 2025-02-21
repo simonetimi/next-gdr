@@ -19,11 +19,13 @@ import { revalidatePath } from "next/cache";
 import { LOCATION_ROUTE } from "@/utils/routes";
 import { sessions } from "@/database/schema/auth";
 import { increaseCharacterExperience } from "@/server/actions/character";
+import { getTranslations } from "next-intl/server";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("unauthenticated"));
 
   const isUsermaster = await isMaster(userId);
 
@@ -121,7 +123,8 @@ export async function fetchAllLocationMessagesWithCharacters(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("unauthenticated"));
 
   const isUsermaster = await isMaster(userId);
 
@@ -254,7 +257,8 @@ export async function postActionMessage(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
     .insert(locationMessages)
@@ -297,17 +301,18 @@ export async function postWhisper(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [recipientCharacter] = await db
     .select({ id: characters.id })
     .from(characters)
     .where(eq(characters.firstName, recipientCharacterName));
 
-  if (!recipientCharacter) throw new Error("Character not found");
+  if (!recipientCharacter) throw new Error(t("game.characters.notFound"));
 
   if (recipientCharacter.id === characterId)
-    throw new Error("You can't send a whisper to yourself.");
+    throw new Error(t("game.chat.whisperSelf"));
 
   const recipientInSession = await db
     .select()
@@ -322,7 +327,7 @@ export async function postWhisper(
     .limit(1);
 
   if (recipientInSession.length === 0)
-    throw new Error("Recipient is not present");
+    throw new Error(t("game.character.notFoundInLocation"));
 
   const [message] = await db
     .insert(locationMessages)
@@ -358,7 +363,8 @@ export async function postWhisperForAll(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
     .insert(locationMessages)
@@ -382,7 +388,8 @@ export async function postMasterScreen(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const isUserMaster = isMaster(userId);
 
@@ -408,7 +415,8 @@ export async function postSystemMessage(
 ) {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!session || !userId) throw new Error("User not authenticated");
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
     .insert(locationMessages)

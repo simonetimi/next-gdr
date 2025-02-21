@@ -10,7 +10,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <ToastProvider
         placement="top-center"
         toastOffset={10}
-        toastProps={{ timeout: 2500 }}
+        toastProps={{ timeout: 3000 }}
       />
       <NextThemesProvider attribute="class">{children}</NextThemesProvider>
     </HeroUIProvider>

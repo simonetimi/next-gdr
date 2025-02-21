@@ -14,8 +14,8 @@ export default async function SelectCharacterPage() {
   let characters: Character[] = [];
   try {
     characters = await getUserCharacters();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    // handle error
     redirect(GAME_ROUTE);
   }
 

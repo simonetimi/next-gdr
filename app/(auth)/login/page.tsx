@@ -1,9 +1,12 @@
 import { signIn, providerMap } from "@/auth";
 import { AuthError } from "next-auth";
+import { addToast } from "@heroui/react";
+import { getTranslations } from "next-intl/server";
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
 }) {
+  const t = await getTranslations("errors");
   return (
     <div className="flex flex-col gap-2">
       {Object.values(providerMap).map((provider) => (
@@ -16,11 +19,15 @@ export default async function SignInPage(props: {
                 redirectTo: props.searchParams?.callbackUrl ?? "",
               });
             } catch (error) {
-              // TODO toast notification
+              let errorMessage = t("generic");
               if (error instanceof AuthError) {
-                console.log(error);
+                errorMessage = error.message;
               }
-              throw error;
+              addToast({
+                title: t("errors"),
+                description: errorMessage,
+                color: "danger",
+              });
             }
           }}
         >
