@@ -60,6 +60,7 @@ Chat-based RPG app built with Next.js
 - [ ] Put translation labels of weather
 - [ ] Investigate on a way to save location chats (generating html or similar, with a specific call
 - [ ] Make labels for error messages to call in server functions
+- [x] Implement string sanitization in the chat (Interweave)
 
 ### Bugs
 
@@ -80,3 +81,4 @@ Chat-based RPG app built with Next.js
 - [Lucide Icons](https://lucide.dev/icons/)
 - [Hero UI](https://www.heroui.com/)
 - [react-rnd](https://github.com/bokuweb/react-rnd)
+- [Interweave](https://interweave.dev/docs/)

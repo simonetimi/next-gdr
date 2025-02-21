@@ -5,6 +5,7 @@ import {
   enhanceTextWithSquareBrackets,
 } from "@/utils/strings";
 import { MinimalCharacter } from "@/models/characters";
+import { Markup } from "interweave";
 
 // TODO insert labels text to be translated
 
@@ -43,15 +44,13 @@ export function ActionMessage({
             {currentMessage.action?.tag}
           </span>
         </div>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: enhanceTextWithSquareBrackets(
-              enchanceCharacterName(
-                currentMessage.message.content,
-                character.firstName,
-              ),
+        <Markup
+          content={enhanceTextWithSquareBrackets(
+            enchanceCharacterName(
+              currentMessage.message.content,
+              character.firstName,
             ),
-          }}
+          )}
         />
       </div>
     </div>
