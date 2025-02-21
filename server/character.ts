@@ -84,7 +84,7 @@ export async function getCharacterSheet(characterId: string) {
     .where(eq(characters.id, characterId))
     .limit(1);
 
-  if (!character.length) throw new Error(t("game.character.notFound"));
+  if (!character.length) throw new Error(t("game.characters.notFound"));
 
   // handles possible multiple characters
   const isUserOwner = character[0].userId === userId;

@@ -71,9 +71,9 @@ function ControlNavbar({
   useEffect(() => {
     if (isMaster) {
       (async () => {
-        const response = await fetch("/api/character/invisible");
+        const response = await fetch("/api/game/character/invisible");
         const isUserInvisible = await response.json();
-        console.log(isUserInvisible);
+
         setIsInvisibleSelected(isUserInvisible ?? false);
       })();
     }

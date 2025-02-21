@@ -93,7 +93,7 @@ export async function postWhisper(
     .limit(1);
 
   if (recipientInSession.length === 0)
-    throw new Error(t("game.character.notFoundInLocation"));
+    throw new Error(t("game.characters.notFoundInLocation"));
 
   const [message] = await db
     .insert(locationMessages)

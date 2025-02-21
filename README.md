@@ -13,6 +13,7 @@ Chat-based RPG app built with Next.js
 - React-draggable
 - Zod
 - react-rnd
+- SWR to handle client-side fetching
 
 ## Developers
 

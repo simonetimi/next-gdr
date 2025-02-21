@@ -105,7 +105,7 @@ export async function increaseCharacterExperience(
     .where(eq(characters.id, characterId))
     .limit(1);
 
-  if (!character.length) throw new Error(t("game.character.notFound"));
+  if (!character.length) throw new Error(t("game.characters.notFound"));
 
   const newCurrentExperience = (character[0].currentExperience || 0) + amount;
   const newTotalExperience = (character[0].totalExperience || 0) + amount;

@@ -45,7 +45,7 @@
     "auth": {
       "unauthorized": "Utente non autorizzato",
       "unauthenticated": "Utente non autenticato",
-      "chaarcterNotFound": "Personaggio non trovato"
+      "characterNotFound": "Personaggio non trovato"
     },
     "game": {
       "characters": {

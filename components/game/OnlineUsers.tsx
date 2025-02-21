@@ -19,7 +19,7 @@ export default function OnlineUsers() {
         setIsLoading(false);
         return addToast({
           title: t("errors.title"),
-          description: (await response.text()) || t("errors.generic"),
+          description: (await response.json()).error || t("errors.generic"),
           color: "danger",
         });
       }

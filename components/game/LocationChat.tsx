@@ -94,10 +94,10 @@ export default function LocationChat({
   useEffect(() => {
     const fetchInitialMessages = async () => {
       const response = await fetch(
-        `/api/game/location-messages/${locationId}?timestamp=}`,
+        `/api/game/location-messages/${locationId}?timestamp=`,
       );
       if (!response.ok) {
-        const errorMessage = await response.text();
+        const errorMessage = (await response.json()).error;
         return addToast({
           title: t("errors.title"),
           description: errorMessage || t("errors.generic"),
@@ -105,6 +105,7 @@ export default function LocationChat({
         });
       }
       const initialMessages = await response.json();
+
       setAllMessages(initialMessages);
       // set the timestamp of the newest message
       if (initialMessages.length > 0) {
@@ -118,11 +119,13 @@ export default function LocationChat({
   const fetchAndAppendMessages = async () => {
     if (isFetching) return; // prevent multiple fetches
     setIsFetching(true);
+    let timestamp = "";
+    if (lastMessageTimestamp) timestamp = lastMessageTimestamp.toISOString();
     const response = await fetch(
-      `/api/game/location-messages/${locationId}?timestamp=${lastMessageTimestamp?.toISOString()}`,
+      `/api/game/location-messages/${locationId}?timestamp=${timestamp}`,
     );
     if (!response.ok) {
-      const errorMessage = await response.text();
+      const errorMessage = (await response.json()).error;
       setIsFetching(false);
       return addToast({
         title: t("errors.title"),
@@ -146,7 +149,7 @@ export default function LocationChat({
             `/api/game/location-messages/${locationId}?timestamp=${lastMessageTimestamp.toISOString()}`,
           ).then(async (response) => {
             if (!response.ok) {
-              const errorMessage = await response.text();
+              const errorMessage = (await response.json()).error;
               return addToast({
                 title: t("errors.title"),
                 description: errorMessage || t("errors.generic"),

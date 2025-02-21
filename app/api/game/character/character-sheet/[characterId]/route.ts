@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { characterId: string } },
+  context: { params: Promise<{ characterId: string }> },
 ) {
   try {
-    const characterId = params.characterId;
+    const { characterId } = await context.params;
     const characterSheet = await getCharacterSheet(characterId);
     return NextResponse.json(characterSheet);
   } catch (error) {
