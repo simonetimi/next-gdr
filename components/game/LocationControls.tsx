@@ -12,6 +12,7 @@ import {
   Select,
   SelectItem,
   Textarea,
+  addToast,
 } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { CircleHelp, Dices, Save, Send } from "lucide-react";
@@ -125,7 +126,13 @@ export default function LocationControls({
       // refresh chat
       fetchMessages();
     } catch (error) {
-      //handle error (toast)
+      let errorMessage = "Errore generico";
+      if (error instanceof Error) errorMessage = error.message;
+      addToast({
+        title: "Error",
+        description: errorMessage,
+        color: "danger",
+      });
     }
   };
 

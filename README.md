@@ -52,6 +52,7 @@ Chat-based RPG app built with Next.js
 - [ ] Forum
 - [ ] Internal market
 - [ ] Admin and master controls (especially for managing users, banning, locations, forum, docs)
+- [ ] News section on login (but before entering the game) that the admin can set up and update
 
 ### TODO
 

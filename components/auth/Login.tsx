@@ -1,18 +1,30 @@
-import { signIn } from "@/auth";
+"use client";
+
 import { Button } from "@heroui/button";
 import { Github } from "lucide-react";
+import { useState } from "react";
+import { login } from "@/server/actions/auth";
 
 // TODO replace lucide github icon with svg
 
-export default async function Login() {
+export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [provider, setProvider] = useState("");
+
   return (
     <form
-      action={async () => {
-        "use server";
-        await signIn("github");
+      onSubmit={async () => {
+        setIsLoading(true);
+        await login(provider);
       }}
     >
-      <Button type="submit" color="primary" startContent={<Github />}>
+      <Button
+        isLoading={isLoading}
+        type="submit"
+        color="primary"
+        startContent={!isLoading && <Github />}
+        onPress={() => setProvider("github")}
+      >
         Login with GitHub
       </Button>
     </form>
