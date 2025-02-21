@@ -8,14 +8,9 @@ export const downloadComponent = (locale: string, locationCode: string) => {
     hour12: false,
   });
   const pageHTML = document.querySelector("#chat-messages")!.outerHTML;
-  const head = `<head><title>Chat ${fromKebabCase(locationCode)} - ${now}</title><script src="https://cdn.tailwindcss.com"></script></head`;
-  const styles = `
-<style>
+  const head = `<head><title>${fromKebabCase(locationCode)} - ${now}</title><script src="https://cdn.tailwindcss.com"></script></head`;
 
-</style>
-
-  `;
-  const blob = new Blob([head + styles + pageHTML], { type: "text/html" });
+  const blob = new Blob([head + pageHTML], { type: "text/html" });
   const url = URL.createObjectURL(blob);
   const tempEl = document.createElement("a");
   document.body.appendChild(tempEl);

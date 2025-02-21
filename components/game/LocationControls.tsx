@@ -134,7 +134,7 @@ export default function LocationControls({
   }
 
   return (
-    <div className="flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:pr-3">
+    <div className="z-10 flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:pr-3">
       <div className="w-10 sm:w-28">
         <Navbar
           isBlurred={false}
@@ -145,22 +145,37 @@ export default function LocationControls({
             className="-ml-3 sm:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           ></NavbarMenuToggle>
-          <NavbarContent className="ml-1 hidden gap-3 sm:flex sm:min-w-8 sm:flex-wrap sm:items-center sm:justify-center">
-            <NavbarItem>
-              <Dices />
-            </NavbarItem>
-            <NavbarItem>
-              <Button
-                isIconOnly
-                size="sm"
-                className="min-h-2 min-w-2"
-                startContent={<Save />}
-                onPress={onDownloadChat}
-              />
-            </NavbarItem>
-            <NavbarItem>
-              <CircleHelp />
-            </NavbarItem>
+          <NavbarContent className="hidden sm:flex sm:w-full sm:items-center sm:justify-center">
+            <div className="flex flex-wrap gap-y-3">
+              <NavbarItem>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="m-0 p-0"
+                  startContent={<Dices className="h-5 w-5" />}
+                  variant="light"
+                />
+              </NavbarItem>
+              <NavbarItem>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="m-0 p-0"
+                  startContent={<Save className="h-5 w-5" />}
+                  onPress={onDownloadChat}
+                  variant="light"
+                />
+              </NavbarItem>
+              <NavbarItem>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  className="m-0 p-0"
+                  startContent={<CircleHelp className="h-5 w-5" />}
+                  variant="light"
+                />
+              </NavbarItem>
+            </div>
           </NavbarContent>
           <NavbarMenu>
             <NavbarMenuItem></NavbarMenuItem>
