@@ -161,7 +161,7 @@ export default function LocationControls({
       addToast({
         title: t("errors.title"),
         description: errorMessage,
-        color: "danger",
+        color: "warning",
       });
     } finally {
       setTimeout(() => {

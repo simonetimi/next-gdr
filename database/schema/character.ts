@@ -26,6 +26,7 @@ export const characters = pgTable("character", {
     .notNull(),
   currentExperience: integer("current_experience").default(0),
   totalExperience: integer("total_experience").default(0),
+  lastSeenAt: timestamp("last_seen_at", { mode: "date" }),
 });
 
 export const characterSheets = pgTable("character_sheet", {

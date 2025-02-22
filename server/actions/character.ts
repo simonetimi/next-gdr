@@ -59,6 +59,12 @@ export async function setCurrentCharacter(characterId: string) {
     .set({ selectedCharacterId: characterId })
     .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)));
 
+  // set last seen at
+  await db
+    .update(characters)
+    .set({ lastSeenAt: now })
+    .where(eq(characters.id, characterId));
+
   revalidatePath(GAME_ROUTE);
   revalidatePath(CHARACTER_ROUTE);
 

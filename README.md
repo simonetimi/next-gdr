@@ -81,10 +81,11 @@ Chat-based RPG app built with Next.js
 - [x] When in a location and mobile mode, the movable will not take full screen
 
 ### Cron jobs to implement
-- [x] Weather
-- [ ] Delete chat logs (older than x
+- [x] Weather (to run daily)
+- [ ] Delete chat messages (older than 1 month)
 - [ ] Delete sessions older than a week
 - [ ] Delete messages older than x
+- [ ] Delete private locations not accessed for longer than 1 day 
 
 ### Utils and Docs
 

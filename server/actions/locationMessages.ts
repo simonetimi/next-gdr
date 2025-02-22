@@ -81,7 +81,7 @@ export async function postWhisper(
   if (!recipientCharacter) throw new Error(t("game.characters.notFound"));
 
   if (recipientCharacter.id === characterId)
-    throw new Error(t("game.chat.whisperSelf"));
+    throw new Error(t("chat.whisperSelf"));
 
   const recipientInSession = await db
     .select()
