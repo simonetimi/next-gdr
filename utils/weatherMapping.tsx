@@ -1,0 +1,56 @@
+import {
+  CloudSun,
+  Sun,
+  Cloudy,
+  CloudDrizzle,
+  CloudLightning,
+  CloudRain,
+  Snowflake,
+  Wind,
+  CloudFog,
+  Tornado,
+  CloudSnow,
+  ThermometerSun,
+  ThermometerSnowflake,
+  CloudRainWind,
+} from "lucide-react";
+import {
+  FirstQuarter,
+  FullMoon,
+  LastQuarter,
+  NewMoon,
+  WaningCrescent,
+  WaningGibbous,
+  WaxingCrescent,
+  WaxingGibbous,
+} from "@/components/ui/icons/MoonPhases";
+
+export const ForecastMap = {
+  sunny: <Sun />,
+  partlyCloudy: <CloudSun />,
+  cloudy: <Cloudy />,
+  rainy: <CloudDrizzle />,
+  showers: <CloudRain />,
+  thunderstorm: <CloudLightning />,
+  snowy: <Snowflake />,
+  windy: <Wind />,
+  foggy: <CloudFog />,
+  sunShower: <CloudSun />,
+  hurricane: <Tornado />,
+  tornado: <Tornado />,
+  blizzard: <CloudSnow />,
+  heatWave: <ThermometerSun />,
+  coldWave: <ThermometerSnowflake />,
+  flashFlood: <CloudRainWind />,
+};
+
+export const MoonMap = {
+  full: <FullMoon />,
+  new: <NewMoon />,
+  waxingCrescent: <WaxingCrescent />,
+  waningCrescent: <WaningCrescent />,
+  waxingGibbous: <WaxingGibbous />,
+  waningGibbous: <WaningGibbous />,
+  firstQuarter: <FirstQuarter />,
+  lastQuarter: <LastQuarter />,
+};

@@ -2,6 +2,7 @@
 
 import { Location } from "@/models/location";
 import { WeatherForecasts } from "@/models/weather";
+import Weather from "@/components/ui/Weather";
 
 export default function LocationChatSidebar({
   location,
@@ -21,6 +22,7 @@ export default function LocationChatSidebar({
         />
       )}
       <p>{location.description}</p>
+      <Weather weather={weather} />
       Weather, chat description, location image (two lines, find icons, make
       labels in the dictionary and map everything in an object we can import)
     </aside>

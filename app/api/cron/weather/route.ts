@@ -1,6 +1,6 @@
 import { db } from "@/database/db";
 import { weatherForecasts } from "@/database/schema/weather";
-import getWeather from "@/utils/weather";
+import getWeather from "@/utils/weatherGenerator";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {

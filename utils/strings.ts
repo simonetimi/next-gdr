@@ -13,6 +13,12 @@ export const toCamelCase = (str: string) => {
     );
 };
 
+export const fromCamelCase = (str: string) => {
+  return str
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^./, (char) => char.toUpperCase());
+};
+
 export const fromKebabCase = (str: string) => {
   return str.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };

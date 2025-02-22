@@ -2,9 +2,9 @@ import { SVGProps } from "react";
 
 export const FullMoon = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="full-moon"
@@ -20,12 +20,12 @@ export const FullMoon = (props: SVGProps<SVGSVGElement>) => (
 
 export const WaningGibbous = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="waning-gibbous"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}
@@ -38,12 +38,12 @@ export const WaningGibbous = (props: SVGProps<SVGSVGElement>) => (
 
 export const LastQuarter = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="last-quarter"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}
@@ -56,12 +56,12 @@ export const LastQuarter = (props: SVGProps<SVGSVGElement>) => (
 
 export const WaningCrescent = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="waning-crescent"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}
@@ -74,12 +74,12 @@ export const WaningCrescent = (props: SVGProps<SVGSVGElement>) => (
 
 export const NewMoon = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="new-moon"
     stroke="#241f21"
     strokeWidth={12}
     strokeLinecap="square"
@@ -92,12 +92,12 @@ export const NewMoon = (props: SVGProps<SVGSVGElement>) => (
 
 export const WaxingCrescent = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="waxing-crescent"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}
@@ -110,12 +110,12 @@ export const WaxingCrescent = (props: SVGProps<SVGSVGElement>) => (
 
 export const FirstQuarter = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="first-quarter"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}
@@ -128,12 +128,12 @@ export const FirstQuarter = (props: SVGProps<SVGSVGElement>) => (
 
 export const WaxingGibbous = (props: SVGProps<SVGSVGElement>) => (
   <svg
-    width={208}
-    height={208}
-    viewBox="0 0 208 208"
+    width={50}
+    height={50}
+    viewBox="0 -10 208 240"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
-    id="full-moon"
+    id="waxing-gibbous"
     fill="#241f21"
     stroke="#241f21"
     strokeWidth={12}

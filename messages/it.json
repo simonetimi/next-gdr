@@ -37,6 +37,24 @@
   "game": {
     "dices": {
       "rolled": "ha lanciato un dado {dice} e ottenuto {diceRoll}"
+    },
+    "weather": {
+      "sunny": "soleggiato",
+      "partlyCloudy": "parzialmente nuvoloso",
+      "cloudy": "nuvoloso",
+      "rainy": "piovoso",
+      "showers": "rovesci",
+      "thunderstorm": "temporale",
+      "snowy": "nevicata",
+      "windy": "ventoso",
+      "foggy": "nebbia",
+      "sunShower": "pioggia con sole",
+      "hurricane": "uragano",
+      "tornado": "tornado",
+      "blizzard": "bufera di neve",
+      "heatWave": "ondata di caldo",
+      "coldWave": "ondata di freddo",
+      "flashFlood": "alluvione lampo"
     }
   },
   "errors": {
