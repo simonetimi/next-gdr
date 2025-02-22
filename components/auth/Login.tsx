@@ -1,11 +1,9 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { Github } from "lucide-react";
 import { useState } from "react";
+import Github from "@/components/ui/icons/Github";
 import { login } from "@/server/actions/auth";
-
-// TODO replace lucide github icon with svg
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +20,7 @@ export default function Login() {
         isLoading={isLoading}
         type="submit"
         color="primary"
-        startContent={!isLoading && <Github />}
+        startContent={!isLoading && <Github className="h-5 w-5 fill-white" />}
         onPress={() => setProvider("github")}
       >
         Login with GitHub

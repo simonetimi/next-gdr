@@ -3,9 +3,7 @@ import { toCamelCase } from "@/utils/strings";
 
 type WeatherCondition =
   | "sunny"
-  | "mostlySunny"
   | "partlyCloudy"
-  | "mostlyCloudy"
   | "cloudy"
   | "rainy"
   | "showers"
@@ -13,7 +11,7 @@ type WeatherCondition =
   | "snowy"
   | "windy"
   | "foggy"
-  | "stormy";
+  | "sunShower";
 
 type ExtremeWeatherCondition =
   | "hurricane"
@@ -21,7 +19,6 @@ type ExtremeWeatherCondition =
   | "blizzard"
   | "heatWave"
   | "coldWave"
-  | "sandstorm"
   | "flashFlood";
 
 export default function getWeather(): {
@@ -115,9 +112,7 @@ function getSeason(month: number) {
 const weatherWeights = {
   winter: {
     sunny: 10,
-    mostlySunny: 5,
     partlyCloudy: 10,
-    mostlyCloudy: 15,
     cloudy: 30,
     rainy: 15,
     showers: 10,
@@ -125,13 +120,11 @@ const weatherWeights = {
     snowy: 20,
     windy: 10,
     foggy: 10,
-    stormy: 10,
+    sunShower: 5,
   },
   spring: {
     sunny: 25,
-    mostlySunny: 10,
     partlyCloudy: 15,
-    mostlyCloudy: 15,
     cloudy: 20,
     rainy: 15,
     showers: 10,
@@ -139,13 +132,11 @@ const weatherWeights = {
     snowy: 5,
     windy: 10,
     foggy: 10,
-    stormy: 5,
+    sunShower: 5,
   },
   summer: {
     sunny: 50,
-    mostlySunny: 10,
     partlyCloudy: 15,
-    mostlyCloudy: 10,
     cloudy: 10,
     rainy: 10,
     showers: 10,
@@ -153,13 +144,11 @@ const weatherWeights = {
     snowy: 0,
     windy: 5,
     foggy: 5,
-    stormy: 5,
+    sunShower: 5,
   },
   fall: {
     sunny: 20,
-    mostlySunny: 5,
     partlyCloudy: 15,
-    mostlyCloudy: 20,
     cloudy: 25,
     rainy: 15,
     showers: 10,
@@ -167,7 +156,7 @@ const weatherWeights = {
     snowy: 10,
     windy: 15,
     foggy: 10,
-    stormy: 10,
+    sunShower: 5,
   },
 };
 
@@ -184,7 +173,6 @@ const extremeWeatherWeights = {
   summer: {
     hurricane: 0,
     heatWave: 20,
-    sandstorm: 5,
     flashFlood: 10,
   },
   fall: {
@@ -197,13 +185,11 @@ const extremeWeatherWeights = {
 const windSpeedRanges = {
   default: { min: 0, max: 15 },
   windy: { min: 20, max: 80 },
-  stormy: { min: 20, max: 80 },
   thunderstorm: { min: 20, max: 80 },
   hurricane: { min: 120, max: 250 },
   tornado: { min: 100, max: 300 },
   blizzard: { min: 50, max: 100 },
   hail: { min: 0, max: 15 },
-  sandstorm: { min: 20, max: 80 },
 };
 
 function getWindSpeed(condition: WeatherCondition | ExtremeWeatherCondition) {
@@ -213,9 +199,7 @@ function getWindSpeed(condition: WeatherCondition | ExtremeWeatherCondition) {
     case "hurricane":
     case "tornado":
     case "blizzard":
-    case "sandstorm":
     case "windy":
-    case "stormy":
     case "thunderstorm":
       range = windSpeedRanges[condition];
       break;
