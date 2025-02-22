@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/button";
 import { useState } from "react";
-import Github from "@/components/ui/icons/Github";
+import Github from "@/components/ui/icons/logos/Github";
 import { login } from "@/server/actions/auth";
 
 export default function Login() {
