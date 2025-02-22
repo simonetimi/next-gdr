@@ -18,7 +18,6 @@ export function useLocationMessages(locationId: string) {
     {
       refreshInterval: fetchingInterval,
       refreshWhenHidden: false,
-      shouldRetryOnError: true,
       revalidateOnFocus: true,
       keepPreviousData: true,
       onSuccess: (newMessages = []) => {
