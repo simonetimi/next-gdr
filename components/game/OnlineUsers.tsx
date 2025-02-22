@@ -12,20 +12,27 @@ export default function OnlineUsers() {
 
   const groupedByLocationGroup = onlineCharacters.reduce(
     (acc, char) => {
-      if (!char.location && !char.locationGroup) {
-        // Characters with no location and no group go to entry location
-        const entryLocation = t("general.entryLocationName");
-        if (!acc["entry"]) {
-          acc["entry"] = {};
+      if (char.inSecretLocation) {
+        // characters in secret locations go under the secret locations group
+        const secretGroup = t("general.secretLocationName");
+        if (!acc[secretGroup]) {
+          acc[secretGroup] = { "": [] };
         }
-        if (!acc["entry"][entryLocation]) {
-          acc["entry"][entryLocation] = [];
-        }
-        acc["entry"][entryLocation].push(char);
+        acc[secretGroup][""].push(char);
         return acc;
       }
 
-      const locationName = char.location?.name ?? t("entryLocationName");
+      if (!char.location && !char.locationGroup) {
+        // characters with no location go under the map group
+        const mapGroup = t("general.entryLocationName");
+        if (!acc[mapGroup]) {
+          acc[mapGroup] = { "": [] };
+        }
+        acc[mapGroup][""].push(char);
+        return acc;
+      }
+
+      const locationName = char.location?.name ?? "";
       const groupName = char.locationGroup?.name ?? "";
 
       if (!acc[groupName]) {
@@ -48,9 +55,12 @@ export default function OnlineUsers() {
     );
   }
 
-  // Sort groups to ensure "map" appears first, then alphabetically
+  // first characters in map, then alphabetically and lastly in secret locations
   const sortedGroups = Object.entries(groupedByLocationGroup).sort(
     ([a], [b]) => {
+      const secretGroup = t("general.secretLocations");
+      if (a === secretGroup) return 1;
+      if (b === secretGroup) return -1;
       if (a === "entry") return -1;
       if (b === "entry") return 1;
       return a.localeCompare(b);
@@ -102,7 +112,9 @@ const LocationGroup = ({
   characters: OnlineUsersType;
 }) => (
   <div>
-    <h3 className="mb-2 rounded border p-4 text-center font-bold">{name}</h3>
+    {name && (
+      <h3 className="mb-2 rounded border p-4 text-center font-bold">{name}</h3>
+    )}
     <ul className="space-y-2">
       {characters
         .sort((a, b) =>

@@ -29,13 +29,14 @@ export const onlineUsersSchema = z.array(
           code: true,
         })
         .optional()
-        .nullable(), // allow location to be undefined
+        .nullable(),
       locationGroup: locationGroupSelectSchema
         .pick({
           name: true,
         })
         .optional()
-        .nullable(), // allow locationGroup to be undefined
+        .nullable(),
+      inSecretLocation: z.boolean(),
     })
     .omit({
       userId: true,

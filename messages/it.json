@@ -1,6 +1,7 @@
 {
   "general": {
-    "entryLocationName": "Mappa"
+    "entryLocationName": "Mappa",
+    "secretLocationName": "Luoghi segreti"
   },
   "pages": {
     "index": {

@@ -148,9 +148,9 @@ export async function getOnlineCharacters() {
 
   const now = new Date();
 
-  // subquery to get the latest session for each user
+  // get latest session for user
   const latestSessions = db
-    .select({
+    .selectDistinct({
       userId: sessions.userId,
       maxExpires: sql`MAX(${sessions.expires})`.as("maxExpires"),
     })
@@ -160,6 +160,7 @@ export async function getOnlineCharacters() {
     )
     .groupBy(sessions.userId)
     .as("latestSessions");
+
   const results = await db
     .select({
       character: {
@@ -179,6 +180,7 @@ export async function getOnlineCharacters() {
         name: races.name,
         id: races.id,
       },
+      inSecretLocation: sessions.inSecretLocation,
     })
     .from(sessions)
     .innerJoin(latestSessions, eq(sessions.userId, latestSessions.userId))
@@ -187,6 +189,7 @@ export async function getOnlineCharacters() {
     .leftJoin(locations, eq(locations.id, sessions.currentLocationId))
     .leftJoin(locationGroups, eq(locationGroups.id, locations.locationGroupId))
     .where(eq(sessions.expires, latestSessions.maxExpires));
+
   return onlineUsersSchema.parse(results);
 }
 
