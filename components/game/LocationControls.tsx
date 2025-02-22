@@ -13,6 +13,7 @@ import {
   SelectItem,
   Textarea,
   addToast,
+  Spinner,
 } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { CircleHelp, Dices, Save, Send } from "lucide-react";
@@ -31,12 +32,14 @@ export default function LocationControls({
   isUserMaster,
   currentCharacterId,
   fetchMessages,
+  isRefetching,
   locationCode,
 }: {
   locationId: string;
   isUserMaster: boolean;
   currentCharacterId: string;
   fetchMessages: () => void;
+  isRefetching: boolean;
   locationCode: string;
 }) {
   const locale = process.env.LOCALE;
@@ -169,8 +172,8 @@ export default function LocationControls({
             className="-ml-3 sm:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           ></NavbarMenuToggle>
-          <NavbarContent className="hidden sm:flex sm:w-full sm:items-center sm:justify-center">
-            <div className="flex flex-wrap gap-y-3">
+          <NavbarContent className="hidden sm:flex sm:h-full sm:w-full sm:flex-col sm:gap-2">
+            <div className="-mt-2 flex flex-wrap gap-y-2">
               <NavbarItem>
                 <Button
                   isIconOnly
@@ -199,6 +202,9 @@ export default function LocationControls({
                   variant="light"
                 />
               </NavbarItem>
+            </div>
+            <div className="-mt-5">
+              {isRefetching && <Spinner size="sm" variant="wave" />}
             </div>
           </NavbarContent>
           <NavbarMenu>
