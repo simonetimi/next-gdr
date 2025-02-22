@@ -1,7 +1,6 @@
 import { users } from "@/database/schema/auth";
 import { races } from "@/database/schema/race";
 import {
-  boolean,
   integer,
   pgTable,
   text,

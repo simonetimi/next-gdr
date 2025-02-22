@@ -3,11 +3,12 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import { isInvisible } from "@/server/character";
 import LocationChat from "@/components/game/LocationChat";
-import { getLocation, getMinimalCurrentCharacter } from "@/server/character";
+import { getMinimalCurrentCharacter } from "@/server/character";
 import { isMaster } from "@/server/role";
 import { auth } from "@/auth";
 import LocationChatSidebar from "@/components/game/LocationChatSidebar";
 import { fetchWeather } from "@/server/weather";
+import { accessLocation } from "@/server/location";
 
 export default async function LocationPage({
   params,
@@ -24,11 +25,12 @@ export default async function LocationPage({
   let weather;
   let isUserMaster = false;
   try {
-    location = await getLocation(locationCode);
-    character = await getMinimalCurrentCharacter();
-    isUserMaster = await isMaster(userId ?? "");
-
-    weather = await fetchWeather();
+    [location, character, isUserMaster, weather] = await Promise.all([
+      accessLocation(locationCode),
+      getMinimalCurrentCharacter(),
+      isMaster(userId ?? ""),
+      fetchWeather(),
+    ]);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {

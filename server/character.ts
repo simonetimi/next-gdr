@@ -42,15 +42,6 @@ export async function getMinimalCurrentCharacter() {
   return minimalCharacterSchema.parse(results[0]);
 }
 
-export async function getLocation(locationCode: string) {
-  const result = await db
-    .select()
-    .from(locations)
-    .where(eq(locations.code, locationCode));
-
-  return result[0];
-}
-
 export async function getCurrentCharacterIdOnly() {
   const session = await auth();
   const userId = session?.user?.id;

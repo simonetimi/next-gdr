@@ -13,10 +13,6 @@ export default async function GamePage() {
 
   return (
     <div className="m-8 flex w-screen flex-col items-center gap-4">
-      <p>
-        Main page of the game (protected). If you can see this, you have a
-        character
-      </p>
       <Map locations={locations} />
     </div>
   );
