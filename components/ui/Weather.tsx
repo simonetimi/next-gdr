@@ -19,7 +19,7 @@ export default function Weather({
   const t = useTranslations("game.weather");
 
   return (
-    <div className="flex items-center justify-evenly rounded-2xl border border-gray-200 p-1 text-sm">
+    <div className="flex w-full items-center justify-evenly rounded-2xl border border-gray-200 p-1 text-sm">
       <Tooltip content={capitalize(t("condition." + weather.condition))}>
         {ForecastMap[weather.condition as keyof typeof ForecastMap]}
       </Tooltip>

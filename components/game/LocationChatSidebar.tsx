@@ -13,19 +13,17 @@ export default function LocationChatSidebar({
   const temperatureColor = temperatureToColor(weather.temperature);
 
   return (
-    <aside className="hidden w-[320px] flex-col gap-8 p-6 md:flex">
+    <aside className="hidden w-[320px] flex-col items-center gap-6 p-6 md:flex">
+      <Weather weather={weather} temperatureColor={temperatureColor} />
       <h1>{location.name}</h1>
       {location.imageUrl && (
         <img
           src={location.imageUrl}
           alt={location.name}
-          className="h-10 w-10 rounded-2xl"
+          className="h-[150px] w-[150px] rounded-2xl"
         />
       )}
       <p>{location.description}</p>
-      <Weather weather={weather} temperatureColor={temperatureColor} />
-      Chat description, location image (two lines, find icons, make labels in
-      the dictionary and map everything in an object we can import)
     </aside>
   );
 }

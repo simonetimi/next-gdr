@@ -167,19 +167,20 @@ export default function LocationControls({
           isBlurred={false}
           isMenuOpen={isMenuOpen}
           onMenuOpenChange={setIsMenuOpen}
+          classNames={{ wrapper: "ml-4 p-2 items-self-center" }}
         >
           <NavbarMenuToggle
             className="-ml-3 sm:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           ></NavbarMenuToggle>
           <NavbarContent className="hidden sm:flex sm:h-full sm:w-full sm:flex-col sm:gap-2">
-            <div className="-mt-2 flex flex-wrap gap-y-2">
+            <div className="-mt-4 flex flex-wrap gap-x-1 gap-y-2">
               <NavbarItem>
                 <Button
                   isIconOnly
                   size="sm"
                   className="m-0 p-0"
-                  startContent={<Dices className="h-5 w-5" />}
+                  startContent={<Dices className="h-6 w-6" />}
                   variant="light"
                 />
               </NavbarItem>
@@ -188,7 +189,7 @@ export default function LocationControls({
                   isIconOnly
                   size="sm"
                   className="m-0 p-0"
-                  startContent={<Save className="h-5 w-5" />}
+                  startContent={<Save className="h-6 w-6" />}
                   onPress={onDownloadChat}
                   variant="light"
                 />
@@ -198,7 +199,7 @@ export default function LocationControls({
                   isIconOnly
                   size="sm"
                   className="m-0 p-0"
-                  startContent={<CircleHelp className="h-5 w-5" />}
+                  startContent={<CircleHelp className="h-6 w-6" />}
                   variant="light"
                 />
               </NavbarItem>
