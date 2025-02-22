@@ -1,34 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getOnlineCharacters } from "@/server/character";
 import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
-import { addToast, Avatar, Spinner } from "@heroui/react";
+import { Avatar, Spinner } from "@heroui/react";
+import { useOnlineCharacters } from "@/hooks/useOnlineCharacters";
 
 export default function OnlineUsers() {
-  const [onlineCharacters, setOnlineCharacters] = useState<OnlineUsersType>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const t = useTranslations();
 
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("/api/game/characters/online");
-
-      if (!response.ok) {
-        setIsLoading(false);
-        return addToast({
-          title: t("errors.title"),
-          description: (await response.json()).error || t("errors.generic"),
-          color: "danger",
-        });
-      }
-
-      const data = await response.json();
-      setOnlineCharacters(data);
-      setIsLoading(false);
-    })();
-  }, [t]);
+  const { onlineCharacters, isLoading } = useOnlineCharacters();
 
   const groupedByLocationGroup = onlineCharacters.reduce(
     (acc, char) => {
@@ -82,7 +62,7 @@ export default function OnlineUsers() {
       {sortedGroups.map(([groupName, locations]) => (
         <LocationGroupSection
           key={groupName}
-          name={groupName === "entry" ? "" : groupName} // No group name for entry location
+          name={groupName === "entry" ? "" : groupName} // no group name for entry location
           locations={locations}
         />
       ))}
