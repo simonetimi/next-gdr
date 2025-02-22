@@ -55,6 +55,16 @@
       "heatWave": "ondata di caldo",
       "coldWave": "ondata di freddo",
       "flashFlood": "alluvione lampo"
+    },
+    "moon": {
+      "full": "piena",
+      "new": "nuova",
+      "waxingCrescent": "crescente",
+      "waningCrescent": "calante",
+      "waxingGibbous": "gibbosa crescente",
+      "waningGibbous": "gibbosa calante",
+      "firstQuarter": "primo quarto",
+      "lastQuarter": "ultimo quarto"
     }
   },
   "errors": {
