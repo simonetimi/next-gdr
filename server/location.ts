@@ -3,6 +3,7 @@ import {
   locationAccesses,
   locationGroups,
   locations,
+  secretLocations,
 } from "@/database/schema/location";
 import { and, eq, gt, sql } from "drizzle-orm";
 import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
@@ -85,4 +86,44 @@ export async function getAllLocations() {
       code: locations.code,
     })
     .from(locations);
+}
+
+export async function accessSecretLocation(secretCode: string) {
+  const t = await getTranslations("errors");
+
+  const secretLocation = await db
+    .select({ id: secretLocations.id, code: secretLocations.code })
+    .from(secretLocations)
+    .where(eq(secretLocations.code, secretCode));
+
+  const characterId = await getCurrentCharacterIdOnly();
+
+  if (!characterId.id) throw new Error(t("game.characters.notFound"));
+
+  const logIntervalMinutes = parseInt(
+    process.env.LOCATION_ACCESS_LOG_INTERVAL_MINUTES!,
+  );
+  const logInterval = new Date(Date.now() - logIntervalMinutes * 60 * 1000);
+
+  const recentAccess = await db
+    .select()
+    .from(locationAccesses)
+    .where(
+      and(
+        eq(locationAccesses.secretLocationId, secretLocation[0].id),
+        eq(locationAccesses.characterId, characterId.id),
+        gt(locationAccesses.accessTime, logInterval),
+      ),
+    );
+
+  if (recentAccess.length === 0) {
+    // register access
+    await db.insert(locationAccesses).values({
+      secretLocationId: secretLocation[0].id,
+      characterId: characterId.id,
+      accessTime: new Date(),
+    });
+  }
+
+  return secretLocation[0];
 }

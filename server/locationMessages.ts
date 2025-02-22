@@ -118,6 +118,7 @@ export async function fetchAllLocationMessages(locationId: string) {
 export async function fetchAllLocationMessagesWithCharacters(
   locationId: string,
   lastMessageTimestamp?: Date | null,
+  isSecretLocation: boolean = false,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -142,10 +143,15 @@ export async function fetchAllLocationMessagesWithCharacters(
     fetchMessagesLastHours.getHours() - fetchLocationMessagesLastHours,
   );
 
-  // only recent messages with provided location id
+  // only recent messages with provided location id (secret if secretLocation is true)
   let conditions = and(
     gte(locationMessages.createdAt, fetchMessagesLastHours),
-    eq(locationMessages.locationId, locationId),
+    eq(
+      isSecretLocation
+        ? locationMessages.secretLocationId
+        : locationMessages.locationId,
+      locationId,
+    ),
   );
 
   // if timestamp is provided, add it to base conditions. used to fetch only the newest
@@ -190,7 +196,9 @@ export async function fetchAllLocationMessagesWithCharacters(
         // main message data
         id: locationMessages.id,
         content: locationMessages.content,
-        locationId: locationMessages.locationId,
+        locationId: isSecretLocation
+          ? locationMessages.secretLocationId
+          : locationMessages.locationId,
         createdAt: locationMessages.createdAt,
         type: locationMessages.type,
       },
@@ -244,9 +252,5 @@ export async function fetchAllLocationMessagesWithCharacters(
     // desc, from the newest to the oldest
     .orderBy(desc(locationMessages.createdAt));
 
-  try {
-    return fullLocationMessagesWithCharactersSchema.parse(result);
-  } catch (error) {
-    throw new Error(t("chat.retrievingMessages"));
-  }
+  return result;
 }

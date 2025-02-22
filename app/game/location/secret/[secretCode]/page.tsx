@@ -8,25 +8,25 @@ import { isMaster } from "@/server/role";
 import { auth } from "@/auth";
 import LocationChatSidebar from "@/components/game/LocationChatSidebar";
 import { fetchWeather } from "@/server/weather";
-import { accessLocation } from "@/server/location";
+import { accessSecretLocation } from "@/server/location";
 
 export default async function LocationPage({
   params,
 }: {
-  params: Promise<{ locationCode: string }>;
+  params: Promise<{ secretCode: string }>;
 }) {
-  const locationCode = (await params).locationCode;
+  const secretCode = (await params).secretCode;
 
   const session = await auth();
   const userId = session?.user.id;
 
-  let location;
+  let secretLocation;
   let character;
   let weather;
   let isUserMaster = false;
   try {
-    [location, character, isUserMaster, weather] = await Promise.all([
-      accessLocation(locationCode),
+    [secretLocation, character, isUserMaster, weather] = await Promise.all([
+      accessSecretLocation(secretCode),
       getMinimalCurrentCharacter(),
       isMaster(userId ?? ""),
       fetchWeather(),
@@ -36,22 +36,24 @@ export default async function LocationPage({
   } catch (error) {
     redirect(GAME_ROUTE);
   }
-  if (!location || !weather || !character || !character?.id)
+  if (!secretLocation || !weather || !character || !character?.id)
     redirect(GAME_ROUTE);
 
   const isUserInvisible = await isInvisible();
   if (!isUserInvisible) {
-    await setCurrentLocation(location.id);
+    // sets curent location as secret
+    await setCurrentLocation(null, true);
   }
 
   return (
     <div className="flex h-full w-full flex-grow flex-row">
-      <LocationChatSidebar location={location} weather={weather} />
+      <LocationChatSidebar weather={weather} />
       <LocationChat
-        locationId={location.id}
+        locationId={secretLocation.id}
         character={character}
         isUserMaster={isUserMaster}
-        locationCode={locationCode}
+        locationCode={secretLocation.code}
+        isSecretLocation
       />
     </div>
   );

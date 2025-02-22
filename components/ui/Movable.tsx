@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/react";
 import { X } from "lucide-react";
-import { ReactElement } from "react";
+import { Dispatch, ReactElement, SetStateAction } from "react";
 import { Rnd } from "react-rnd";
 
 interface MovableProps {
@@ -18,7 +18,7 @@ interface MovableProps {
   boundsSelector: string;
   dragHandleClassName: string;
   component: ReactElement;
-  showSetter: React.Dispatch<React.SetStateAction<boolean>>;
+  showSetter: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Movable({

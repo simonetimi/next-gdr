@@ -68,6 +68,13 @@
         "lastQuarter": "ultimo quarto"
       },
       "temperatureUnit": "°C"
+    },
+    "locations": {
+      "secret": {
+        "name": "Luogo segreto",
+        "description": "Questo è un luogo segreto. Solo tu e chi ha la password può vederlo.",
+        "secretCode": "Codice segreto"
+      }
     }
   },
   "errors": {
@@ -93,7 +100,8 @@
       "retrievingMessages": "Errore nel recupero della chat. Attendi o aggiorna la pagina"
     },
     "validation": {
-      "noSpacesOrPunctuationAllowed": "can only contain letters"
+      "noSpacesOrPunctuationAllowed": "può contenere solo lettere",
+      "mustNotBeEmpty": "Il campo non può essere vuoto"
     }
   }
 }

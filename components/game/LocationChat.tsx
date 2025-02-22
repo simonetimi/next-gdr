@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import useSWRInfinite from "swr/infinite";
-import useFetchInterval from "@/hooks/useFetchInterval";
-import { Spinner, ScrollShadow, addToast } from "@heroui/react";
+import { Spinner, ScrollShadow } from "@heroui/react";
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import {
   ActionMessage,
@@ -14,9 +11,6 @@ import {
 } from "@/components/ui/LocationChatMessages";
 import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
-import { useTranslations } from "next-intl";
-import { fetcher } from "@/utils/swr";
-import useSWR from "swr";
 import { useLocationMessages } from "@/hooks/useLocationMessages";
 
 function messageRender(
@@ -71,16 +65,16 @@ export default function LocationChat({
   character,
   isUserMaster,
   locationCode,
+  isSecretLocation,
 }: {
   locationId: string;
   character: MinimalCharacter;
   isUserMaster: boolean;
   locationCode: string;
+  isSecretLocation?: boolean;
 }) {
-  const t = useTranslations();
-
   const { messages, mutate, isRefetching, initialLoading } =
-    useLocationMessages(locationId);
+    useLocationMessages(locationId, isSecretLocation);
 
   return (
     <section className="align-center flex w-full flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700">
@@ -108,6 +102,7 @@ export default function LocationChat({
         fetchMessages={mutate}
         isRefetching={isRefetching}
         locationCode={locationCode}
+        isSecretLocation
       />
     </section>
   );

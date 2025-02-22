@@ -20,6 +20,7 @@ export async function postActionMessage(
   characterId: string,
   content: string,
   tag: string,
+  isSecretLocation?: boolean,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -29,7 +30,8 @@ export async function postActionMessage(
   const [message] = await db
     .insert(locationMessages)
     .values({
-      locationId,
+      // adds locationId or secretLocationId depending on the type of location
+      ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
       content,
       type: "action",
@@ -64,6 +66,7 @@ export async function postWhisper(
   characterId: string,
   recipientCharacterName: string,
   content: string,
+  isSecretLocation?: boolean,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -98,7 +101,7 @@ export async function postWhisper(
   const [message] = await db
     .insert(locationMessages)
     .values({
-      locationId,
+      ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
       content,
       type: "whisper",
@@ -126,6 +129,7 @@ export async function postWhisperForAll(
   locationId: string,
   characterId: string,
   content: string,
+  isSecretLocation?: boolean,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -135,7 +139,7 @@ export async function postWhisperForAll(
   const [message] = await db
     .insert(locationMessages)
     .values({
-      locationId,
+      ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
       content,
       type: "whisperAll",
@@ -151,6 +155,7 @@ export async function postMasterScreen(
   locationId: string,
   characterId: string,
   content: string,
+  isSecretLocation?: boolean,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -162,7 +167,7 @@ export async function postMasterScreen(
   if (!isUserMaster) throw new Error("User is not a master");
 
   const result = await db.insert(locationMessages).values({
-    locationId,
+    ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
     characterId,
     content,
     type: "master",
@@ -178,6 +183,7 @@ export async function postSystemMessage(
   characterId?: string,
   recipientCharacterId?: string,
   additionalData?: string,
+  isSecretLocation?: boolean,
 ) {
   const session = await auth();
   const userId = session?.user?.id;
@@ -187,7 +193,7 @@ export async function postSystemMessage(
   const [message] = await db
     .insert(locationMessages)
     .values({
-      locationId,
+      ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
       content,
       type: "system",

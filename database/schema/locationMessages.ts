@@ -1,14 +1,20 @@
 import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
-import { locations } from "./location";
+import { locations, secretLocations } from "./location";
 import { characters } from "./character";
 
 export const locationMessages = pgTable("location_message", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  locationId: uuid("location_id")
-    .notNull()
-    .references(() => locations.id, { onDelete: "cascade" }),
+  locationId: uuid("location_id").references(() => locations.id, {
+    onDelete: "cascade",
+  }),
+  secretLocationId: uuid("secret_location_id").references(
+    () => secretLocations.id,
+    {
+      onDelete: "cascade",
+    },
+  ),
   characterId: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
   }),

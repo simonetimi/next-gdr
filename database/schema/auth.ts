@@ -66,6 +66,7 @@ export const sessions = pgTable("session", {
       onDelete: "cascade",
     },
   ),
+  inSecretLocation: boolean("in_secret_location").default(false),
   invisibleMode: boolean("invisible_mode").default(false),
 });
 

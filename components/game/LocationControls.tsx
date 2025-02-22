@@ -34,6 +34,7 @@ export default function LocationControls({
   fetchMessages,
   isRefetching,
   locationCode,
+  isSecretLocation,
 }: {
   locationId: string;
   isUserMaster: boolean;
@@ -41,6 +42,7 @@ export default function LocationControls({
   fetchMessages: () => void;
   isRefetching: boolean;
   locationCode: string;
+  isSecretLocation?: boolean;
 }) {
   const locale = process.env.LOCALE;
   const t = useTranslations();
@@ -117,6 +119,7 @@ export default function LocationControls({
             currentCharacterId,
             localMessage,
             tag,
+            isSecretLocation,
           );
         }
       } else if (messageType === "whisper") {
@@ -126,12 +129,23 @@ export default function LocationControls({
             currentCharacterId,
             recipientCharacter,
             localMessage,
+            isSecretLocation,
           );
         } else {
-          await postWhisperForAll(locationId, currentCharacterId, localMessage);
+          await postWhisperForAll(
+            locationId,
+            currentCharacterId,
+            localMessage,
+            isSecretLocation,
+          );
         }
       } else if (messageType === "master") {
-        await postMasterScreen(locationId, currentCharacterId, localMessage);
+        await postMasterScreen(
+          locationId,
+          currentCharacterId,
+          localMessage,
+          isSecretLocation,
+        );
       }
 
       // empty the fields and remove from locale storage
