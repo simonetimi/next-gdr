@@ -1,8 +1,7 @@
-"use client";
-
 import { Location } from "@/models/location";
 import { WeatherForecasts } from "@/models/weather";
 import Weather from "@/components/ui/Weather";
+import { temperatureToColor } from "@/utils/weather";
 
 export default function LocationChatSidebar({
   location,
@@ -11,6 +10,8 @@ export default function LocationChatSidebar({
   location: Location;
   weather: WeatherForecasts;
 }) {
+  const temperatureColor = temperatureToColor(weather.temperature);
+
   return (
     <aside className="hidden w-[320px] flex-col gap-8 p-6 md:flex">
       <h1>{location.name}</h1>
@@ -22,9 +23,9 @@ export default function LocationChatSidebar({
         />
       )}
       <p>{location.description}</p>
-      <Weather weather={weather} />
-      Weather, chat description, location image (two lines, find icons, make
-      labels in the dictionary and map everything in an object we can import)
+      <Weather weather={weather} temperatureColor={temperatureColor} />
+      Chat description, location image (two lines, find icons, make labels in
+      the dictionary and map everything in an object we can import)
     </aside>
   );
 }
