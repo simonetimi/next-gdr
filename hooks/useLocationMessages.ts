@@ -4,7 +4,7 @@ import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { fetcher } from "@/utils/swr";
 
 export function useLocationMessages(locationId: string) {
-  const fetchingInterval = 1000 * 2; // 30 seconds
+  const fetchingInterval = 1000 * 30; // 30 seconds
   const [lastTimestamp, setLastTimestamp] = useState<Date | null>(null);
   const [accumulatedMessages, setAccumulatedMessages] = useState<
     LocationMessageWithCharacter[]
@@ -19,7 +19,7 @@ export function useLocationMessages(locationId: string) {
       refreshInterval: fetchingInterval,
       refreshWhenHidden: false,
       shouldRetryOnError: true,
-      revalidateOnFocus: false,
+      revalidateOnFocus: true,
       keepPreviousData: true,
       onSuccess: (newMessages = []) => {
         if (newMessages.length > 0) {

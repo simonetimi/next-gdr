@@ -39,6 +39,7 @@ import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
 import { toggleInvisible } from "@/server/actions/app";
+import { useInvisibleStatus } from "@/hooks/useInvisibleStatus";
 
 function ControlNavbar({
   character,
@@ -60,24 +61,12 @@ function ControlNavbar({
     setIsSmallDevice(isMaxWidth850);
   }, [isMaxWidth850]);
 
-  const [isInvisibleSelected, setIsInvisibleSelected] =
-    useState<boolean>(false);
+  const { isInvisible, mutate } = useInvisibleStatus();
+
   const handleToggleInvisible = async () => {
-    await toggleInvisible(isInvisibleSelected);
-    setIsInvisibleSelected((prev) => !prev);
+    await toggleInvisible(isInvisible);
+    mutate();
   };
-  // fix component error with heroui
-
-  useEffect(() => {
-    if (isMaster) {
-      (async () => {
-        const response = await fetch("/api/game/character/invisible");
-        const isUserInvisible = await response.json();
-
-        setIsInvisibleSelected(isUserInvisible ?? false);
-      })();
-    }
-  }, [isMaster]);
 
   // manage portal creation and access safety
   // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
@@ -340,10 +329,10 @@ function ControlNavbar({
           {isMaster && (
             <NavbarMenuItem className="flex flex-col">
               <Button
-                startContent={isInvisibleSelected ? <EyeOff /> : <Eye />}
+                startContent={isInvisible ? <EyeOff /> : <Eye />}
                 size="lg"
                 onPress={handleToggleInvisible}
-                color={isInvisibleSelected ? "primary" : "default"}
+                color={isInvisible ? "primary" : "default"}
                 variant="light"
               >
                 Invisible mode
@@ -364,10 +353,10 @@ function ControlNavbar({
         <Tooltip content="Toggle invisible">
           <Button
             isIconOnly
-            startContent={isInvisibleSelected ? <EyeOff /> : <Eye />}
+            startContent={isInvisible ? <EyeOff /> : <Eye />}
             size="sm"
             onPress={handleToggleInvisible}
-            color={isInvisibleSelected ? "primary" : "default"}
+            color={isInvisible ? "primary" : "default"}
             variant="flat"
           ></Button>
         </Tooltip>

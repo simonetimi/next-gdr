@@ -2,10 +2,12 @@
 
 import { db } from "@/database/db";
 import { auth } from "@/auth";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import { sessions } from "@/database/schema/auth";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
+import { revalidatePath } from "next/cache";
+import { LOCATION_ROUTE } from "@/utils/routes";
 
 export async function toggleInvisible(isInvisibleActive: boolean) {
   const session = await auth();
@@ -61,4 +63,8 @@ export async function toggleInvisible(isInvisibleActive: boolean) {
         ),
       ),
     );
+
+  revalidatePath(LOCATION_ROUTE);
+
+  return !isInvisibleActive;
 }
