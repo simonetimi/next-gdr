@@ -71,6 +71,7 @@ Chat-based RPG app built with Next.js
 - [ ] Add all cron jobs
 - [x] Evaluate to migrate all get requests to API routes
 - [x] Investigate a way to cache information you don't want to fetch too often (like weather)
+- [ ] Movables should be able to reduce to icon or at least temporarely hide with a button
 
 ### Bugs
 
