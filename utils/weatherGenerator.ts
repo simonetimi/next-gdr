@@ -46,7 +46,11 @@ export default function getWeather(): {
     maxTemp = parseInt(process.env.FALL_MAX_TEMP!);
     minTemp = parseInt(process.env.FALL_MIN_TEMP!);
   }
-  const condition = getWeatherCondition(season, isExtremeWeatherAllowed);
+  const condition = getWeatherCondition(
+    season,
+    isExtremeWeatherAllowed,
+    maxTemp,
+  );
 
   const windSpeed = getWindSpeed(condition);
 
@@ -63,6 +67,7 @@ export default function getWeather(): {
 function getWeatherCondition(
   season: string,
   isExtremeWeatherAllowed: boolean,
+  maxTemperature: number,
 ): WeatherCondition | ExtremeWeatherCondition {
   const random = Math.random() * 100;
 
@@ -95,6 +100,12 @@ function getWeatherCondition(
   for (const [condition, weight] of Object.entries(seasonWeights)) {
     sum += weight;
     if (random <= sum) {
+      const temperatureUnit = process.env.TEMPERATURE_UNIT;
+      const maxSnowTemperature = temperatureUnit === "C" ? 0 : 32;
+
+      if (condition === "snowy" && maxTemperature > maxSnowTemperature) {
+        continue; // skip snow if temperature is above maxSnowTemp
+      }
       return condition as WeatherCondition;
     }
   }

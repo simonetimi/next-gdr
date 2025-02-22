@@ -5,11 +5,12 @@ export const toKebabCase = (str: string) =>
   str.toLowerCase().replaceAll(" ", "-");
 
 export const toCamelCase = (str: string) => {
+  if (/^[a-z]+([A-Z][a-z]*)*$/.test(str)) return str; // return if camelcase
   return str
     .toLowerCase()
-    .split(" ")
-    .reduce(
-      (s: string, c: string) => s + (c.charAt(0).toUpperCase() + c.slice(1)),
+    .split(/[-_\s]/)
+    .reduce((s: string, c: string, index: number) =>
+      index === 0 ? c : s + c.charAt(0).toUpperCase() + c.slice(1),
     );
 };
 
