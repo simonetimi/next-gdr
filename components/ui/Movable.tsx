@@ -75,13 +75,14 @@ export default function Movable({
         <div
           className={`flex h-12 p-2 ${isMinimized ? "" : "border-b-1 border-gray-200 dark:border-gray-700"}`}
         >
-          <span className="ml-2 self-center font-bold">
-            {t(`${componentName}.title`)}
-          </span>
           {enableMovement && (
             <div
-              className={`${dragHandleClassName} w-full flex-1 cursor-move`}
-            />
+              className={`${dragHandleClassName} flex w-full flex-1 cursor-move`}
+            >
+              <span className="ml-2 self-center font-bold">
+                {t(`${componentName}.title`)}
+              </span>
+            </div>
           )}
           <Button
             color="primary"
