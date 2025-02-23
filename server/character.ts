@@ -80,7 +80,7 @@ export async function getCharacterSheet(characterId: string) {
   // handles possible multiple characters
   const isUserOwner = character[0].userId === userId;
 
-  const result = await db
+  const [characterSheet] = await db
     .select({
       id: characterSheets.id,
       avatarUrl: characterSheets.avatarUrl,
@@ -98,6 +98,7 @@ export async function getCharacterSheet(characterId: string) {
         lastName: characters.lastName,
         miniAvatarUrl: characters.miniAvatarUrl,
         createdAt: characters.createdAt,
+        lastSeenAt: characters.lastSeenAt,
         // only fetch experience if user is admin, master or is owner of the character
         ...(isUserOwner || hasFullPermission
           ? {
@@ -121,23 +122,25 @@ export async function getCharacterSheet(characterId: string) {
     .from(characterSheets)
     .where(eq(characterSheets.characterId, characterId))
     .innerJoin(characters, eq(characters.id, characterSheets.characterId))
-    .innerJoin(races, eq(characters.raceId, races.id));
+    .innerJoin(races, eq(characters.raceId, races.id))
+    .limit(1);
 
-  const fetchedChar = result[0].character as z.infer<
+  const fetchedChar = characterSheet.character as z.infer<
     typeof characterSelectSchema
   >;
 
   // if not fetched, adds those fields as null for a correct parsing
   if (!hasFullPermission) {
     if (!isUserOwner) {
-      result[0].background = null;
+      characterSheet.background = null;
       fetchedChar.totalExperience = null;
       fetchedChar.currentExperience = null;
     }
-    result[0].masterNotes = null;
+    characterSheet.masterNotes = null;
   }
 
-  return characterSheetSchemaWithCharacter.parse(result[0]);
+  // since this is the returned from the db and we have full control, the parsing isn't strictly necessary
+  return characterSheetSchemaWithCharacter.parse(characterSheet);
 }
 
 export async function getOnlineCharacters() {

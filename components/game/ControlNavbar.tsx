@@ -121,8 +121,8 @@ function ControlNavbar({
             coords={isSmallDevice ? [0, 140] : [0, 110]}
             width={isSmallDevice ? "100vw" : 1000}
             minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "80vw" : 550}
-            height={isSmallDevice ? undefined : 600}
+            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
+            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
             showSetter={setShowCharacterSheetMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
@@ -140,8 +140,8 @@ function ControlNavbar({
             coords={isSmallDevice ? [0, 140] : [0, 110]}
             width={isSmallDevice ? "100vw" : 1000}
             minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "80vw" : 550}
-            height={isSmallDevice ? undefined : 600}
+            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
+            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
             showSetter={setOnlineUsersMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
@@ -159,8 +159,8 @@ function ControlNavbar({
             coords={isSmallDevice ? [0, 140] : [0, 110]}
             width={isSmallDevice ? "100vw" : 1000}
             minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "80vw" : 550}
-            height={isSmallDevice ? undefined : 600}
+            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
+            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
             showSetter={setShowSettingsMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
