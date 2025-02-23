@@ -35,6 +35,7 @@ export function ActionMessage({
           size="lg"
           src={currentMessage.character?.miniAvatarUrl ?? ""}
           name={currentMessage.character?.firstName ?? ""}
+          className="cursor-pointer"
         />
         <span className="text-xs">{timeString}</span>
       </div>

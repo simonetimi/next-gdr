@@ -1,6 +1,8 @@
 "use client";
 
 import Movable from "@/components/ui/Movable";
+import { useGame } from "@/contexts/GameContext";
+
 import {
   Button,
   Navbar,
@@ -40,6 +42,8 @@ import { resetCurrentCharacter } from "@/server/actions/character";
 import OnlineUsers from "@/components/game/OnlineUsers";
 import { toggleInvisible } from "@/server/actions/app";
 import { useInvisibleStatus } from "@/hooks/useInvisibleStatus";
+import { usePortalRoot } from "@/hooks/usePortalRoot";
+import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
 
 function ControlNavbar({
   character,
@@ -52,6 +56,7 @@ function ControlNavbar({
   isAdmin?: boolean;
   isMaster?: boolean;
 }) {
+  const game = useGame();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const router = useRouter();
@@ -68,24 +73,12 @@ function ControlNavbar({
     mutate();
   };
 
-  // manage portal creation and access safety
-  // it saves the reference of the portal-root div with useRef and it's accessed safety in the template
-  const portalRef = useRef<HTMLDivElement | null>(null);
-  useLayoutEffect(() => {
-    let portal = document.getElementById("portal-root");
-    if (!portal) {
-      portal = document.createElement("div");
-      portal.style.cssText = "width: 100%; height: 100%;";
-      document.body.prepend(portal);
-    }
-    portalRef.current = portal as HTMLDivElement;
-  }, []);
+  // movables management
+  const portalRef = usePortalRoot();
 
-  const [showCharacterSheetMovable, setShowCharacterSheetMovable] =
-    useState(false);
   const toggleCharacterSheetMovable = () => {
     if (isMenuOpen) setIsMenuOpen(false);
-    setShowCharacterSheetMovable((prev) => !prev);
+    game.toggleCharacterSheet(character.id);
   };
 
   const [showOnlineUsersMovable, setOnlineUsersMovable] = useState(false);
@@ -111,25 +104,7 @@ function ControlNavbar({
   // buttons on the navbar activate movables for large screens. instead, buttons on the side menu will open small screen movables
   return (
     <div className="flex flex-grow items-center justify-start gap-0 sm:justify-center sm:gap-3">
-      {showCharacterSheetMovable &&
-        portalRef.current &&
-        createPortal(
-          <Movable
-            boundsSelector="body"
-            dragHandleClassName="handle"
-            component={<CharacterSheet characterId={character.id} />}
-            coords={isSmallDevice ? [0, 140] : [0, 110]}
-            width={isSmallDevice ? "100vw" : 1000}
-            minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
-            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
-            showSetter={setShowCharacterSheetMovable}
-            enableResizing={!isSmallDevice}
-            enableMovement={!isSmallDevice}
-            componentName="characterSheet"
-          />,
-          portalRef.current,
-        )}
+      <CharacterSheetPortal isSmallDevice={isSmallDevice} />
       {showOnlineUsersMovable &&
         portalRef.current &&
         createPortal(
