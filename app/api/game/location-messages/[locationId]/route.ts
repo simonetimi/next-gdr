@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { fetchAllLocationMessagesWithCharacters } from "@/server/locationMessages";
+import { fetchAllLocationMessagesWithCharacters } from "@/server/locationMessage";
 
 export async function GET(
   request: NextRequest,

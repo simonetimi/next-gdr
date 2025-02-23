@@ -1,6 +1,6 @@
 "use server";
 
-import { postSystemMessage } from "@/server/actions/locationMessages";
+import { postSystemMessage } from "@/server/actions/locationMessage";
 import { getTranslations } from "next-intl/server";
 
 export async function rollDice(

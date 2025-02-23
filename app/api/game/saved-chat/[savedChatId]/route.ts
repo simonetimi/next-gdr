@@ -1,4 +1,4 @@
-import { getSavedChat } from "@/server/locationMessages";
+import { getSavedChat } from "@/server/locationMessage";
 import { NextResponse } from "next/server";
 
 export async function GET(

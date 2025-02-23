@@ -159,8 +159,8 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Tooltip content="Off-game messages">
-              <Badge color="primary" content="5">
+            <Badge color="primary" content="5">
+              <Tooltip content="Off-game messages">
                 <Button
                   isIconOnly
                   startContent={<Mail />}
@@ -168,8 +168,8 @@ function ControlNavbar({
                   onPress={toggleOffGameMessagesMovable}
                   variant="light"
                 />
-              </Badge>
-            </Tooltip>
+              </Tooltip>
+            </Badge>
           </NavbarItem>
           <NavbarItem>
             <Tooltip content="On-game messages">

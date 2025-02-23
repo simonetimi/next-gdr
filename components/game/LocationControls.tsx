@@ -23,7 +23,7 @@ import {
   postWhisper,
   postWhisperForAll,
   saveLocationChat,
-} from "@/server/actions/locationMessages";
+} from "@/server/actions/locationMessage";
 import { rollDice } from "@/server/actions/game";
 import {
   downloadLocationChatHTML,

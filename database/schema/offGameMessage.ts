@@ -2,14 +2,12 @@ import {
   boolean,
   date,
   index,
-  integer,
   pgTable,
+  text,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { characters } from "@/database/schema/character";
-
-// TODO create indexes for frequent queries
 
 export const offGameConversations = pgTable("off_game_conversation", {
   id: uuid()
@@ -37,34 +35,47 @@ export const offGameParticipants = pgTable("off_game_participant", {
     onDelete: "cascade",
   }),
   joinedAt: date("joined_at").defaultNow().notNull(),
-  newMessages: integer("new_messages").default(0).notNull(),
 });
 
-export const offGameMessages = pgTable("off_game_message", {
-  id: uuid()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  conversationId: uuid("conversation_id").references(
-    () => offGameConversations.id,
-    {
+export const offGameMessages = pgTable(
+  "off_game_message",
+  {
+    id: uuid()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    conversationId: uuid("conversation_id").references(
+      () => offGameConversations.id,
+      {
+        onDelete: "cascade",
+      },
+    ),
+    content: text("content").notNull(),
+    senderId: uuid("sender_id").references(() => characters.id, {
       onDelete: "cascade",
-    },
-  ),
-  senderId: uuid("sender_id").references(() => characters.id, {
-    onDelete: "cascade",
+    }),
+    sentAt: date("sent_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    conversationIdIdx: index("conversation_id_idx").on(table.conversationId),
+    sentAtIdx: index("sent_at_idx").on(table.sentAt),
   }),
-  sentAt: date("sent_at").defaultNow().notNull(),
-});
+);
 
-export const offGameReads = pgTable("off_game_read", {
-  id: uuid()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  messageId: uuid("message_id").references(() => offGameMessages.id, {
-    onDelete: "cascade",
+export const offGameReads = pgTable(
+  "off_game_read",
+  {
+    id: uuid()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    messageId: uuid("message_id").references(() => offGameMessages.id, {
+      onDelete: "cascade",
+    }),
+    readBy: uuid("read_by").references(() => characters.id, {
+      onDelete: "cascade",
+    }),
+    readAt: date("read_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    messageReadIdx: index("message_read_idx").on(table.messageId, table.readBy),
   }),
-  characterId: uuid("character_id").references(() => characters.id, {
-    onDelete: "cascade",
-  }),
-  readAt: date("read_at").defaultNow().notNull(),
-});
+);
