@@ -9,10 +9,14 @@ import TextStyle from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
 import EditorToolbar from "@/components/editor/EditorToolbar";
 import dynamic from "next/dynamic";
 
-function Editor({
+export default function Editor({
   content,
   onContentChange,
   className,
@@ -99,17 +103,22 @@ function Editor({
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
+      Table.configure({
+        resizable: false,
+      }),
+      TableRow,
+      TableCell,
+      TableHeader,
     ],
     content: content,
     editorProps: {
       attributes: {
-        class:
-          "text-sm prose max-w-none w-full rounded-lg border border-default-200 bg-content1 px-3 py-2 h-[200px] overflow-y-auto outline-none",
+        class: "tiptap prose text-sm",
       },
     },
+
     onUpdate: ({ editor }) => {
       onContentChange(editor.getHTML());
-      console.log(editor.getHTML());
     },
   });
 
@@ -120,7 +129,3 @@ function Editor({
     </div>
   );
 }
-
-export default dynamic(() => Promise.resolve(Editor), {
-  ssr: false,
-});

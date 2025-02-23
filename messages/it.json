@@ -46,6 +46,35 @@
     },
     "locationControls": {
       "chatSavedOnClipboard": "Link alla chat salvato negli appunti"
+    },
+    "editor": {
+      "bold": "Grassetto",
+      "italic": "Corsivo",
+      "underline": "Sottolineato",
+      "strikethrough": "Barrato",
+      "fontSize": "Dimensione font",
+      "color": "Colore",
+      "alignLeft": "Allinea a sinistra",
+      "alignCenter": "Allinea al centro",
+      "alignRight": "Allinea a destra",
+      "justify": "Giustifica",
+      "orderedList": "Elenco ordinato",
+      "bulletList": "Elenco puntato",
+      "link": "Link",
+      "image": "Immagine",
+      "blockquote": "Citazione",
+      "codeBlock": "Blocco di codice",
+      "table": "Tabella",
+      "imageUrl": "URL immagine",
+      "delete": "Elimina",
+      "cancel": "Annulla",
+      "insert": "Inserisci",
+      "tableOptions": "Opzioni tabella",
+      "insertLink": "Inserisci link",
+      "insertImage": "Inserisci immagine",
+      "imageSize": "Dimensione immagine",
+      "keepAspectRatio": "Matieni proporzioni",
+      "apply": "Applica"
     }
   },
   "game": {

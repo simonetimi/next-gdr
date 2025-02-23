@@ -64,15 +64,21 @@ h6 {
 
 /* CSS reset - end */
 
+:root {
+  --primary-color: #5088ff;
+}
+
 h1 {
   @apply text-3xl;
 }
 
 /* Rich text editor */
 
-.ProseMirror {
+.tiptap.prose {
+  @apply h-[250px] w-full max-w-none overflow-y-auto rounded-lg border border-default-200 bg-content1 px-3 py-2 outline-none;
+
   a {
-    color: #5088ff;
+    color: var(--primary-color);
     text-decoration: underline;
   }
 
@@ -85,14 +91,33 @@ h1 {
     list-style-type: decimal;
     padding-left: 1.5em;
   }
+
+  blockquote {
+    @apply my-2 border-l-4 border-primary pl-4 italic;
+  }
+
+  pre {
+    @apply my-2 rounded-lg bg-default-100 p-4;
+  }
+
+  code {
+    @apply rounded bg-default-100 px-1.5 py-0.5;
+  }
+
+  table {
+    @apply my-2 border-collapse;
+  }
+
+  td,
+  th {
+    @apply border border-default-200 px-4 py-2;
+  }
+
+  th {
+    @apply bg-default-100;
+  }
 }
 
-.resize-image {
-  display: inline-block;
-  cursor: pointer;
-  transition: box-shadow 0.3s;
-}
-
-.resize-image:hover {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+.font-size-dropdown .dropdown-item {
+  @apply px-2 py-1 text-sm;
 }

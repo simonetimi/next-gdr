@@ -12,6 +12,7 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Tooltip,
 } from "@heroui/react";
 import {
   Bold,
@@ -28,10 +29,14 @@ import {
   AlignCenter,
   AlignRight,
   AlignJustify,
+  Quote,
+  Code,
+  Table as TableIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "@heroui/input";
 import ImageSizeModal from "@/components/editor/ImageSizeModal";
+import { useTranslations } from "next-intl";
 
 const fontSizes = {
   "text-xs": "12px",
@@ -44,7 +49,6 @@ const fontSizes = {
   "text-4xl": "36px",
   "text-5xl": "48px",
   "text-6xl": "60px",
-  "text-7xl": "72px",
 };
 
 interface CustomChain {
@@ -63,8 +67,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
     null,
   );
 
-  // TODO add translations with useTranslations
-  // TODO imeplement popovers with the translations
+  const t = useTranslations("components.editor");
 
   useEffect(() => {
     const handleImageClick = (e: MouseEvent) => {
@@ -113,106 +116,71 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
       setIsImageOpen(false);
     }
   };
-
   return (
     <>
-      <div className="border-input flex flex-wrap gap-1 rounded-2xl border bg-transparent p-2">
-        <Button
-          isIconOnly
-          startContent={<Bold className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleBold().run()}
-          color={editor.isActive("bold") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<Italic className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleItalic().run()}
-          color={editor.isActive("italic") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<Underline className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleUnderline().run()}
-          color={editor.isActive("underline") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<Strikethrough className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleStrike().run()}
-          color={editor.isActive("strike") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<Link2 className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => setIsLinkOpen(true)}
-          color={editor.isActive("link") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<Image className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => setIsImageOpen(true)}
-        />
-        <Button
-          isIconOnly
-          startContent={<ListOrdered className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleOrderedList().run()}
-          color={editor.isActive("orderedList") ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<List className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().toggleBulletList().run()}
-          color={editor.isActive("bulletList") ? "primary" : "default"}
-        />
-        <div className="relative">
-          <input
-            type="color"
-            className="absolute h-7 w-7 cursor-pointer opacity-0"
-            onChange={(e) =>
-              editor.chain().focus().setColor(e.target.value).run()
-            }
-          />
+      <div className="border-input flex flex-wrap justify-evenly gap-1 rounded-2xl border bg-transparent p-2">
+        <Tooltip content={t("bold")}>
           <Button
             isIconOnly
-            startContent={<Palette className="h-5 w-5" />}
+            startContent={<Bold className="h-5 w-5" />}
             size="sm"
-            className="pointer-events-none h-7 min-h-7 w-7 min-w-7"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleBold().run()}
+            color={editor.isActive("bold") ? "primary" : "default"}
           />
-        </div>
+        </Tooltip>
+        <Tooltip content={t("italic")}>
+          <Button
+            isIconOnly
+            startContent={<Italic className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleItalic().run()}
+            color={editor.isActive("italic") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("underline")}>
+          <Button
+            isIconOnly
+            startContent={<Underline className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleUnderline().run()}
+            color={editor.isActive("underline") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("strikethrough")}>
+          <Button
+            isIconOnly
+            startContent={<Strikethrough className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleStrike().run()}
+            color={editor.isActive("strike") ? "primary" : "default"}
+          />
+        </Tooltip>
         <Dropdown>
           <DropdownTrigger>
-            <Button
-              isIconOnly
-              startContent={<ALargeSmall className="h-5 w-5" />}
-              size="sm"
-              className="h-7 min-h-7 w-7 min-w-7"
-            />
+            <div>
+              <Tooltip content={t("fontSize")}>
+                <Button
+                  isIconOnly
+                  startContent={<ALargeSmall className="h-5 w-5" />}
+                  size="sm"
+                  className="h-7 min-h-7 w-7 min-w-7"
+                />
+              </Tooltip>
+            </div>
           </DropdownTrigger>
           <DropdownMenu
-            aria-label="Font sizes"
+            aria-label={t("fontSize")}
             items={Object.entries(fontSizes)}
-            className="min-w-[120px]"
+            className="font-size-dropdown"
           >
             {(item) => (
               <DropdownItem
                 key={item[0]}
-                className={item[0]}
+                className={`dropdown-item ${item[0]}`}
                 onPress={() =>
                   (editor.chain() as unknown as CustomChain)
                     .focus()
@@ -225,49 +193,170 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             )}
           </DropdownMenu>
         </Dropdown>
-        <Button
-          isIconOnly
-          startContent={<AlignLeft className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().setTextAlign("left").run()}
-          color={editor.isActive({ textAlign: "left" }) ? "primary" : "default"}
-        />
-        <Button
-          isIconOnly
-          startContent={<AlignCenter className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().setTextAlign("center").run()}
-          color={
-            editor.isActive({ textAlign: "center" }) ? "primary" : "default"
-          }
-        />
-        <Button
-          isIconOnly
-          startContent={<AlignRight className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().setTextAlign("right").run()}
-          color={
-            editor.isActive({ textAlign: "right" }) ? "primary" : "default"
-          }
-        />
-        <Button
-          isIconOnly
-          startContent={<AlignJustify className="h-5 w-5" />}
-          size="sm"
-          className="h-7 min-h-7 w-7 min-w-7"
-          onPress={() => editor.chain().focus().setTextAlign("justify").run()}
-          color={
-            editor.isActive({ textAlign: "justify" }) ? "primary" : "default"
-          }
-        />
+        <Tooltip content={t("color")}>
+          <div className="relative">
+            <input
+              type="color"
+              className="absolute h-7 w-7 cursor-pointer opacity-0"
+              onChange={(e) =>
+                editor.chain().focus().setColor(e.target.value).run()
+              }
+            />
+            <Button
+              isIconOnly
+              startContent={<Palette className="h-5 w-5" />}
+              size="sm"
+              className="pointer-events-none h-7 min-h-7 w-7 min-w-7"
+            />
+          </div>
+        </Tooltip>
+        <Tooltip content={t("alignLeft")}>
+          <Button
+            isIconOnly
+            startContent={<AlignLeft className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().setTextAlign("left").run()}
+            color={
+              editor.isActive({ textAlign: "left" }) ? "primary" : "default"
+            }
+          />
+        </Tooltip>
+        <Tooltip content={t("alignCenter")}>
+          <Button
+            isIconOnly
+            startContent={<AlignCenter className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().setTextAlign("center").run()}
+            color={
+              editor.isActive({ textAlign: "center" }) ? "primary" : "default"
+            }
+          />
+        </Tooltip>
+        <Tooltip content={t("alignRight")}>
+          <Button
+            isIconOnly
+            startContent={<AlignRight className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().setTextAlign("right").run()}
+            color={
+              editor.isActive({ textAlign: "right" }) ? "primary" : "default"
+            }
+          />
+        </Tooltip>
+        <Tooltip content={t("justify")}>
+          <Button
+            isIconOnly
+            startContent={<AlignJustify className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().setTextAlign("justify").run()}
+            color={
+              editor.isActive({ textAlign: "justify" }) ? "primary" : "default"
+            }
+          />
+        </Tooltip>
+        <Tooltip content={t("orderedList")}>
+          <Button
+            isIconOnly
+            startContent={<ListOrdered className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleOrderedList().run()}
+            color={editor.isActive("orderedList") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("bulletList")}>
+          <Button
+            isIconOnly
+            startContent={<List className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleBulletList().run()}
+            color={editor.isActive("bulletList") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("link")}>
+          <Button
+            isIconOnly
+            startContent={<Link2 className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => setIsLinkOpen(true)}
+            color={editor.isActive("link") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("image")}>
+          <Button
+            isIconOnly
+            startContent={<Image className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => setIsImageOpen(true)}
+          />
+        </Tooltip>
+        <Tooltip content={t("blockquote")}>
+          <Button
+            isIconOnly
+            startContent={<Quote className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleBlockquote().run()}
+            color={editor.isActive("blockquote") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Tooltip content={t("codeBlock")}>
+          <Button
+            isIconOnly
+            startContent={<Code className="h-5 w-5" />}
+            size="sm"
+            className="h-7 min-h-7 w-7 min-w-7"
+            onPress={() => editor.chain().focus().toggleCodeBlock().run()}
+            color={editor.isActive("codeBlock") ? "primary" : "default"}
+          />
+        </Tooltip>
+        <Dropdown>
+          <DropdownTrigger>
+            <div>
+              <Tooltip content={t("table")}>
+                <Button
+                  isIconOnly
+                  startContent={<TableIcon className="h-5 w-5" />}
+                  size="sm"
+                  className="h-7 min-h-7 w-7 min-w-7"
+                />
+              </Tooltip>
+            </div>
+          </DropdownTrigger>
+          <DropdownMenu aria-label={t("tableOptions")}>
+            <DropdownItem
+              key="delete-table"
+              onPress={() =>
+                editor
+                  .chain()
+                  .focus()
+                  .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                  .run()
+              }
+            >
+              {t("insert")}
+            </DropdownItem>
+            <DropdownItem
+              key="insert-table"
+              onPress={() => editor.chain().focus().deleteTable().run()}
+              isDisabled={!editor.can().deleteTable()}
+            >
+              {t("delete")}
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
 
       <Modal isOpen={isLinkOpen} onOpenChange={setIsLinkOpen}>
         <ModalContent>
-          <ModalHeader>Add Link</ModalHeader>
+          <ModalHeader> {t("insertLink")}</ModalHeader>
           <ModalBody>
             <Input
               placeholder="https://"
@@ -286,10 +375,10 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
               variant="light"
               onPress={() => setIsLinkOpen(false)}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button color="primary" onPress={handleLinkSubmit}>
-              Add
+              {t("insert")}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -303,10 +392,10 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
               handleImageSubmit();
             }}
           >
-            <ModalHeader>Insert Image</ModalHeader>
+            <ModalHeader>{}</ModalHeader>
             <ModalBody>
               <Input
-                label="Image URL"
+                label={t("imageUrl")}
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
               />
@@ -317,10 +406,10 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
                 variant="light"
                 onPress={() => setIsImageOpen(false)}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button color="primary" type="submit">
-                Insert
+                {t("insert")}
               </Button>
             </ModalFooter>
           </form>

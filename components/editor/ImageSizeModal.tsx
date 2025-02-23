@@ -9,6 +9,7 @@ import {
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/checkbox";
+import { useTranslations } from "next-intl";
 
 interface ImageSizeModalProps {
   isOpen: boolean;
@@ -30,7 +31,7 @@ export default function ImageSizeModal({
   const [maintainRatio, setMaintainRatio] = useState(true);
   const [aspect, setAspect] = useState(initialWidth / initialHeight);
 
-  // TODO implement translations
+  const t = useTranslations("components.editor");
 
   useEffect(() => {
     if (maintainRatio) {
@@ -56,7 +57,7 @@ export default function ImageSizeModal({
             handleSubmit();
           }}
         >
-          <ModalHeader>Image Size</ModalHeader>
+          <ModalHeader> {t("imageSize")}</ModalHeader>
           <ModalBody className="flex flex-col gap-4">
             <div className="flex gap-4">
               <Input
@@ -76,7 +77,7 @@ export default function ImageSizeModal({
               isSelected={maintainRatio}
               onValueChange={setMaintainRatio}
             >
-              Maintain aspect ratio
+              {t("keepAspectRatio")}
             </Checkbox>
           </ModalBody>
           <ModalFooter>
@@ -85,10 +86,10 @@ export default function ImageSizeModal({
               variant="light"
               onPress={() => onOpenChange(false)}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button color="primary" type="submit">
-              Apply
+              {t("apply")}
             </Button>
           </ModalFooter>
         </form>
