@@ -86,19 +86,19 @@ export default function Movable({
           )}
           <Button
             color="primary"
-            className="ml-auto"
+            className="ml-auto h-7 min-h-7 w-7 min-w-7"
             isIconOnly
             onPress={onMinimize}
             size="sm"
-            startContent={<Minimize2 />}
+            startContent={<Minimize2 className="h-4 w-4" />}
           />
           <Button
             color="danger"
-            className="ml-2"
+            className="ml-1 h-7 min-h-7 w-7 min-w-7"
             isIconOnly
             onPress={onClose}
             size="sm"
-            startContent={<X />}
+            startContent={<X className="h-4 w-4" />}
           />
         </div>
         {!isMinimized && <div className="p-4">{component}</div>}
