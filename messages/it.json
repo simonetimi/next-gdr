@@ -33,6 +33,15 @@
         "placeholder": "Scegli un luogo",
         "label": "Scelta del luogo"
       }
+    },
+    "onlineCharacters": {
+      "title": "Personaggi online"
+    },
+    "characterSheet": {
+      "title": "Scheda personaggio"
+    },
+    "settings": {
+      "title": "Impostazioni"
     }
   },
   "game": {

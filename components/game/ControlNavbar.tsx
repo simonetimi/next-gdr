@@ -126,6 +126,7 @@ function ControlNavbar({
             showSetter={setShowCharacterSheetMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
+            componentName="characterSheet"
           />,
           portalRef.current,
         )}
@@ -144,6 +145,7 @@ function ControlNavbar({
             showSetter={setOnlineUsersMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
+            componentName="onlineCharacters"
           />,
           portalRef.current,
         )}
@@ -162,6 +164,7 @@ function ControlNavbar({
             showSetter={setShowSettingsMovable}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}
+            componentName="settings"
           />,
           portalRef.current,
         )}
