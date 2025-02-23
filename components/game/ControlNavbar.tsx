@@ -1,6 +1,5 @@
 "use client";
 
-import Movable from "@/components/ui/Movable";
 import { useGame } from "@/contexts/GameContext";
 
 import {
@@ -23,8 +22,7 @@ import {
   Shield,
   Users,
 } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ADMIN_ROUTE,
@@ -32,18 +30,17 @@ import {
   MODERATION_ROUTE,
   SELECT_CHARACTER_ROUTE,
 } from "@/utils/routes";
-import CharacterSheet from "@/components/game/CharacterSheet";
 import { Character } from "@/models/characters";
 import { useMediaQuery } from "@uidotdev/usehooks";
 
 import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
-import OnlineUsers from "@/components/game/OnlineUsers";
 import { toggleInvisible } from "@/server/actions/app";
 import { useInvisibleStatus } from "@/hooks/useInvisibleStatus";
-import { usePortalRoot } from "@/hooks/usePortalRoot";
 import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
+import SettingsPortal from "@/components/portals/SettingsPortal";
+import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal";
 
 function ControlNavbar({
   character,
@@ -72,9 +69,6 @@ function ControlNavbar({
     await toggleInvisible(isInvisible);
     mutate();
   };
-
-  // movables management
-  const portalRef = usePortalRoot();
 
   const toggleCharacterSheetMovable = () => {
     if (isMenuOpen) setIsMenuOpen(false);
@@ -105,44 +99,16 @@ function ControlNavbar({
   return (
     <div className="flex flex-grow items-center justify-start gap-0 sm:justify-center sm:gap-3">
       <CharacterSheetPortal isSmallDevice={isSmallDevice} />
-      {showOnlineUsersMovable &&
-        portalRef.current &&
-        createPortal(
-          <Movable
-            boundsSelector="body"
-            dragHandleClassName="handle"
-            component={<OnlineUsers />}
-            coords={isSmallDevice ? [0, 140] : [0, 110]}
-            width={isSmallDevice ? "100vw" : 1000}
-            minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
-            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
-            showSetter={setOnlineUsersMovable}
-            enableResizing={!isSmallDevice}
-            enableMovement={!isSmallDevice}
-            componentName="onlineCharacters"
-          />,
-          portalRef.current,
-        )}
-      {showSettingsMovable &&
-        portalRef.current &&
-        createPortal(
-          <Movable
-            boundsSelector="body"
-            dragHandleClassName="handle"
-            component={<div>Settings</div>}
-            coords={isSmallDevice ? [0, 140] : [0, 110]}
-            width={isSmallDevice ? "100vw" : 1000}
-            minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
-            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
-            showSetter={setShowSettingsMovable}
-            enableResizing={!isSmallDevice}
-            enableMovement={!isSmallDevice}
-            componentName="settings"
-          />,
-          portalRef.current,
-        )}
+      <OnlineCharactersPortal
+        isSmallDevice={isSmallDevice}
+        show={showOnlineUsersMovable}
+        setShow={setOnlineUsersMovable}
+      />
+      <SettingsPortal
+        isSmallDevice={isSmallDevice}
+        show={showSettingsMovable}
+        setShow={setShowSettingsMovable}
+      />
       <Navbar
         className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
         isMenuOpen={isMenuOpen}
