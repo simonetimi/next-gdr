@@ -59,6 +59,7 @@ Chat-based RPG app built with Next.js
 - [ ] News section on login (but before entering the game) that the admin can set up and update
 - [ ] Characters registry, searchable and/or divided in pages. Implement "last seen"
 - [ ] Pins for locations
+- [ ] Implement user settings in the client store, updated on login
 
 ### TODO
 

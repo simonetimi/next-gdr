@@ -14,6 +14,7 @@ import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
 import { useLocationMessages } from "@/hooks/useLocationMessages";
 import dynamic from "next/dynamic";
+import { useLayoutEffect, useRef } from "react";
 
 function messageRender(
   currentMessage: LocationMessageWithCharacter,
@@ -83,6 +84,12 @@ function LocationChat({
   // the character sheet state is controlled in the context
   const game = useGame();
 
+  // scroll into view (reversed order for messages)
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <>
       <section className="align-center flex w-full flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700">
@@ -94,7 +101,7 @@ function LocationChat({
           ) : (
             <div className="relative h-full w-full" id="chat-messages">
               <ScrollShadow className="absolute inset-0 overflow-y-auto">
-                <div className="flex flex-col p-5 text-sm">
+                <div className="flex flex-col-reverse p-5 text-sm">
                   {messages?.map((chatMessage) =>
                     messageRender(
                       chatMessage,
@@ -103,6 +110,7 @@ function LocationChat({
                     ),
                   )}
                 </div>
+                <div ref={bottomRef} />
               </ScrollShadow>
             </div>
           )}
