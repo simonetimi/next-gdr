@@ -6,11 +6,11 @@ import { characters } from "@/database/schema/character";
 import { and, desc, eq, gte, isNull, or, sql } from "drizzle-orm";
 import {
   locationActionMessages,
-  locationMessages,
+  locationMessage,
   locationSystemMessages,
   locationWhispers,
   savedLocationMessages,
-} from "@/database/schema/locationMessages";
+} from "@/database/schema/locationMessage";
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 
 export async function fetchAllLocationMessages(locationId: string) {
@@ -39,8 +39,8 @@ export async function fetchAllLocationMessages(locationId: string) {
 
   // only recent messages with that location id
   let conditions = and(
-    gte(locationMessages.createdAt, fetchMessagesLastHours),
-    eq(locationMessages.locationId, locationId),
+    gte(locationMessage.createdAt, fetchMessagesLastHours),
+    eq(locationMessage.locationId, locationId),
   );
 
   // apply filtering only if the user is NOT a master
@@ -50,7 +50,7 @@ export async function fetchAllLocationMessages(locationId: string) {
       or(
         isNull(locationWhispers.messageId), // allow non-whisper messages
         eq(locationWhispers.recipientCharacterId, userCharacterId), // allow whispers directed to the user
-        eq(locationMessages.characterId, userCharacterId), // allow the user's own messages
+        eq(locationMessage.characterId, userCharacterId), // allow the user's own messages
       ),
     );
 
@@ -58,7 +58,7 @@ export async function fetchAllLocationMessages(locationId: string) {
     conditions = or(
       conditions, // keep previous conditions
       and(
-        eq(locationMessages.id, locationSystemMessages.messageId), // ensure it's a system message
+        eq(locationMessage.id, locationSystemMessages.messageId), // ensure it's a system message
         or(
           isNull(locationSystemMessages.recipientCharacterId), // allow system messages with no recipient
           eq(locationSystemMessages.recipientCharacterId, userCharacterId), // allow system messages for the user
@@ -71,12 +71,12 @@ export async function fetchAllLocationMessages(locationId: string) {
     .select({
       message: {
         // main message data
-        id: locationMessages.id,
-        content: locationMessages.content,
-        characterId: locationMessages.characterId,
-        locationId: locationMessages.locationId,
-        createdAt: locationMessages.createdAt,
-        type: locationMessages.type,
+        id: locationMessage.id,
+        content: locationMessage.content,
+        characterId: locationMessage.characterId,
+        locationId: locationMessage.locationId,
+        createdAt: locationMessage.createdAt,
+        type: locationMessage.type,
       },
       // grouped by message type
       action: {
@@ -90,21 +90,21 @@ export async function fetchAllLocationMessages(locationId: string) {
         recipientCharacterId: locationSystemMessages.recipientCharacterId,
       },
     })
-    .from(locationMessages)
+    .from(locationMessage)
     .where(conditions)
     .leftJoin(
       locationActionMessages,
-      eq(locationMessages.id, locationActionMessages.messageId),
+      eq(locationMessage.id, locationActionMessages.messageId),
     )
     .leftJoin(
       locationWhispers,
-      eq(locationMessages.id, locationWhispers.messageId),
+      eq(locationMessage.id, locationWhispers.messageId),
     )
     .leftJoin(
       locationSystemMessages,
-      eq(locationMessages.id, locationSystemMessages.messageId),
+      eq(locationMessage.id, locationSystemMessages.messageId),
     )
-    .orderBy(locationMessages.createdAt);
+    .orderBy(locationMessage.createdAt);
 
   try {
     return fullLocationMessagesSchema.parse(result);
@@ -143,11 +143,11 @@ export async function fetchAllLocationMessagesWithCharacters(
 
   // only recent messages with provided location id (secret if secretLocation is true)
   let conditions = and(
-    gte(locationMessages.createdAt, fetchMessagesLastHours),
+    gte(locationMessage.createdAt, fetchMessagesLastHours),
     eq(
       isSecretLocation
-        ? locationMessages.secretLocationId
-        : locationMessages.locationId,
+        ? locationMessage.secretLocationId
+        : locationMessage.locationId,
       locationId,
     ),
   );
@@ -161,7 +161,7 @@ export async function fetchAllLocationMessagesWithCharacters(
     const utcTimestamp = new Date(lastMessageTimestamp).toISOString();
     conditions = and(
       conditions,
-      sql`${locationMessages.createdAt} > ${utcTimestamp}::timestamp`,
+      sql`${locationMessage.createdAt} > ${utcTimestamp}::timestamp`,
     );
   }
 
@@ -174,11 +174,11 @@ export async function fetchAllLocationMessagesWithCharacters(
         or(
           isNull(locationWhispers.messageId), // not a whisper
           eq(locationWhispers.recipientCharacterId, userCharacterId), // recipient is the user
-          eq(locationMessages.characterId, userCharacterId), // sender is the user
+          eq(locationMessage.characterId, userCharacterId), // sender is the user
         ),
         // system messages conditions (both sender and recipients are null)
         and(
-          eq(locationMessages.id, locationSystemMessages.messageId), // it's a system message
+          eq(locationMessage.id, locationSystemMessages.messageId), // it's a system message
           or(
             isNull(locationSystemMessages.recipientCharacterId), // not directed to a user specifically, it's for everyone
             eq(locationSystemMessages.recipientCharacterId, userCharacterId), // it's specifically directed to the user
@@ -192,13 +192,13 @@ export async function fetchAllLocationMessagesWithCharacters(
     .select({
       message: {
         // main message data
-        id: locationMessages.id,
-        content: locationMessages.content,
+        id: locationMessage.id,
+        content: locationMessage.content,
         locationId: isSecretLocation
-          ? locationMessages.secretLocationId
-          : locationMessages.locationId,
-        createdAt: locationMessages.createdAt,
-        type: locationMessages.type,
+          ? locationMessage.secretLocationId
+          : locationMessage.locationId,
+        createdAt: locationMessage.createdAt,
+        type: locationMessage.type,
       },
       // grouped by message type
       action: {
@@ -213,7 +213,7 @@ export async function fetchAllLocationMessagesWithCharacters(
         additionalData: locationSystemMessages.additionalData,
       },
       character: {
-        id: locationMessages.characterId,
+        id: locationMessage.characterId,
         firstName: characters.firstName,
         middleName: characters.middleName,
         lastName: characters.lastName,
@@ -228,27 +228,27 @@ export async function fetchAllLocationMessagesWithCharacters(
         miniAvatarUrl: sql`recipientCharacters.mini_avatar_url`,
       },
     })
-    .from(locationMessages)
+    .from(locationMessage)
     .where(conditions)
-    .leftJoin(characters, eq(locationMessages.characterId, characters.id))
+    .leftJoin(characters, eq(locationMessage.characterId, characters.id))
     .leftJoin(
       locationActionMessages,
-      eq(locationMessages.id, locationActionMessages.messageId),
+      eq(locationMessage.id, locationActionMessages.messageId),
     )
     .leftJoin(
       locationWhispers,
-      eq(locationMessages.id, locationWhispers.messageId),
+      eq(locationMessage.id, locationWhispers.messageId),
     )
     .leftJoin(
       locationSystemMessages,
-      eq(locationMessages.id, locationSystemMessages.messageId),
+      eq(locationMessage.id, locationSystemMessages.messageId),
     )
     .leftJoin(
       sql`${characters} as recipientCharacters`,
       eq(locationWhispers.recipientCharacterId, characters.id),
     )
     // desc, from the newest to the oldest
-    .orderBy(desc(locationMessages.createdAt));
+    .orderBy(desc(locationMessage.createdAt));
 
   return result;
 }

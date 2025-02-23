@@ -17,7 +17,9 @@ import {
   BadgeCheck,
   Eye,
   EyeOff,
+  Mail,
   Map,
+  MessageCircle,
   Settings,
   Shield,
   Users,
@@ -41,6 +43,7 @@ import { useInvisibleStatus } from "@/hooks/useInvisibleStatus";
 import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
 import SettingsPortal from "@/components/portals/SettingsPortal";
 import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal";
+import { Badge } from "@heroui/badge";
 
 function ControlNavbar({
   character,
@@ -79,6 +82,20 @@ function ControlNavbar({
   const toggleOnlineUsersMovable = () => {
     if (isMenuOpen) setIsMenuOpen(false);
     setOnlineUsersMovable((prev) => !prev);
+  };
+
+  const [showOffGameMessagesMovable, setShowOffGameMessagesMovable] =
+    useState(false);
+  const toggleOffGameMessagesMovable = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
+    setShowOffGameMessagesMovable((prev) => !prev);
+  };
+
+  const [showOnGameMessagesMovable, setShowOnGameMessagesMovable] =
+    useState(false);
+  const toggleOnGameMessagesMovable = () => {
+    if (isMenuOpen) setIsMenuOpen(false);
+    setShowOnGameMessagesMovable((prev) => !prev);
   };
 
   const [showSettingsMovable, setShowSettingsMovable] = useState(false);
@@ -137,6 +154,30 @@ function ControlNavbar({
                 startContent={<Users />}
                 size="sm"
                 onPress={toggleOnlineUsersMovable}
+                variant="light"
+              />
+            </Tooltip>
+          </NavbarItem>
+          <NavbarItem>
+            <Tooltip content="Off-game messages">
+              <Badge color="primary" content="5">
+                <Button
+                  isIconOnly
+                  startContent={<Mail />}
+                  size="sm"
+                  onPress={toggleOffGameMessagesMovable}
+                  variant="light"
+                />
+              </Badge>
+            </Tooltip>
+          </NavbarItem>
+          <NavbarItem>
+            <Tooltip content="On-game messages">
+              <Button
+                isIconOnly
+                startContent={<MessageCircle />}
+                size="sm"
+                onPress={toggleOnGameMessagesMovable}
                 variant="light"
               />
             </Tooltip>
@@ -216,6 +257,26 @@ function ControlNavbar({
               variant="light"
             >
               Online users
+            </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
+            <Button
+              startContent={<Mail />}
+              size="lg"
+              onPress={toggleOffGameMessagesMovable}
+              variant="light"
+            >
+              Off-game messages
+            </Button>
+          </NavbarMenuItem>
+          <NavbarMenuItem className="flex flex-col">
+            <Button
+              startContent={<MessageCircle />}
+              size="lg"
+              onPress={toggleOnGameMessagesMovable}
+              variant="light"
+            >
+              On-game messages
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">

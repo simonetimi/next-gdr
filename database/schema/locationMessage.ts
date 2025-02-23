@@ -2,7 +2,7 @@ import { pgTable, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { locations, secretLocations } from "./location";
 import { characters } from "./character";
 
-export const locationMessages = pgTable("location_message", {
+export const locationMessage = pgTable("location_message", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -29,14 +29,14 @@ export const locationMessages = pgTable("location_message", {
 export const locationActionMessages = pgTable("location_action_message", {
   messageId: uuid("message_id")
     .primaryKey()
-    .references(() => locationMessages.id, { onDelete: "cascade" }),
+    .references(() => locationMessage.id, { onDelete: "cascade" }),
   tag: varchar("tag", { length: 50 }),
 });
 
 export const locationWhispers = pgTable("location_whisper_message", {
   messageId: uuid("message_id")
     .primaryKey()
-    .references(() => locationMessages.id, { onDelete: "cascade" }),
+    .references(() => locationMessage.id, { onDelete: "cascade" }),
   recipientCharacterId: uuid("recipient_character_id")
     .notNull()
     .references(() => characters.id, { onDelete: "cascade" }),
@@ -45,7 +45,7 @@ export const locationWhispers = pgTable("location_whisper_message", {
 export const locationSystemMessages = pgTable("location_system_message", {
   messageId: uuid("message_id")
     .primaryKey()
-    .references(() => locationMessages.id, { onDelete: "cascade" }),
+    .references(() => locationMessage.id, { onDelete: "cascade" }),
   systemType: varchar("system_type", { length: 50 }).notNull(),
   additionalData: text("additional_data"),
   recipientCharacterId: uuid("recipient_character_id").references(

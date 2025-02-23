@@ -2,14 +2,14 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
   locationActionMessages,
-  locationMessages,
+  locationMessage,
   locationSystemMessages,
   locationWhispers,
-} from "@/database/schema/locationMessages";
+} from "@/database/schema/locationMessage";
 import { characterSelectSchema } from "@/zod/schemas/character";
 
-const locationMessageSchema = createSelectSchema(locationMessages);
-const locationMessagesSchema = createInsertSchema(locationMessages);
+const locationMessageSchema = createSelectSchema(locationMessage);
+const locationMessagesSchema = createInsertSchema(locationMessage);
 
 const actionMessageSchema = createSelectSchema(locationActionMessages);
 const whisperMessageSchema = createSelectSchema(locationWhispers);

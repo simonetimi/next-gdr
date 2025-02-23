@@ -3,11 +3,11 @@
 import { db } from "@/database/db";
 import {
   locationActionMessages,
-  locationMessages,
+  locationMessage,
   locationSystemMessages,
   locationWhispers,
   savedLocationMessages,
-} from "@/database/schema/locationMessages";
+} from "@/database/schema/locationMessage";
 import { and, desc, eq } from "drizzle-orm";
 import { auth } from "@/auth";
 import { characters } from "@/database/schema/character";
@@ -29,7 +29,7 @@ export async function postActionMessage(
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
-    .insert(locationMessages)
+    .insert(locationMessage)
     .values({
       // adds locationId or secretLocationId depending on the type of location
       ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
@@ -38,7 +38,7 @@ export async function postActionMessage(
       type: "action",
     })
     .returning({
-      id: locationMessages.id,
+      id: locationMessage.id,
     });
 
   try {
@@ -48,9 +48,7 @@ export async function postActionMessage(
     });
   } catch (error) {
     // if the second one fails, delete the first entry
-    await db
-      .delete(locationMessages)
-      .where(eq(locationMessages.id, message.id));
+    await db.delete(locationMessage).where(eq(locationMessage.id, message.id));
     throw error;
   }
 
@@ -100,7 +98,7 @@ export async function postWhisper(
     throw new Error(t("game.characters.notFoundInLocation"));
 
   const [message] = await db
-    .insert(locationMessages)
+    .insert(locationMessage)
     .values({
       ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
@@ -108,7 +106,7 @@ export async function postWhisper(
       type: "whisper",
     })
     .returning({
-      id: locationMessages.id,
+      id: locationMessage.id,
     });
 
   try {
@@ -118,9 +116,7 @@ export async function postWhisper(
     });
   } catch (error) {
     // if the second one fails, delete the first entry
-    await db
-      .delete(locationMessages)
-      .where(eq(locationMessages.id, message.id));
+    await db.delete(locationMessage).where(eq(locationMessage.id, message.id));
     throw error;
   }
   return !!message.id;
@@ -138,7 +134,7 @@ export async function postWhisperForAll(
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
-    .insert(locationMessages)
+    .insert(locationMessage)
     .values({
       ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
@@ -146,7 +142,7 @@ export async function postWhisperForAll(
       type: "whisperAll",
     })
     .returning({
-      id: locationMessages.id,
+      id: locationMessage.id,
     });
 
   return !!message.id;
@@ -167,7 +163,7 @@ export async function postMasterScreen(
 
   if (!isUserMaster) throw new Error("User is not a master");
 
-  const result = await db.insert(locationMessages).values({
+  const result = await db.insert(locationMessage).values({
     ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
     characterId,
     content,
@@ -192,7 +188,7 @@ export async function postSystemMessage(
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
-    .insert(locationMessages)
+    .insert(locationMessage)
     .values({
       ...(isSecretLocation ? { secretLocationId: locationId } : { locationId }),
       characterId,
@@ -200,7 +196,7 @@ export async function postSystemMessage(
       type: "system",
     })
     .returning({
-      id: locationMessages.id,
+      id: locationMessage.id,
     });
 
   try {
@@ -212,9 +208,7 @@ export async function postSystemMessage(
     });
   } catch (error) {
     // if the second one fails, delete the first entry
-    await db
-      .delete(locationMessages)
-      .where(eq(locationMessages.id, message.id));
+    await db.delete(locationMessage).where(eq(locationMessage.id, message.id));
     throw error;
   }
   return !!message.id;
