@@ -52,6 +52,7 @@ export default async function LocationPage({
         character={character}
         isUserMaster={isUserMaster}
         locationCode={locationCode}
+        isSecretLocation={false}
       />
     </div>
   );

@@ -5,7 +5,7 @@ import { fetcher } from "@/utils/swr";
 
 export function useLocationMessages(
   locationId: string,
-  isSecrretLocation?: boolean,
+  isSecretLocation?: boolean,
 ) {
   const fetchingInterval = 1000 * 30; // 30 seconds
   const [lastTimestamp, setLastTimestamp] = useState<Date | null>(null);
@@ -15,7 +15,7 @@ export function useLocationMessages(
 
   const swrKey =
     `/api/game/location-messages/${locationId}?timestamp=${lastTimestamp?.toISOString() ?? ""}` +
-    (isSecrretLocation ? "&isSecretLocation=true" : "");
+    (isSecretLocation ? "&isSecretLocation=true" : "");
   const { isLoading, mutate, error } = useSWR<LocationMessageWithCharacter[]>(
     swrKey,
     fetcher,

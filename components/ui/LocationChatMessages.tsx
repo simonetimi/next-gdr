@@ -14,9 +14,11 @@ const locale = process.env.LOCALE;
 export function ActionMessage({
   currentMessage,
   character,
+  onOpenCharacterSheet,
 }: {
   currentMessage: LocationMessageWithCharacter;
   character: MinimalCharacter;
+  onOpenCharacterSheet: (characterId: string) => void;
 }) {
   const timeString = new Date(
     currentMessage.message.createdAt,
@@ -29,6 +31,7 @@ export function ActionMessage({
     <div className="flex gap-3 py-1">
       <div className="flex flex-shrink-0 flex-col items-center gap-1">
         <Avatar
+          onClick={() => onOpenCharacterSheet(character.id)}
           size="lg"
           src={currentMessage.character?.miniAvatarUrl ?? ""}
           name={currentMessage.character?.firstName ?? ""}
