@@ -160,18 +160,18 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
           />
         </Tooltip>
         <Dropdown>
-          <DropdownTrigger>
+          <Tooltip content={t("fontSize")}>
             <div>
-              <Tooltip content={t("fontSize")}>
+              <DropdownTrigger>
                 <Button
                   isIconOnly
                   startContent={<ALargeSmall className="h-5 w-5" />}
                   size="sm"
                   className="h-7 min-h-7 w-7 min-w-7"
                 />
-              </Tooltip>
+              </DropdownTrigger>
             </div>
-          </DropdownTrigger>
+          </Tooltip>
           <DropdownMenu
             aria-label={t("fontSize")}
             items={Object.entries(fontSizes)}
@@ -318,18 +318,18 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
           />
         </Tooltip>
         <Dropdown>
-          <DropdownTrigger>
+          <Tooltip content={t("table")}>
             <div>
-              <Tooltip content={t("table")}>
+              <DropdownTrigger>
                 <Button
                   isIconOnly
                   startContent={<TableIcon className="h-5 w-5" />}
                   size="sm"
                   className="h-7 min-h-7 w-7 min-w-7"
                 />
-              </Tooltip>
+              </DropdownTrigger>
             </div>
-          </DropdownTrigger>
+          </Tooltip>
           <DropdownMenu aria-label={t("tableOptions")}>
             <DropdownItem
               key="delete-table"
