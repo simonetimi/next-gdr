@@ -1,7 +1,8 @@
 {
   "general": {
     "entryLocationName": "Mappa",
-    "secretLocationName": "Luoghi segreti"
+    "secretLocationName": "Luoghi segreti",
+    "success": "Successo"
   },
   "pages": {
     "index": {
@@ -42,6 +43,9 @@
     },
     "settings": {
       "title": "Impostazioni"
+    },
+    "locationControls": {
+      "chatSavedOnClipboard": "Link alla chat salvato negli appunti"
     }
   },
   "game": {
@@ -107,7 +111,9 @@
       "rollAtMostOneHundredDice": "Devi lanciare al massimo un dado d100",
       "invalidRoll": "Lancio non valido",
       "invalidRollDescription": "Scrivi #d seguito da un numero tra 2 e 100. Es: #d10",
-      "retrievingMessages": "Errore nel recupero della chat. Attendi o aggiorna la pagina"
+      "retrievingMessages": "Errore nel recupero della chat. Attendi o aggiorna la pagina",
+      "notFound": "Chat non trovata",
+      "savingChat": "Errore nel salvataggio della chat"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",

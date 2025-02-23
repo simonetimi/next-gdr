@@ -9,11 +9,9 @@ import {
   locationMessages,
   locationSystemMessages,
   locationWhispers,
+  savedLocationMessages,
 } from "@/database/schema/locationMessages";
-import {
-  fullLocationMessagesSchema,
-  fullLocationMessagesWithCharactersSchema,
-} from "@/zod/schemas/locationMessages";
+import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -253,4 +251,22 @@ export async function fetchAllLocationMessagesWithCharacters(
     .orderBy(desc(locationMessages.createdAt));
 
   return result;
+}
+
+export async function getSavedChat(id: string) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+
+  const [savedChat] = await db
+    .select({ htmlContent: savedLocationMessages.htmlContent })
+    .from(savedLocationMessages)
+    .where(eq(savedLocationMessages.id, id));
+
+  if (!savedChat || !savedChat.htmlContent) {
+    throw new Error(t("chat.notFound"));
+  }
+
+  return savedChat;
 }

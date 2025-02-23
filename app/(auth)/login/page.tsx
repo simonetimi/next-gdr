@@ -24,7 +24,7 @@ export default async function SignInPage(props: {
                 errorMessage = error.message;
               }
               addToast({
-                title: t("errors"),
+                title: t("title"),
                 description: errorMessage,
                 color: "danger",
               });

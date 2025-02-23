@@ -6,6 +6,7 @@ import {
   locationMessages,
   locationSystemMessages,
   locationWhispers,
+  savedLocationMessages,
 } from "@/database/schema/locationMessages";
 import { and, desc, eq } from "drizzle-orm";
 import { auth } from "@/auth";
@@ -219,6 +220,24 @@ export async function postSystemMessage(
   return !!message.id;
 }
 
-// TODO method to fetch them all (single location) regardless of time (for the admins)
+export async function saveLocationChat(htmlContent: string) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  const t = await getTranslations("errors");
+  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+
+  const [savedChat] = await db
+    .insert(savedLocationMessages)
+    .values({ htmlContent })
+    .returning({ id: savedLocationMessages.id });
+
+  const domain = process.env.APP_URL;
+
+  return domain + "/api/game/saved-chat/" + savedChat.id;
+}
+
+//
+
+// TODO method to fetch them all (from a single location) regardless of time (for the admins)
 
 // TODO method to fetch them all for one specific character, regardless of time (for the admins)

@@ -22,9 +22,13 @@ import {
   postMasterScreen,
   postWhisper,
   postWhisperForAll,
+  saveLocationChat,
 } from "@/server/actions/locationMessages";
 import { rollDice } from "@/server/actions/game";
-import { downloadComponent } from "@/utils/download";
+import {
+  downloadLocationChatHTML,
+  generateLocationChatHTML,
+} from "@/utils/download";
 import { useTranslations } from "next-intl";
 
 export default function LocationControls({
@@ -44,7 +48,6 @@ export default function LocationControls({
   locationCode: string;
   isSecretLocation?: boolean;
 }) {
-  const locale = process.env.LOCALE;
   const t = useTranslations();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -148,7 +151,7 @@ export default function LocationControls({
         );
       }
 
-      // empty the fields and remove from locale storage
+      // empty the fields and remove from local storage
       setLocalMessage("");
       setMessageCharCount(0);
       localStorage.removeItem("locationMessage-" + locationCode);
@@ -170,8 +173,23 @@ export default function LocationControls({
     }
   };
 
-  function onDownloadChat() {
-    downloadComponent(locale ?? "en-US", locationCode);
+  async function onDownloadChat() {
+    const generatedHtml = generateLocationChatHTML(locationCode);
+    const link = await saveLocationChat(generatedHtml);
+    try {
+      await navigator.clipboard.writeText(link);
+      addToast({
+        title: t("general.success"),
+        description: t("components.locationControls.chatSavedOnClipboard"),
+        color: "success",
+      });
+    } catch (error) {
+      addToast({
+        title: t("errors.title"),
+        description: t("errors.chat.savingChat"),
+        color: "danger",
+      });
+    }
   }
 
   return (

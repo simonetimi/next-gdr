@@ -53,3 +53,11 @@ export const locationSystemMessages = pgTable("location_system_message", {
     { onDelete: "cascade" },
   ),
 });
+
+export const savedLocationMessages = pgTable("saved_location_message", {
+  id: uuid()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  htmlContent: text("html_content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
