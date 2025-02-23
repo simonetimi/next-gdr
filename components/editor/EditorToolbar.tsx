@@ -332,7 +332,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
           </Tooltip>
           <DropdownMenu aria-label={t("tableOptions")}>
             <DropdownItem
-              key="delete-table"
+              key="insert-table"
               onPress={() =>
                 editor
                   .chain()
@@ -341,14 +341,42 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
                   .run()
               }
             >
-              {t("insert")}
+              {t("insertTable")}
             </DropdownItem>
             <DropdownItem
-              key="insert-table"
+              key="add-column"
+              onPress={() => editor.chain().focus().addColumnAfter().run()}
+              isDisabled={!editor.can().addColumnAfter()}
+            >
+              {t("insertColumn")}
+            </DropdownItem>
+            <DropdownItem
+              key="delete-column"
+              onPress={() => editor.chain().focus().deleteColumn().run()}
+              isDisabled={!editor.can().deleteColumn()}
+            >
+              {t("removeColumn")}
+            </DropdownItem>
+            <DropdownItem
+              key="add-row"
+              onPress={() => editor.chain().focus().addRowAfter().run()}
+              isDisabled={!editor.can().addRowAfter()}
+            >
+              {t("insertRow")}
+            </DropdownItem>
+            <DropdownItem
+              key="delete-row"
+              onPress={() => editor.chain().focus().deleteRow().run()}
+              isDisabled={!editor.can().deleteRow()}
+            >
+              {t("removeRow")}
+            </DropdownItem>
+            <DropdownItem
+              key="delete-table"
               onPress={() => editor.chain().focus().deleteTable().run()}
               isDisabled={!editor.can().deleteTable()}
             >
-              {t("delete")}
+              {t("removeTable")}
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
