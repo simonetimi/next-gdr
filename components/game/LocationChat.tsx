@@ -13,13 +13,7 @@ import {
 import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
 import { useLocationMessages } from "@/hooks/useLocationMessages";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useMediaQuery } from "@uidotdev/usehooks";
-import { createPortal } from "react-dom";
-import Movable from "@/components/ui/Movable";
-import CharacterSheet from "@/components/game/CharacterSheet";
 import dynamic from "next/dynamic";
-import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
 
 function messageRender(
   currentMessage: LocationMessageWithCharacter,
@@ -130,5 +124,3 @@ function LocationChat({
 export default dynamic(() => Promise.resolve(LocationChat), {
   ssr: false,
 });
-
-// TODO movable component to render characters' sheets

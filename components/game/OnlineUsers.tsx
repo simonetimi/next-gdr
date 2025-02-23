@@ -4,6 +4,7 @@ import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
 import { Avatar, Spinner } from "@heroui/react";
 import { useOnlineCharacters } from "@/hooks/useOnlineCharacters";
+import { useGame } from "@/contexts/GameContext";
 
 export default function OnlineUsers() {
   const t = useTranslations();
@@ -133,23 +134,36 @@ const LocationGroup = ({
   </div>
 );
 
-// TODO movable to open character sheet
 const CharacterItem = ({
   character,
   race,
 }: {
   character: {
+    id: string;
     firstName: string;
     lastName: string;
     miniAvatarUrl: string | null;
   };
   race: { name: string };
-}) => (
-  <li className="flex items-center gap-2 p-2">
-    <Avatar src={character.miniAvatarUrl ?? ""} name={character.firstName} />
-    <span>
-      {character.firstName} {character.lastName}
-    </span>
-    <span className="text-sm text-gray-500">({race.name})</span>
-  </li>
-);
+}) => {
+  // the character sheet state is controlled in the context
+  const game = useGame();
+  const handleOnAvatarClick = () => {
+    game.toggleCharacterSheet(character.id);
+  };
+
+  return (
+    <li className="flex items-center gap-2 p-2">
+      <Avatar
+        src={character.miniAvatarUrl ?? ""}
+        name={character.firstName}
+        onClick={handleOnAvatarClick}
+        className="cursor-pointer"
+      />
+      <span>
+        {character.firstName} {character.lastName}
+      </span>
+      <span className="text-sm text-gray-500">({race.name})</span>
+    </li>
+  );
+};

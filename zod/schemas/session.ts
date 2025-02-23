@@ -14,6 +14,7 @@ export const onlineUsersSchema = z.array(
   sessionSelectSchema
     .extend({
       character: characterSelectSchema.pick({
+        id: true,
         firstName: true,
         middleName: true,
         lastName: true,

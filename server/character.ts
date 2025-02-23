@@ -167,6 +167,7 @@ export async function getOnlineCharacters() {
   const results = await db
     .select({
       character: {
+        id: characters.id,
         firstName: characters.firstName,
         middleName: characters.middleName,
         lastName: characters.lastName,
