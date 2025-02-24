@@ -17,7 +17,9 @@ export default async function Home() {
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {session ? (
           <div className="flex flex-col gap-4">
-            <p>Welcome, {session.user?.name}!</p>
+            <p>
+              {t("welcome")}, {session.user?.name}!
+            </p>
             <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
               {t("enter")}
             </Button>

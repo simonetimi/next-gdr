@@ -44,6 +44,7 @@ import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
 import SettingsPortal from "@/components/portals/SettingsPortal";
 import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal";
 import { Badge } from "@heroui/badge";
+import { useTranslations } from "next-intl";
 
 function ControlNavbar({
   character,
@@ -57,6 +58,7 @@ function ControlNavbar({
   isMaster?: boolean;
 }) {
   const game = useGame();
+  const t = useTranslations("components.controlNavbar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
   const router = useRouter();
@@ -137,7 +139,7 @@ function ControlNavbar({
         />
         <NavbarContent className="hidden sm:flex sm:gap-4" justify="center">
           <NavbarItem>
-            <Tooltip content="Map">
+            <Tooltip content={t("map")}>
               <Button
                 isIconOnly
                 startContent={<Map />}
@@ -148,7 +150,7 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Tooltip content="Online users">
+            <Tooltip content={t("onlineCharacters")}>
               <Button
                 isIconOnly
                 startContent={<Users />}
@@ -160,7 +162,7 @@ function ControlNavbar({
           </NavbarItem>
           <NavbarItem>
             <Badge color="primary" content="5">
-              <Tooltip content="Off-game messages">
+              <Tooltip content={t("offGameMessages")}>
                 <Button
                   isIconOnly
                   startContent={<Mail />}
@@ -172,7 +174,7 @@ function ControlNavbar({
             </Badge>
           </NavbarItem>
           <NavbarItem>
-            <Tooltip content="On-game messages">
+            <Tooltip content={t("onGameMessages")}>
               <Button
                 isIconOnly
                 startContent={<MessageCircle />}
@@ -183,7 +185,7 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Tooltip content="Settings">
+            <Tooltip content={t("settings")}>
               <Button
                 isIconOnly
                 startContent={<Settings />}
@@ -196,7 +198,7 @@ function ControlNavbar({
           </NavbarItem>
           {allowMultipleCharacters && (
             <NavbarItem>
-              <Tooltip content="Switch character">
+              <Tooltip content={t("switchCharacter")}>
                 <Button
                   isIconOnly
                   startContent={<ArrowLeftRight />}
@@ -210,7 +212,7 @@ function ControlNavbar({
           )}
           {isMaster && (
             <NavbarItem>
-              <Tooltip content="Moderation">
+              <Tooltip content={t("moderation")}>
                 <Button
                   isIconOnly
                   startContent={<BadgeCheck />}
@@ -223,7 +225,7 @@ function ControlNavbar({
           )}
           {isAdmin && (
             <NavbarItem>
-              <Tooltip content="Admin settings">
+              <Tooltip content={t("adminDashboard")}>
                 <Button
                   isIconOnly
                   startContent={<Shield />}
@@ -246,7 +248,7 @@ function ControlNavbar({
               }}
               variant="light"
             >
-              Main map
+              {t("map")}
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">
@@ -256,7 +258,7 @@ function ControlNavbar({
               onPress={toggleOnlineUsersMovable}
               variant="light"
             >
-              Online users
+              {t("onlineCharacters")}
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">
@@ -266,7 +268,7 @@ function ControlNavbar({
               onPress={toggleOffGameMessagesMovable}
               variant="light"
             >
-              Off-game messages
+              {t("offGameMessages")}
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">
@@ -276,7 +278,7 @@ function ControlNavbar({
               onPress={toggleOnGameMessagesMovable}
               variant="light"
             >
-              On-game messages
+              {t("onGameMessages")}
             </Button>
           </NavbarMenuItem>
           <NavbarMenuItem className="flex flex-col">
@@ -286,7 +288,7 @@ function ControlNavbar({
               onPress={toggleSettingsMovable}
               variant="light"
             >
-              Settings
+              {t("settings")}
             </Button>
           </NavbarMenuItem>
           {allowMultipleCharacters && (
@@ -297,7 +299,7 @@ function ControlNavbar({
                 onPress={handleOnPressResetCharacter}
                 variant="light"
               >
-                Switch characters
+                {t("switchCharacter")}
               </Button>
             </NavbarMenuItem>
           )}
@@ -312,7 +314,7 @@ function ControlNavbar({
                 }}
                 variant="light"
               >
-                Moderation
+                {t("moderation")}
               </Button>
             </NavbarMenuItem>
           )}
@@ -327,7 +329,7 @@ function ControlNavbar({
                 }}
                 variant="light"
               >
-                Admin settings
+                {t("adminDashboard")}
               </Button>
             </NavbarMenuItem>
           )}
@@ -340,7 +342,7 @@ function ControlNavbar({
                 color={isInvisible ? "primary" : "default"}
                 variant="light"
               >
-                Invisible mode
+                {t("toggleInvisible")}
               </Button>
             </NavbarMenuItem>
           )}
@@ -355,7 +357,7 @@ function ControlNavbar({
         />
       </Tooltip>
       {isMaster && !isSmallDevice && (
-        <Tooltip content="Toggle invisible">
+        <Tooltip content={t("toggleInvisible")}>
           <Button
             isIconOnly
             startContent={isInvisible ? <EyeOff /> : <Eye />}

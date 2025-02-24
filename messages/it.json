@@ -6,10 +6,20 @@
   },
   "pages": {
     "index": {
-      "enter": "Entra"
+      "enter": "Entra",
+      "welcome": "Benvenuto"
+    }
+  },
+  "components": {
+    "map": {
+      "select": {
+        "placeholder": "Scegli un luogo",
+        "label": "Scelta del luogo"
+      }
     },
     "newCharacter": {
       "title": "Nuovo Personaggio",
+      "created": "Hai appena creato:",
       "name": {
         "label": "Nome",
         "placeholder": "Nome del personaggio",
@@ -26,14 +36,10 @@
       },
       "submit": "Crea",
       "play": "Vai al gioco"
-    }
-  },
-  "components": {
-    "map": {
-      "select": {
-        "placeholder": "Scegli un luogo",
-        "label": "Scelta del luogo"
-      }
+    },
+    "characterSelection": {
+      "title": "Seleziona personaggio",
+      "create": "Crea un nuovo personaggio"
     },
     "onlineCharacters": {
       "title": "Personaggi online"
@@ -44,8 +50,28 @@
     "settings": {
       "title": "Impostazioni"
     },
+    "controlNavbar": {
+      "map": "Mappa",
+      "onlineCharacters": "Online",
+      "offGameMessages": "Messaggi off game",
+      "onGameMessages": "Messaggi on game",
+      "switchCharacter": "Cambia personaggio",
+      "settings": "Impostazioni",
+      "moderation": "Moderazione",
+      "adminDashboard": "Dashboard admin",
+      "toggleInvisible": "Modalità invisible"
+    },
     "locationControls": {
-      "chatSavedOnClipboard": "Link alla chat salvato negli appunti"
+      "chatSavedOnClipboard": "Link alla chat salvato negli appunti",
+      "rollDice": "Tiri",
+      "saveChat": "Salva chat",
+      "help": "Aiuto",
+      "action": "Azione",
+      "whisper": "Sussurro",
+      "master": "Master",
+      "tag": "Tag",
+      "recipient": "Destinatario",
+      "messagePlaceholder": "Scrivi qui"
     },
     "editor": {
       "bold": "Grassetto",

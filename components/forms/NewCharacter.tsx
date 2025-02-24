@@ -19,7 +19,7 @@ import { FormEvent, useState } from "react";
 export default function NewCharacterForm({ races }: { races: Races }) {
   const [character, setCharacter] = useState<Character | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const t = useTranslations("pages.newCharacter");
+  const t = useTranslations("components.newCharacter");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,8 +46,9 @@ export default function NewCharacterForm({ races }: { races: Races }) {
     <section className="flex flex-col items-center justify-center gap-8">
       {character ? (
         <>
-          <h2>Welcome</h2>
-          <div>You just created your new character: {character.firstName}</div>
+          <p>
+            {t("created")} {character.firstName}
+          </p>
           <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
             {t("play")}
           </Button>

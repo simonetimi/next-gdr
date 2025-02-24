@@ -30,6 +30,7 @@ import {
   generateLocationChatHTML,
 } from "@/utils/download";
 import { useTranslations } from "next-intl";
+import { Tooltip } from "@heroui/tooltip";
 
 export default function LocationControls({
   locationId,
@@ -208,32 +209,38 @@ export default function LocationControls({
           <NavbarContent className="hidden sm:flex sm:h-full sm:w-full sm:flex-col sm:gap-2">
             <div className="-mt-4 flex flex-wrap gap-x-1 gap-y-2">
               <NavbarItem>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  className="m-0 p-0"
-                  startContent={<Dices className="h-6 w-6" />}
-                  variant="light"
-                />
+                <Tooltip content={t("components.locationControls.rollDice")}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="m-0 p-0"
+                    startContent={<Dices className="h-6 w-6" />}
+                    variant="light"
+                  />
+                </Tooltip>
               </NavbarItem>
               <NavbarItem>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  className="m-0 p-0"
-                  startContent={<Save className="h-6 w-6" />}
-                  onPress={onDownloadChat}
-                  variant="light"
-                />
+                <Tooltip content={t("components.locationControls.saveChat")}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="m-0 p-0"
+                    startContent={<Save className="h-6 w-6" />}
+                    onPress={onDownloadChat}
+                    variant="light"
+                  />
+                </Tooltip>
               </NavbarItem>
               <NavbarItem>
-                <Button
-                  isIconOnly
-                  size="sm"
-                  className="m-0 p-0"
-                  startContent={<CircleHelp className="h-6 w-6" />}
-                  variant="light"
-                />
+                <Tooltip content={t("components.locationControls.help")}>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    className="m-0 p-0"
+                    startContent={<CircleHelp className="h-6 w-6" />}
+                    variant="light"
+                  />
+                </Tooltip>
               </NavbarItem>
             </div>
             <div className="-mt-5">
@@ -252,14 +259,26 @@ export default function LocationControls({
           label="Tipo"
           variant="flat"
         >
-          <SelectItem key="action">Azione</SelectItem>
-          <SelectItem key="whisper">Sussurro</SelectItem>
-          {isUserMaster ? <SelectItem key="master">Master</SelectItem> : null}
+          <SelectItem key="action">
+            {t("components.locationControls.action")}
+          </SelectItem>
+          <SelectItem key="whisper">
+            {t("components.locationControls.whisper")}
+          </SelectItem>
+          {isUserMaster ? (
+            <SelectItem key="master">
+              {t("components.locationControls.master")}
+            </SelectItem>
+          ) : null}
         </Select>
         <Input
           onValueChange={handleTagChange}
           value={messageType === "whisper" ? recipientCharacter : tag}
-          label={messageType === "whisper" ? "Destinatario" : "Tag"}
+          label={
+            messageType === "whisper"
+              ? t("components.locationControls.recipient")
+              : t("components.locationControls.master")
+          }
         />
       </div>
       <div className="flex flex-1 items-center justify-end gap-1">
@@ -276,7 +295,7 @@ export default function LocationControls({
               await handleSubmitMessage();
             }
           }}
-          placeholder="Scrivi il tuo testo qui"
+          placeholder={t("components.locationControls.messagePlaceholder")}
         />
         <div className="flex flex-col gap-3 pl-2">
           <Button

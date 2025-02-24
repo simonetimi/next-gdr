@@ -1,11 +1,13 @@
 "use client";
 
 import { Character } from "@/models/characters";
-import { Avatar, AvatarGroup } from "@heroui/react";
+import { addToast, Avatar, AvatarGroup } from "@heroui/react";
 import { setCurrentCharacter } from "@/server/actions/character";
 import { GAME_ROUTE, NEW_CHARACTER_ROUTE } from "@/utils/routes";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "@heroui/tooltip";
+import { useTranslations } from "next-intl";
+import { AuthError } from "next-auth";
 
 export default function CharacterSelection({
   characters,
@@ -16,13 +18,15 @@ export default function CharacterSelection({
 }) {
   const router = useRouter();
   const showAddCharacterButton = characters.length < maxCharactersAllowed;
+  const t = useTranslations("components.characterSelection");
+  const tError = useTranslations("errors");
 
   return (
     <>
-      <h1>Select your character</h1>
+      <h1>{t("title")}</h1>
       <AvatarGroup isBordered isGrid className="flex gap-4">
         {showAddCharacterButton && (
-          <Tooltip content="Create new character">
+          <Tooltip content={t("create")}>
             <Avatar
               name="+"
               size="lg"
@@ -51,7 +55,15 @@ export default function CharacterSelection({
                     router.push(GAME_ROUTE);
                   }
                 } catch (error) {
-                  // handle error
+                  let errorMessage = t("generic");
+                  if (error instanceof Error) {
+                    errorMessage = error.message;
+                  }
+                  addToast({
+                    title: tError("title"),
+                    description: errorMessage,
+                    color: "danger",
+                  });
                 }
               }}
             />
