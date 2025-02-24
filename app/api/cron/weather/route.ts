@@ -2,6 +2,7 @@ import { db } from "@/database/db";
 import { weatherForecasts } from "@/database/schema/weather";
 import getWeather from "@/utils/weatherGenerator";
 import { NextResponse } from "next/server";
+import { Logger } from "@/utils/logger";
 
 export async function GET(req: Request) {
   const authToken = (req.headers.get("authorization") || "")
@@ -22,6 +23,7 @@ export async function GET(req: Request) {
   try {
     await db.insert(weatherForecasts).values(weather);
   } catch (error) {
+    Logger.error(error);
     if (error instanceof Error) {
       return NextResponse.json({ message: error.message }, { status: 500 });
     }

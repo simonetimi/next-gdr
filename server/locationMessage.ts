@@ -12,6 +12,7 @@ import {
   savedLocationMessages,
 } from "@/database/schema/locationMessage";
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
+import { Logger } from "@/utils/logger";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -109,6 +110,7 @@ export async function fetchAllLocationMessages(locationId: string) {
   try {
     return fullLocationMessagesSchema.parse(result);
   } catch (error) {
+    Logger.error(error);
     throw new Error(t("chat.retrievingMessages"));
   }
 }

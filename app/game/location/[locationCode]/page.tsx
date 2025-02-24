@@ -9,6 +9,7 @@ import { auth } from "@/auth";
 import LocationChatSidebar from "@/components/game/LocationChatSidebar";
 import { fetchWeather } from "@/server/weather";
 import { accessLocation } from "@/server/location";
+import { Logger } from "@/utils/logger";
 
 export default async function LocationPage({
   params,
@@ -31,9 +32,8 @@ export default async function LocationPage({
       isMaster(userId ?? ""),
       fetchWeather(),
     ]);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    Logger.error(error);
     redirect(GAME_ROUTE);
   }
   if (!location || !weather || !character || !character?.id)

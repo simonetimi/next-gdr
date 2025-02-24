@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchAllLocationMessagesWithCharacters } from "@/server/locationMessage";
+import { Logger } from "@/utils/logger";
 
 export async function GET(
   request: NextRequest,
@@ -23,6 +24,7 @@ export async function GET(
 
     return NextResponse.json(messages);
   } catch (error) {
+    Logger.error(error);
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
   }

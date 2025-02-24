@@ -15,6 +15,7 @@ import { sessions } from "@/database/schema/auth";
 import { increaseCharacterExperience } from "@/server/actions/character";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
+import { Logger } from "@/utils/logger";
 
 export async function postActionMessage(
   locationId: string,
@@ -207,6 +208,7 @@ export async function postSystemMessage(
       systemType,
     });
   } catch (error) {
+    Logger.error(error);
     // if the second one fails, delete the first entry
     await db.delete(locationMessage).where(eq(locationMessage.id, message.id));
     throw error;

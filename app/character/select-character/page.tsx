@@ -3,6 +3,7 @@ import { getUserCharacters } from "@/server/character";
 import { redirect } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSelection from "@/components/forms/CharacterSelection";
+import { Logger } from "@/utils/logger";
 
 export default async function SelectCharacterPage() {
   const allowMultipleCharacters =
@@ -14,8 +15,8 @@ export default async function SelectCharacterPage() {
   let characters: Character[] = [];
   try {
     characters = await getUserCharacters();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    Logger.error(error);
     redirect(GAME_ROUTE);
   }
 

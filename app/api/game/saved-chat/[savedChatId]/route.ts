@@ -1,5 +1,6 @@
 import { getSavedChat } from "@/server/locationMessage";
 import { NextResponse } from "next/server";
+import { Logger } from "@/utils/logger";
 
 export async function GET(
   request: Request,
@@ -19,6 +20,7 @@ export async function GET(
       },
     });
   } catch (error) {
+    Logger.error(error);
     if (error instanceof Error) {
       return new NextResponse(error.message, { status: 404 });
     }

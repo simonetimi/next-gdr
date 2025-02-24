@@ -2,6 +2,7 @@ import { signIn, providerMap } from "@/auth";
 import { AuthError } from "next-auth";
 import { addToast } from "@heroui/react";
 import { getTranslations } from "next-intl/server";
+import { Logger } from "@/utils/logger";
 
 export default async function SignInPage(props: {
   searchParams: { callbackUrl: string | undefined };
@@ -19,6 +20,7 @@ export default async function SignInPage(props: {
                 redirectTo: props.searchParams?.callbackUrl ?? "",
               });
             } catch (error) {
+              Logger.error(error);
               let errorMessage = t("generic");
               if (error instanceof AuthError) {
                 errorMessage = error.message;
