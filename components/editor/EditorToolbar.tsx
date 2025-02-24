@@ -23,7 +23,7 @@ import {
   ListOrdered,
   List,
   Palette,
-  Image,
+  Image as ImageIcon,
   ALargeSmall,
   AlignLeft,
   AlignCenter,
@@ -118,7 +118,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
   };
   return (
     <>
-      <div className="border-input flex flex-wrap justify-evenly gap-1 rounded-2xl border bg-transparent p-2">
+      <div className="border-input flex flex-wrap gap-0.5 rounded-2xl border bg-transparent p-1 sm:gap-1 sm:p-1.5">
         <Tooltip content={t("bold")}>
           <Button
             isIconOnly
@@ -154,7 +154,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             isIconOnly
             startContent={<Strikethrough className="h-5 w-5" />}
             size="sm"
-            className="h-7 min-h-7 w-7 min-w-7"
+            className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
             onPress={() => editor.chain().focus().toggleStrike().run()}
             color={editor.isActive("strike") ? "primary" : "default"}
           />
@@ -263,7 +263,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             isIconOnly
             startContent={<ListOrdered className="h-5 w-5" />}
             size="sm"
-            className="h-7 min-h-7 w-7 min-w-7"
+            className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
             onPress={() => editor.chain().focus().toggleOrderedList().run()}
             color={editor.isActive("orderedList") ? "primary" : "default"}
           />
@@ -273,7 +273,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             isIconOnly
             startContent={<List className="h-5 w-5" />}
             size="sm"
-            className="h-7 min-h-7 w-7 min-w-7"
+            className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
             onPress={() => editor.chain().focus().toggleBulletList().run()}
             color={editor.isActive("bulletList") ? "primary" : "default"}
           />
@@ -291,7 +291,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
         <Tooltip content={t("image")}>
           <Button
             isIconOnly
-            startContent={<Image className="h-5 w-5" />}
+            startContent={<ImageIcon className="h-5 w-5" />}
             size="sm"
             className="h-7 min-h-7 w-7 min-w-7"
             onPress={() => setIsImageOpen(true)}
@@ -302,7 +302,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             isIconOnly
             startContent={<Quote className="h-5 w-5" />}
             size="sm"
-            className="h-7 min-h-7 w-7 min-w-7"
+            className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
             onPress={() => editor.chain().focus().toggleBlockquote().run()}
             color={editor.isActive("blockquote") ? "primary" : "default"}
           />
@@ -312,7 +312,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             isIconOnly
             startContent={<Code className="h-5 w-5" />}
             size="sm"
-            className="h-7 min-h-7 w-7 min-w-7"
+            className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
             onPress={() => editor.chain().focus().toggleCodeBlock().run()}
             color={editor.isActive("codeBlock") ? "primary" : "default"}
           />
@@ -325,7 +325,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
                   isIconOnly
                   startContent={<TableIcon className="h-5 w-5" />}
                   size="sm"
-                  className="h-7 min-h-7 w-7 min-w-7"
+                  className="hidden h-7 min-h-7 w-7 min-w-7 sm:flex"
                 />
               </DropdownTrigger>
             </div>
