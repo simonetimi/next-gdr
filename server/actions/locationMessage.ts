@@ -36,9 +36,13 @@ export async function postActionMessage(
   // hard limits for characters
   const hardCharsLimits = GameConfig.getCharsLimitsPerAction();
   if (content.length > hardCharsLimits.max)
-    throw new Error(t("validation.maxCharsLimit"));
+    throw new Error(
+      t("validation.maxCharsLimit", { maxChars: hardCharsLimits.max }),
+    );
   if (content.length < hardCharsLimits.min)
-    throw new Error(t("validation.minCharsLimit"));
+    throw new Error(
+      t("validation.minCharsLimit", { minChars: hardCharsLimits.min }),
+    );
 
   const [message] = await db
     .insert(locationMessage)
@@ -84,9 +88,18 @@ export async function postWhisper(
   content: string,
   isSecretLocation?: boolean,
 ) {
+  const t = await getTranslations("errors");
+
+  const hardCharsLimitPerWhisper = GameConfig.getCharsLimitsPerAction().whisper;
+  if (content.length > hardCharsLimitPerWhisper)
+    throw new Error(
+      t("validation.maxCharsLimitWhisper", {
+        maxChars: hardCharsLimitPerWhisper,
+      }),
+    );
+
   const session = await auth();
   const userId = session?.user?.id;
-  const t = await getTranslations("errors");
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [recipientCharacter] = await db
@@ -145,9 +158,18 @@ export async function postWhisperForAll(
   content: string,
   isSecretLocation?: boolean,
 ) {
+  const t = await getTranslations("errors");
+
+  const hardCharsLimitPerWhisper = GameConfig.getCharsLimitsPerAction().whisper;
+  if (content.length > hardCharsLimitPerWhisper)
+    throw new Error(
+      t("validation.maxCharsLimitWhisper", {
+        maxChars: hardCharsLimitPerWhisper,
+      }),
+    );
+
   const session = await auth();
   const userId = session?.user?.id;
-  const t = await getTranslations("errors");
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [message] = await db
@@ -171,9 +193,19 @@ export async function postMasterScreen(
   content: string,
   isSecretLocation?: boolean,
 ) {
+  const t = await getTranslations("errors");
+
+  const hardCharsLimitPerMasterAction =
+    GameConfig.getCharsLimitsPerAction().master;
+  if (content.length > hardCharsLimitPerMasterAction)
+    throw new Error(
+      t("validation.maxCharsLimit", {
+        maxChars: hardCharsLimitPerMasterAction,
+      }),
+    );
+
   const session = await auth();
   const userId = session?.user?.id;
-  const t = await getTranslations("errors");
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const isUserMaster = isMaster(userId);

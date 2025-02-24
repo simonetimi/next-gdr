@@ -11,6 +11,8 @@ export class GameConfig {
     return {
       min: parseInt(process.env.MIN_CHARS_PER_ACTION ?? "200"),
       max: parseInt(process.env.MAX_CHARS_PER_ACTION ?? "4000"),
+      master: parseInt(process.env.MAX_LIMIT_PER_MASTER_ACTION ?? "10000"),
+      whisper: parseInt(process.env.MAX_LIMIT_PER_WHISPER ?? "300"),
     };
   }
 
