@@ -14,7 +14,7 @@
     "map": {
       "select": {
         "placeholder": "Scegli un luogo",
-        "label": "Scelta del luogo"
+        "label": "Luogo"
       }
     },
     "newCharacter": {
@@ -32,7 +32,8 @@
       },
       "race": {
         "label": "Razza",
-        "placeholder": "Seleziona una razza"
+        "placeholder": "Seleziona una razza",
+        "mustSelect": "Devi selezionare una razza"
       },
       "submit": "Crea",
       "play": "Vai al gioco"
