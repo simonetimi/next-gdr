@@ -24,6 +24,8 @@ import {
   WaxingCrescent,
   WaxingGibbous,
 } from "@/components/ui/icons/MoonPhases";
+import { AppConfig } from "@/utils/config/appConfig";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export const ForecastMap = {
   sunny: <Sun />,
@@ -56,8 +58,9 @@ export const MoonMap = {
 };
 
 export function temperatureToColor(temperature: number): string {
-  const minTemp = parseInt(process.env.WINTER_MIN_TEMP!);
-  const maxTemp = parseInt(process.env.SUMMER_MAX_TEMP!);
+  const seasonTemperatures = GameConfig.getSeasonTemperatures();
+  const minTemp = seasonTemperatures.winter.min;
+  const maxTemp = seasonTemperatures.summer.max;
 
   const clampedTemp = Math.max(minTemp, Math.min(maxTemp, temperature));
 

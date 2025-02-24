@@ -3,13 +3,14 @@ import { weatherForecasts } from "@/database/schema/weather";
 import getWeather from "@/utils/weatherGenerator";
 import { NextResponse } from "next/server";
 import { Logger } from "@/utils/logger";
+import { AppConfig } from "@/utils/config/appConfig";
 
 export async function GET(req: Request) {
   const authToken = (req.headers.get("authorization") || "")
     .split("Bearer ")
     .at(1);
 
-  if (!authToken || authToken != process.env.CRON_SECRET) {
+  if (!authToken || authToken != AppConfig.getCronSecret()) {
     return NextResponse.json(
       { error: "Unauthorized" },
       {

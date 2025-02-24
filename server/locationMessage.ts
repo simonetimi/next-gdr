@@ -13,6 +13,7 @@ import {
 } from "@/database/schema/locationMessage";
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 import { Logger } from "@/utils/logger";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -29,9 +30,8 @@ export async function fetchAllLocationMessages(locationId: string) {
     .limit(1);
   const userCharacterId = character[0].id;
 
-  const fetchLocationMessagesLastHours = parseInt(
-    process.env.FETCH_LOCATION_MESSAGES_LAST_HOURS!,
-  );
+  const fetchLocationMessagesLastHours =
+    GameConfig.getLocationSettings().fetchLastHours;
 
   const fetchMessagesLastHours = new Date();
   fetchMessagesLastHours.setHours(
@@ -134,9 +134,8 @@ export async function fetchAllLocationMessagesWithCharacters(
     .limit(1);
   const userCharacterId = character[0].id;
 
-  const fetchLocationMessagesLastHours = parseInt(
-    process.env.FETCH_LOCATION_MESSAGES_LAST_HOURS!,
-  );
+  const fetchLocationMessagesLastHours =
+    GameConfig.getLocationSettings().fetchLastHours;
 
   const fetchMessagesLastHours = new Date();
   fetchMessagesLastHours.setHours(

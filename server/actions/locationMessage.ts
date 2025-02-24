@@ -16,6 +16,8 @@ import { increaseCharacterExperience } from "@/server/actions/character";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
 import { Logger } from "@/utils/logger";
+import { GameConfig } from "@/utils/config/gameConfig";
+import { AppConfig } from "@/utils/config/appConfig";
 
 export async function postActionMessage(
   locationId: string,
@@ -53,9 +55,8 @@ export async function postActionMessage(
     throw error;
   }
 
-  const experiencePerAction = parseInt(
-    process.env.EXPERIENCE_PER_ACTION ?? "1",
-  );
+  const experiencePerAction = GameConfig.getExperiencePerAction();
+
   await increaseCharacterExperience(experiencePerAction, characterId);
 
   return !!message.id;
@@ -227,7 +228,7 @@ export async function saveLocationChat(htmlContent: string) {
     .values({ htmlContent })
     .returning({ id: savedLocationMessages.id });
 
-  const domain = process.env.APP_URL;
+  const domain = AppConfig.getAppUrl();
 
   return domain + "/api/game/saved-chat/" + savedChat.id;
 }

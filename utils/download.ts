@@ -1,7 +1,8 @@
 import { fromKebabCase } from "@/utils/strings";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export const generateLocationChatHTML = (locationCode: string) => {
-  const locale = process.env.LOCALE || "en-US";
+  const locale = GameConfig.getLocale();
   const now = new Date().toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
@@ -13,7 +14,7 @@ export const generateLocationChatHTML = (locationCode: string) => {
 };
 
 export const downloadLocationChatHTML = (locationCode: string) => {
-  const locale = process.env.LOCALE || "en-US";
+  const locale = GameConfig.getLocale();
   const now = new Date().toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",

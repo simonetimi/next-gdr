@@ -9,6 +9,7 @@ import { and, eq, gt, sql } from "drizzle-orm";
 import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
 import { getCurrentCharacterIdOnly } from "@/server/character";
 import { getTranslations } from "next-intl/server";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export async function getLocation(locationCode: string) {
   const result = await db
@@ -31,9 +32,8 @@ export async function accessLocation(locationCode: string) {
 
   if (!characterId.id) throw new Error(t("game.characters.notFound"));
 
-  const logIntervalMinutes = parseInt(
-    process.env.LOCATION_ACCESS_LOG_INTERVAL_MINUTES!,
-  );
+  const logIntervalMinutes = GameConfig.getLocationSettings().logInterval;
+
   const logInterval = new Date(Date.now() - logIntervalMinutes * 60 * 1000);
 
   const recentAccess = await db
@@ -100,9 +100,8 @@ export async function accessSecretLocation(secretCode: string) {
 
   if (!characterId.id) throw new Error(t("game.characters.notFound"));
 
-  const logIntervalMinutes = parseInt(
-    process.env.LOCATION_ACCESS_LOG_INTERVAL_MINUTES!,
-  );
+  const logIntervalMinutes = GameConfig.getLocationSettings().logInterval;
+
   const logInterval = new Date(Date.now() - logIntervalMinutes * 60 * 1000);
 
   const recentAccess = await db

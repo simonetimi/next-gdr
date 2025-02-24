@@ -4,14 +4,13 @@ import { redirect } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSelection from "@/components/forms/CharacterSelection";
 import { Logger } from "@/utils/logger";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export default async function SelectCharacterPage() {
-  const allowMultipleCharacters =
-    process.env.ALLOW_MULTIPLE_CHARACTERS?.toLowerCase() === "true";
+  const allowMultipleCharacters = GameConfig.isMultipleCharactersAllowed();
   if (!allowMultipleCharacters) redirect(GAME_ROUTE);
 
-  const maxCharactersAllowed =
-    parseInt(process.env.MAX_CHARACTERS_ALLOWED ?? "") || 1;
+  const maxCharactersAllowed = GameConfig.getMaxCharacters() || 1;
   let characters: Character[] = [];
   try {
     characters = await getUserCharacters();

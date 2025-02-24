@@ -1,5 +1,6 @@
 import { Moon } from "lunarphase-js";
 import { toCamelCase } from "@/utils/strings";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 type WeatherCondition =
   | "sunny"
@@ -27,28 +28,28 @@ export default function getWeather(): {
   windSpeed: number;
   lunarPhase: string;
 } {
-  const isExtremeWeatherAllowed =
-    process.env.ALLOW_EXTREME_WEATHER?.toLowerCase() === "true";
+  const extremeWeatherSettings = GameConfig.getExtremeWeatherSettings();
   const month = new Date().getMonth();
   const season = getSeason(month);
   let maxTemp;
   let minTemp;
+  const seasonTemperatures = GameConfig.getSeasonTemperatures();
   if (season === "winter") {
-    maxTemp = parseInt(process.env.WINTER_MAX_TEMP!);
-    minTemp = parseInt(process.env.WINTER_MIN_TEMP!);
+    maxTemp = seasonTemperatures.winter.max;
+    minTemp = seasonTemperatures.winter.min;
   } else if (season === "spring") {
-    maxTemp = parseInt(process.env.SPRING_MAX_TEMP!);
-    minTemp = parseInt(process.env.SPRING_MIN_TEMP!);
+    maxTemp = seasonTemperatures.spring.max;
+    minTemp = seasonTemperatures.spring.min;
   } else if (season === "summer") {
-    maxTemp = parseInt(process.env.SUMMER_MAX_TEMP!);
-    minTemp = parseInt(process.env.SUMMER_MIN_TEMP!);
+    maxTemp = seasonTemperatures.summer.max;
+    minTemp = seasonTemperatures.summer.min;
   } else {
-    maxTemp = parseInt(process.env.FALL_MAX_TEMP!);
-    minTemp = parseInt(process.env.FALL_MIN_TEMP!);
+    maxTemp = seasonTemperatures.fall.max;
+    minTemp = seasonTemperatures.fall.min;
   }
   const condition = getWeatherCondition(
     season,
-    isExtremeWeatherAllowed,
+    extremeWeatherSettings.allowed,
     maxTemp,
   );
 
@@ -72,7 +73,7 @@ function getWeatherCondition(
   const random = Math.random() * 100;
 
   if (isExtremeWeatherAllowed) {
-    const extremeWeatherChance = parseInt(process.env.EXTREME_WEATHER_CHANCE!);
+    const extremeWeatherChance = GameConfig.getExtremeWeatherSettings().chance;
     const extremeWeightsForSeason =
       extremeWeatherWeights[season as keyof typeof extremeWeatherWeights];
     if (random <= extremeWeatherChance) {
@@ -100,7 +101,7 @@ function getWeatherCondition(
   for (const [condition, weight] of Object.entries(seasonWeights)) {
     sum += weight;
     if (random <= sum) {
-      const temperatureUnit = process.env.TEMPERATURE_UNIT;
+      const temperatureUnit = GameConfig.getTemperatureUnit();
       const maxSnowTemperature = temperatureUnit === "C" ? 0 : 32;
 
       if (condition === "snowy" && maxTemperature > maxSnowTemperature) {
