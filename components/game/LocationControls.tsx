@@ -25,12 +25,10 @@ import {
   saveLocationChat,
 } from "@/server/actions/locationMessage";
 import { rollDice } from "@/server/actions/game";
-import {
-  downloadLocationChatHTML,
-  generateLocationChatHTML,
-} from "@/utils/download";
+import { generateLocationChatHTML } from "@/utils/download";
 import { useTranslations } from "next-intl";
 import { Tooltip } from "@heroui/tooltip";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 export default function LocationControls({
   locationId,
@@ -78,8 +76,10 @@ export default function LocationControls({
     }
   }, [locationCode]);
 
+  const maxChars = GameConfig.getCharsLimitsPerAction().max;
   const handleMessageChange = (value: string) => {
-    const truncatedValue = value.length >= 4000 ? value.slice(0, 4000) : value;
+    const truncatedValue =
+      value.length >= maxChars ? value.slice(0, maxChars) : value;
     setLocalMessage(truncatedValue);
     setMessageCharCount(truncatedValue.length);
     localStorage.setItem("locationMessage-" + locationCode, truncatedValue);

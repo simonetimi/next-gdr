@@ -6,11 +6,11 @@ import {
 } from "@/utils/strings";
 import { MinimalCharacter } from "@/models/characters";
 import { Markup } from "interweave";
-import { ClientConfig } from "@/utils/config/clientConfig";
+import { GameConfig } from "@/utils/config/gameConfig";
 
 // TODO insert labels text to be translated
 
-const locale = ClientConfig.getLocale();
+const locale = GameConfig.getLocale();
 
 export function ActionMessage({
   currentMessage,

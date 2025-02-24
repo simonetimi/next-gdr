@@ -7,17 +7,17 @@ export class GameConfig {
     return parseInt(process.env.MAX_CHARACTERS_ALLOWED ?? "2");
   }
 
-  public static getCharacterLimits() {
+  public static getCharsLimitsPerAction() {
     return {
-      min: parseInt(process.env.MIN_CHARACTERS_PER_ACTION ?? "200"),
-      max: parseInt(process.env.MAX_CHARACTERS_PER_ACTION ?? "4000"),
+      min: parseInt(process.env.MIN_CHARS_PER_ACTION ?? "200"),
+      max: parseInt(process.env.MAX_CHARS_PER_ACTION ?? "4000"),
     };
   }
 
-  public static getSoftCharacterLimits() {
+  public static getSoftCharsLimitsPerAction() {
     return {
-      min: parseInt(process.env.MIN_CHARACTERS_PER_ACTION_SOFT ?? "500"),
-      max: parseInt(process.env.MAX_CHARACTERS_PER_ACTION_SOFT ?? "2000"),
+      min: parseInt(process.env.MIN_CHARS_PER_ACTION_SOFT ?? "500"),
+      max: parseInt(process.env.MAX_CHARS_PER_ACTION_SOFT ?? "2000"),
     };
   }
 
@@ -34,6 +34,10 @@ export class GameConfig {
 
   public static getExperiencePerAction() {
     return parseInt(process.env.EXPERIENCE_PER_ACTION ?? "1");
+  }
+
+  public static getLocale(): string {
+    return process.env.NEXT_PUBLIC_LOCALE ?? "it-IT";
   }
 
   public static getTemperatureUnit() {

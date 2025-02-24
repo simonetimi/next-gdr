@@ -18,6 +18,8 @@ import { isMaster } from "@/server/role";
 import { Logger } from "@/utils/logger";
 import { GameConfig } from "@/utils/config/gameConfig";
 import { AppConfig } from "@/utils/config/appConfig";
+import Undici from "undici-types";
+import errors = Undici.errors;
 
 export async function postActionMessage(
   locationId: string,
@@ -30,6 +32,13 @@ export async function postActionMessage(
   const userId = session?.user?.id;
   const t = await getTranslations("errors");
   if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+
+  // hard limits for characters
+  const hardCharsLimits = GameConfig.getCharsLimitsPerAction();
+  if (content.length > hardCharsLimits.max)
+    throw new Error(t("validation.maxCharsLimit"));
+  if (content.length < hardCharsLimits.min)
+    throw new Error(t("validation.minCharsLimit"));
 
   const [message] = await db
     .insert(locationMessage)
@@ -55,9 +64,15 @@ export async function postActionMessage(
     throw error;
   }
 
+  // increase experience if it's inside the soft limits
   const experiencePerAction = GameConfig.getExperiencePerAction();
-
-  await increaseCharacterExperience(experiencePerAction, characterId);
+  const softCharsLimits = GameConfig.getSoftCharsLimitsPerAction();
+  if (
+    content.length >= softCharsLimits.min ||
+    content.length <= softCharsLimits.max
+  ) {
+    await increaseCharacterExperience(experiencePerAction, characterId);
+  }
 
   return !!message.id;
 }

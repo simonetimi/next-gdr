@@ -179,7 +179,9 @@
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",
-      "mustNotBeEmpty": "Il campo non può essere vuoto"
+      "mustNotBeEmpty": "Il campo non può essere vuoto",
+      "maxCharsLimit": "L'azione non può essere più lunga di {maxChars} caratteri",
+      "minCharsLimit": "L'azione deve essere almeno di {minChars} caratteri"
     }
   }
 }

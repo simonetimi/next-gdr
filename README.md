@@ -60,6 +60,7 @@ Chat-based RPG app built with Next.js
 - [ ] Characters registry, searchable and/or divided in pages. Implement "last seen"
 - [ ] Pins for locations
 - [ ] Implement user settings in the client store, updated on login
+- [ ] Add the ability for masters to post a picture in chat
 
 ### TODO
 
