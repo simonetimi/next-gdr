@@ -16,7 +16,7 @@ export default async function LocationChatSidebar({
   const t = await getTranslations("game.locations.secret");
 
   return (
-    <aside className="hidden w-[320px] flex-col items-center gap-6 p-6 md:flex">
+    <aside className="hidden w-[20vw] flex-col items-center gap-6 p-6 lg:flex">
       <Weather weather={weather} temperatureColor={temperatureColor} />
       <h1>{location ? location.name : t("name")}</h1>
       <img

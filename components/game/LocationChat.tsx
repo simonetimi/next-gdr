@@ -13,7 +13,6 @@ import {
 import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
 import { useLocationMessages } from "@/hooks/useLocationMessages";
-import dynamic from "next/dynamic";
 import { useLayoutEffect, useRef } from "react";
 
 function messageRender(
@@ -65,7 +64,7 @@ function messageRender(
   }
 }
 
-function LocationChat({
+export default function LocationChat({
   locationId,
   character,
   isUserMaster,
@@ -91,44 +90,38 @@ function LocationChat({
   }, [messages]);
 
   return (
-    <>
-      <section className="align-center flex w-full flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700">
-        <div className="flex h-full flex-[3]">
-          {initialLoading ? (
-            <div className="flex h-full w-full items-center justify-center">
-              <Spinner />
-            </div>
-          ) : (
-            <div className="relative h-full w-full" id="chat-messages">
-              <ScrollShadow className="absolute inset-0 overflow-y-auto">
-                <div className="flex flex-col-reverse p-5 text-sm">
-                  {messages?.map((chatMessage) =>
-                    messageRender(
-                      chatMessage,
-                      character,
-                      game.toggleCharacterSheet,
-                    ),
-                  )}
-                </div>
-                <div ref={bottomRef} />
-              </ScrollShadow>
-            </div>
-          )}
-        </div>
-        <LocationControls
-          locationId={locationId}
-          isUserMaster={isUserMaster}
-          currentCharacterId={character.id}
-          fetchMessages={mutate}
-          isRefetching={isRefetching}
-          locationCode={locationCode}
-          isSecretLocation={isSecretLocation}
-        />
-      </section>
-    </>
+    <section className="align-center flex w-screen flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700 lg:w-[80vw]">
+      <div className="flex h-full flex-[3]">
+        {initialLoading ? (
+          <div className="flex h-full w-full items-center justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          <div className="relative h-full w-full" id="chat-messages">
+            <ScrollShadow className="absolute inset-0 overflow-y-auto">
+              <div className="flex flex-col-reverse p-5 text-sm">
+                {messages?.map((chatMessage) =>
+                  messageRender(
+                    chatMessage,
+                    character,
+                    game.toggleCharacterSheet,
+                  ),
+                )}
+              </div>
+              <div ref={bottomRef} />
+            </ScrollShadow>
+          </div>
+        )}
+      </div>
+      <LocationControls
+        locationId={locationId}
+        isUserMaster={isUserMaster}
+        currentCharacterId={character.id}
+        fetchMessages={mutate}
+        isRefetching={isRefetching}
+        locationCode={locationCode}
+        isSecretLocation={isSecretLocation}
+      />
+    </section>
   );
 }
-
-export default dynamic(() => Promise.resolve(LocationChat), {
-  ssr: false,
-});

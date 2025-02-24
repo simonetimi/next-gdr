@@ -45,7 +45,7 @@ export default async function LocationPage({
   }
 
   return (
-    <div className="flex h-full w-full flex-grow flex-row">
+    <div className="flex h-full w-screen flex-grow flex-row">
       <LocationChatSidebar location={location} weather={weather} />
       <LocationChat
         locationId={location.id}
