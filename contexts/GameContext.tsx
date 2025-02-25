@@ -1,5 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { MinimalCharacter } from "@/models/characters";
+import { useUserSettings } from "@/hooks/useUserSettings";
+import { UserSettingsMinimal } from "@/models/userSettings";
+import { defaultUserSettings } from "@/utils/constants/defaultUserSettings";
 
 type GameContextType = {
   openCharacterSheets: Set<string>;
@@ -7,6 +10,8 @@ type GameContextType = {
   closeAllCharacterSheets: () => void;
   currentCharacter?: MinimalCharacter;
   setCurrentCharacter: (character: MinimalCharacter) => void;
+  userSettings: UserSettingsMinimal;
+  refreshUserSettings: () => void;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -34,6 +39,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setOpenCharacterSheets(new Set());
   };
 
+  // user settings
+  const { userSettings: fetchedSettings, refreshUserSettings } =
+    useUserSettings();
+  const userSettings = fetchedSettings ?? defaultUserSettings;
+
   return (
     <GameContext.Provider
       value={{
@@ -42,6 +52,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         closeAllCharacterSheets,
         currentCharacter,
         setCurrentCharacter,
+        userSettings,
+        refreshUserSettings,
       }}
     >
       {children}

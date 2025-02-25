@@ -2,6 +2,7 @@ import { createPortal } from "react-dom";
 import Movable from "@/components/ui/Movable";
 import { usePortalRoot } from "@/hooks/usePortalRoot";
 import { Dispatch, SetStateAction } from "react";
+import { UserSettings } from "@/components/game/UserSettings";
 
 export default function SettingsPortal({
   isSmallDevice,
@@ -22,7 +23,7 @@ export default function SettingsPortal({
           <Movable
             boundsSelector="body"
             dragHandleClassName="handle"
-            component={<div>Settings</div>}
+            component={<UserSettings />}
             coords={isSmallDevice ? [0, 140] : [0, 110]}
             width={isSmallDevice ? "100vw" : 1000}
             minWidth={isSmallDevice ? "100vw" : 800}
