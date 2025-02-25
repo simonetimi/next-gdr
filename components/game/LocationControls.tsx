@@ -277,7 +277,7 @@ export default function LocationControls({
           label={
             messageType === "whisper"
               ? t("components.locationControls.recipient")
-              : t("components.locationControls.master")
+              : t("components.locationControls.tag")
           }
         />
       </div>

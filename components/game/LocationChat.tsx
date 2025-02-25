@@ -51,6 +51,7 @@ function messageRender(
       return (
         <MasterMessage
           currentMessage={currentMessage}
+          character={character}
           key={currentMessage.message.id}
         />
       );

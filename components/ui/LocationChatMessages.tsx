@@ -1,12 +1,10 @@
 import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { Avatar } from "@heroui/react";
-import {
-  enchanceCharacterName,
-  enhanceTextWithSquareBrackets,
-} from "@/utils/strings";
 import { MinimalCharacter } from "@/models/characters";
-import { Markup } from "interweave";
 import { GameConfig } from "@/utils/config/GameConfig";
+import { replaceAngleBrackets } from "@/utils/strings";
+import { Interweave } from "interweave";
+import { generateMatchers } from "@/utils/interweaveMatchers";
 
 // TODO insert labels text to be translated
 
@@ -28,6 +26,15 @@ export function ActionMessage({
     minute: "2-digit",
     hour12: false,
   });
+
+  // replace single angle brackets with guillemet
+  const contentWithoutAngleBrackets = replaceAngleBrackets(
+    currentMessage.message.content,
+  );
+
+  const { guillemetMatcher, squareBracketsMatcher, wordmatcher } =
+    generateMatchers(character.firstName);
+
   return (
     <div className="flex gap-3 py-1">
       <div className="flex flex-shrink-0 flex-col items-center gap-1">
@@ -40,22 +47,21 @@ export function ActionMessage({
         />
         <span className="text-xs">{timeString}</span>
       </div>
-      <div className="flex flex-col text-justify">
+      <div className="text-red flex flex-col text-justify">
         <div className="flex items-center gap-2">
           <span className="font-semibold">
             {`${currentMessage.character?.firstName} ${currentMessage.character?.lastName}`}
           </span>
-          <span className="italic text-gray-600">
+          <span className="text-xs italic text-neutral-600 dark:text-neutral-500">
             {currentMessage.action?.tag}
           </span>
         </div>
-        <Markup
-          content={enhanceTextWithSquareBrackets(
-            enchanceCharacterName(
-              currentMessage.message.content,
-              character.firstName,
-            ),
-          )}
+        <Interweave
+          disableLineBreaks
+          noHtmlExceptMatchers
+          className="text-neutral-700 dark:text-neutral-400"
+          matchers={[guillemetMatcher, squareBracketsMatcher, wordmatcher]}
+          content={contentWithoutAngleBrackets}
         />
       </div>
     </div>
@@ -76,56 +82,74 @@ export function WhisperMessage({
     minute: "2-digit",
     hour12: false,
   });
+
   // executes when the current user is the recipient of the whisper
   if (currentMessage.whisper?.recipientCharacterId === currentUserCharacterId) {
     return (
-      <div className="flex items-center gap-3 py-1">
+      <div className="flex items-center gap-2 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="font-semibold">
-            ${currentMessage.character?.firstName}
+            {currentMessage.character?.firstName}
           </span>
-          <span className="italic text-gray-600"> ti dice: </span>
-          <span>{currentMessage.message.content}</span>
+          <span className="italic text-neutral-600 dark:text-neutral-500">
+            {" "}
+            ti dice:{" "}
+          </span>
+          <span className="text-neutral-700 dark:text-neutral-300">
+            {currentMessage.message.content}
+          </span>
         </div>
       </div>
     );
   }
 
-  // exectues when the current user is the sender of the whisper
+  // execute when the current user is the sender of the whisper
   if (
     currentMessage.whisper?.recipientCharacterId !== currentUserCharacterId &&
     currentMessage.character?.id === currentUserCharacterId
   ) {
     return (
-      <div className="flex items-center gap-3 py-1">
+      <div className="flex items-center gap-2 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="italic text-gray-600">Dici a </span>
+          <span className="italic text-neutral-600 dark:text-neutral-500">
+            Dici a{" "}
+          </span>
           <span className="font-semibold">
             ${currentMessage.character?.firstName}
           </span>
-          <span className="italic text-gray-600">: </span>
-          <span>{currentMessage.message.content}</span>
+          <span className="italic text-neutral-600 dark:text-neutral-500">
+            :{" "}
+          </span>
+          <span className="text-neutral-700 dark:text-neutral-300">
+            {currentMessage.message.content}
+          </span>
         </div>
       </div>
     );
   }
 
-  // executes when the user is the master (they can see all whispers - so their id isn't there)
+  // execute when the user is the master (they can see all whispers - so their id isn't there)
   return (
-    <div className="flex items-center gap-3 py-1">
+    <div className="flex items-center gap-2 py-1">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="font-semibold">
           ${currentMessage.character?.firstName}
         </span>
-        <span className="italic text-gray-600">dice a </span>
+        <span className="italic text-neutral-600 dark:text-neutral-500">
+          dice a{" "}
+        </span>
         <span className="font-semibold">
           ${currentMessage.character?.firstName}
         </span>
-        <span className="italic text-gray-600">: </span>
-        <span>{currentMessage.message.content}</span>
+        <span className="italic text-neutral-600 dark:text-neutral-500">
+          :{" "}
+        </span>
+        <span className="text-neutral-700 dark:text-neutral-300">
+          {currentMessage.message.content}
+        </span>
       </div>
     </div>
   );
@@ -145,14 +169,19 @@ export function WhisperAllMessage({
     minute: "2-digit",
     hour12: false,
   });
+
   // current user whispers to all
   if (currentMessage.character?.id === currentUserCharacterId) {
     return (
-      <div className="flex items-center gap-3 py-1">
+      <div className="flex items-center gap-2 py-1">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="italic text-gray-600">Dici a tutti: </span>
-          <span>{currentMessage.message.content}</span>
+          <span className="italic text-neutral-600 dark:text-neutral-500">
+            Dici a tutti:{" "}
+          </span>
+          <span className="text-neutral-700 dark:text-neutral-300">
+            {currentMessage.message.content}
+          </span>
         </div>
       </div>
     );
@@ -160,14 +189,18 @@ export function WhisperAllMessage({
 
   // some user whispers to all
   return (
-    <div className="flex items-center gap-3 py-1">
+    <div className="flex items-center gap-2 py-1">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="font-semibold">
           ${currentMessage.character?.firstName}
         </span>
-        <span className="italic text-gray-600">dice a tutti: </span>
-        <span>{currentMessage.message.content}</span>
+        <span className="italic text-neutral-600 dark:text-neutral-500">
+          dice a tutti:{" "}
+        </span>
+        <span className="text-neutral-700 dark:text-neutral-300">
+          {currentMessage.message.content}
+        </span>
       </div>
     </div>
   );
@@ -175,8 +208,10 @@ export function WhisperAllMessage({
 
 export function MasterMessage({
   currentMessage,
+  character,
 }: {
   currentMessage: LocationMessageWithCharacter;
+  character: MinimalCharacter;
 }) {
   const timeString = new Date(
     currentMessage.message.createdAt,
@@ -185,14 +220,27 @@ export function MasterMessage({
     minute: "2-digit",
     hour12: false,
   });
+
+  const contentWithoutAngleBrackets = replaceAngleBrackets(
+    currentMessage.message.content,
+  );
+  const { guillemetMatcher, squareBracketsMatcher, wordmatcher } =
+    generateMatchers(character.firstName);
+
   return (
     <div className="flex flex-col gap-3 py-1">
       <div className="flex flex-col justify-center">
         <span className="text-center text-xs">{timeString}</span>
         <span className="text-center">Master screen</span>
       </div>
-      <div className="w-full rounded-3xl border border-gray-200 p-2 text-justify dark:border-b-neutral-700">
-        <span>{currentMessage.message.content}</span>
+      <div className="w-full rounded-xl border border-gray-200 p-2 text-justify dark:border-neutral-800">
+        <Interweave
+          disableLineBreaks
+          noHtmlExceptMatchers
+          className="text-neutral-700 dark:text-neutral-400"
+          matchers={[guillemetMatcher, squareBracketsMatcher, wordmatcher]}
+          content={contentWithoutAngleBrackets}
+        />
       </div>
     </div>
   );
