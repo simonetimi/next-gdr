@@ -3,7 +3,7 @@ import { weatherForecasts } from "@/database/schema/weather";
 import getWeather from "@/utils/weatherGenerator";
 import { NextResponse } from "next/server";
 import { Logger } from "@/utils/logger";
-import { AppConfig } from "@/utils/config/appConfig";
+import { AppConfig } from "@/utils/config/AppConfig";
 
 export async function GET(req: Request) {
   const authToken = (req.headers.get("authorization") || "")

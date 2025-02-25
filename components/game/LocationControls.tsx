@@ -28,7 +28,7 @@ import { rollDice } from "@/server/actions/game";
 import { generateLocationChatHTML } from "@/utils/download";
 import { useTranslations } from "next-intl";
 import { Tooltip } from "@heroui/tooltip";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export default function LocationControls({
   locationId,

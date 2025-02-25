@@ -5,7 +5,7 @@ import { auth } from "@/auth";
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import { getUserCharacters } from "@/server/character";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export default async function NewChacterPage() {
   const session = await auth();

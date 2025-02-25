@@ -80,14 +80,16 @@ export default function LocationChat({
   const { messages, mutate, isRefetching, initialLoading } =
     useLocationMessages(locationId, isSecretLocation);
 
-  // the character sheet state is controlled in the context
+  // the character sheet state is controlled in the context, as well as userSettings for chat direction
   const game = useGame();
 
   // scroll into view (reversed order for messages)
   const bottomRef = useRef<HTMLDivElement | null>(null);
   useLayoutEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (game.userSettings.chatDirection === "reverse") {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, game]);
 
   return (
     <section className="align-center flex w-screen flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700 lg:w-[80vw]">
@@ -99,7 +101,9 @@ export default function LocationChat({
         ) : (
           <div className="relative h-full w-full" id="chat-messages">
             <ScrollShadow className="absolute inset-0 overflow-y-auto">
-              <div className="flex flex-col-reverse p-5 text-sm">
+              <div
+                className={`flex ${game.userSettings.chatDirection === "reverse" ? "flex-col-reverse" : "flex-col"} p-5 text-sm`}
+              >
                 {messages?.map((chatMessage) =>
                   messageRender(
                     chatMessage,

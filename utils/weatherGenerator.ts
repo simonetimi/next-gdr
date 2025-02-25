@@ -1,6 +1,6 @@
 import { Moon } from "lunarphase-js";
 import { toCamelCase } from "@/utils/strings";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 type WeatherCondition =
   | "sunny"

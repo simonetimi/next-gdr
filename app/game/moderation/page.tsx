@@ -8,7 +8,7 @@ export default async function ModerationPage() {
   const session = await auth();
   if (!session) redirect(INDEX_ROUTE);
   const isUserMaster = await isMaster(session.user.id ?? "");
-  console.log(isUserMaster);
+
   if (!isUserMaster) redirect(GAME_ROUTE);
 
   return <ModerationControls />;

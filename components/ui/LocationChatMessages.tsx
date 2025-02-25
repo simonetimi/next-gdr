@@ -6,7 +6,7 @@ import {
 } from "@/utils/strings";
 import { MinimalCharacter } from "@/models/characters";
 import { Markup } from "interweave";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 // TODO insert labels text to be translated
 

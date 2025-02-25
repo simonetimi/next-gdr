@@ -1,5 +1,5 @@
 import { fromKebabCase } from "@/utils/strings";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export const generateLocationChatHTML = (locationCode: string) => {
   const locale = GameConfig.getLocale();

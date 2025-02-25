@@ -13,7 +13,7 @@ import {
 } from "@/database/schema/locationMessage";
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 import { Logger } from "@/utils/logger";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();

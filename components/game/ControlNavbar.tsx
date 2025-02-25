@@ -156,6 +156,7 @@ function ControlNavbar({
                 startContent={<Users />}
                 size="sm"
                 onPress={toggleOnlineUsersMovable}
+                color={showOnlineUsersMovable ? "primary" : "default"}
                 variant="light"
               />
             </Tooltip>

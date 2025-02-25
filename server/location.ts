@@ -9,7 +9,7 @@ import { and, eq, gt, sql } from "drizzle-orm";
 import { groupedLocationsSelectSchema } from "@/zod/schemas/location";
 import { getCurrentCharacterIdOnly } from "@/server/character";
 import { getTranslations } from "next-intl/server";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export async function getLocation(locationCode: string) {
   const result = await db

@@ -1,5 +1,5 @@
 import { setCurrentLocation } from "@/server/actions/location";
-import { GAME_ROUTE } from "@/utils/routes";
+import { GAME_ROUTE, INDEX_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
 import { isInvisible } from "@/server/character";
 import LocationChat from "@/components/game/LocationChat";
@@ -20,6 +20,7 @@ export default async function LocationPage({
 
   const session = await auth();
   const userId = session?.user.id;
+  if (!userId) redirect(INDEX_ROUTE);
 
   let location;
   let character;
@@ -29,13 +30,14 @@ export default async function LocationPage({
     [location, character, isUserMaster, weather] = await Promise.all([
       accessLocation(locationCode),
       getMinimalCurrentCharacter(),
-      isMaster(userId ?? ""),
+      isMaster(userId),
       fetchWeather(),
     ]);
   } catch (error) {
     Logger.error(error);
     redirect(GAME_ROUTE);
   }
+
   if (!location || !weather || !character || !character?.id)
     redirect(GAME_ROUTE);
 

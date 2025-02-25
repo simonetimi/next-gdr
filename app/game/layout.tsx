@@ -9,7 +9,7 @@ import {
 import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
 import { isAdmin, isMaster } from "@/server/role";
-import { GameConfig } from "@/utils/config/gameConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export default async function GameLayout({
   children,

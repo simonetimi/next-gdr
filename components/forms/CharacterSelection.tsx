@@ -7,7 +7,6 @@ import { GAME_ROUTE, NEW_CHARACTER_ROUTE } from "@/utils/routes";
 import { useRouter } from "next/navigation";
 import { Tooltip } from "@heroui/tooltip";
 import { useTranslations } from "next-intl";
-import { AuthError } from "next-auth";
 
 export default function CharacterSelection({
   characters,

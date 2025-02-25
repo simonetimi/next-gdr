@@ -25,7 +25,7 @@ export async function getMinimalCurrentCharacter() {
   const now = new Date();
 
   // retrieves the last non-expired session and joins with characters table
-  const results = await db
+  const [character] = await db
     .select({
       id: sessions.selectedCharacterId,
       firstName: characters.firstName,
@@ -39,7 +39,7 @@ export async function getMinimalCurrentCharacter() {
     .orderBy(desc(sessions.expires))
     .limit(1);
 
-  return minimalCharacterSchema.parse(results[0]);
+  return minimalCharacterSchema.parse(character);
 }
 
 export async function getCurrentCharacterIdOnly() {

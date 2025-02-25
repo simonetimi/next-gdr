@@ -16,8 +16,8 @@ import { increaseCharacterExperience } from "@/server/actions/character";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
 import { Logger } from "@/utils/logger";
-import { GameConfig } from "@/utils/config/gameConfig";
-import { AppConfig } from "@/utils/config/appConfig";
+import { GameConfig } from "@/utils/config/GameConfig";
+import { AppConfig } from "@/utils/config/AppConfig";
 import Undici from "undici-types";
 import errors = Undici.errors;
 
@@ -35,6 +35,7 @@ export async function postActionMessage(
 
   // hard limits for characters
   const hardCharsLimits = GameConfig.getCharsLimitsPerAction();
+
   if (content.length > hardCharsLimits.max)
     throw new Error(
       t("validation.maxCharsLimit", { maxChars: hardCharsLimits.max }),
@@ -72,7 +73,7 @@ export async function postActionMessage(
   const experiencePerAction = GameConfig.getExperiencePerAction();
   const softCharsLimits = GameConfig.getSoftCharsLimitsPerAction();
   if (
-    content.length >= softCharsLimits.min ||
+    content.length >= softCharsLimits.min &&
     content.length <= softCharsLimits.max
   ) {
     await increaseCharacterExperience(experiencePerAction, characterId);
