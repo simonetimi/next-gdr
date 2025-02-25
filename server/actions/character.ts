@@ -86,9 +86,6 @@ export async function resetCurrentCharacter() {
     .set({ selectedCharacterId: null })
     .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)));
 
-  revalidatePath(GAME_ROUTE);
-  revalidatePath(CHARACTER_ROUTE);
-
   // returns a boolean (true if success)
   return result?.rowCount > 0;
 }
