@@ -1,14 +1,23 @@
+/* eslint-disable no-console */
+
 export class Logger {
   static info(info: unknown) {
-    // eslint-disable-next-line no-console
     console.log(info);
   }
+
   static error(error: unknown) {
-    // eslint-disable-next-line no-console
-    console.error(error instanceof Error ? error.message : error);
+    if (error instanceof Error) {
+      console.error(`${error.message}\n${error.stack}`);
+    } else {
+      console.error(error);
+    }
   }
+
   static warn(warn: unknown) {
-    // eslint-disable-next-line no-console
-    console.warn(warn instanceof Error ? warn.message : warn);
+    if (warn instanceof Error) {
+      console.warn(`${warn.message}\n${warn.stack}`);
+    } else {
+      console.warn(warn);
+    }
   }
 }
