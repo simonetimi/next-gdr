@@ -228,6 +228,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
             {fontFamilies.map((font) => (
               <DropdownItem
                 key={font.key}
+                textValue={font.label}
                 onPress={() =>
                   (editor.chain() as unknown as CustomChain)
                     .focus()
