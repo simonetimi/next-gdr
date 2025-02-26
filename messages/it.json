@@ -80,6 +80,7 @@
       "underline": "Sottolineato",
       "strikethrough": "Barrato",
       "fontSize": "Dimensione font",
+      "fontFamily": "Stile font",
       "color": "Colore",
       "alignLeft": "Allinea a sinistra",
       "alignCenter": "Allinea al centro",

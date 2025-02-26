@@ -32,6 +32,7 @@ import {
   Quote,
   Code,
   Table as TableIcon,
+  Type,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "@heroui/input";
@@ -51,9 +52,26 @@ const fontSizes = {
   "text-6xl": "60px",
 };
 
+const fontFamilies = [
+  { key: "arial", label: "Arial", value: "Arial, sans-serif" },
+  { key: "helvetica", label: "Helvetica", value: "Helvetica, sans-serif" },
+  { key: "verdana", label: "Verdana", value: "Verdana, sans-serif" },
+  { key: "tahoma", label: "Tahoma", value: "Tahoma, sans-serif" },
+  { key: "times", label: "Times New Roman", value: "'Times New Roman', serif" },
+  { key: "georgia", label: "Georgia", value: "Georgia, serif" },
+  { key: "garamond", label: "Garamond", value: "Garamond, serif" },
+  { key: "courier", label: "Courier New", value: "'Courier New', monospace" },
+  {
+    key: "brush",
+    label: "Brush Script MT",
+    value: "'Brush Script MT', cursive",
+  },
+];
+
 interface CustomChain {
   focus: () => CustomChain;
   setFontSize: (fontSize: string) => CustomChain;
+  setFontFamily: (fontFamily: string) => CustomChain;
   run: () => boolean;
 }
 
@@ -191,6 +209,35 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
                 {item[1]}
               </DropdownItem>
             )}
+          </DropdownMenu>
+        </Dropdown>
+        <Dropdown>
+          <Tooltip content={t("fontFamily")}>
+            <div>
+              <DropdownTrigger>
+                <Button
+                  isIconOnly
+                  startContent={<Type className="h-5 w-5" />}
+                  size="sm"
+                  className="h-7 min-h-7 w-7 min-w-7"
+                />
+              </DropdownTrigger>
+            </div>
+          </Tooltip>
+          <DropdownMenu aria-label={t("fontFamily")}>
+            {fontFamilies.map((font) => (
+              <DropdownItem
+                key={font.key}
+                onPress={() =>
+                  (editor.chain() as unknown as CustomChain)
+                    .focus()
+                    .setFontFamily(font.value)
+                    .run()
+                }
+              >
+                <span style={{ fontFamily: font.value }}>{font.label}</span>
+              </DropdownItem>
+            ))}
           </DropdownMenu>
         </Dropdown>
         <Tooltip content={t("color")}>

@@ -14,7 +14,6 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import EditorToolbar from "@/components/editor/EditorToolbar";
-import dynamic from "next/dynamic";
 
 export default function Editor({
   content,
@@ -88,6 +87,38 @@ export default function Editor({
     },
   });
 
+  const FontFamily = Extension.create({
+    name: "fontFamily",
+    addGlobalAttributes() {
+      return [
+        {
+          types: ["textStyle"],
+          attributes: {
+            fontFamily: {
+              default: null,
+              parseHTML: (element) => element.style.fontFamily || null,
+              renderHTML: (attributes) => {
+                if (!attributes.fontFamily) return {};
+                return {
+                  style: `font-family: ${attributes.fontFamily}`,
+                };
+              },
+            },
+          },
+        },
+      ];
+    },
+    addCommands() {
+      return {
+        setFontFamily:
+          (fontFamily: string) =>
+          ({ chain }: { chain: CustomChain }) => {
+            return chain().setMark("textStyle", { fontFamily });
+          },
+      };
+    },
+  });
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -100,6 +131,7 @@ export default function Editor({
       TextStyle,
       Color,
       FontSize,
+      FontFamily,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
