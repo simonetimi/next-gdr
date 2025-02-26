@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
 import { isAdmin, isMaster } from "@/server/role";
 import { GameConfig } from "@/utils/config/GameConfig";
+import { Providers } from "@/app/game/providers";
 
 export default async function GameLayout({
   children,
@@ -46,7 +47,7 @@ export default async function GameLayout({
   const isUserMaster = await isMaster(session.user.id ?? "");
 
   return (
-    <>
+    <Providers>
       <Header
         showControls
         character={character!}
@@ -57,6 +58,6 @@ export default async function GameLayout({
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {children}
       </main>
-    </>
+    </Providers>
   );
 }

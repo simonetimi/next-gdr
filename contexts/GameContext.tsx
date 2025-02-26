@@ -3,6 +3,7 @@ import { MinimalCharacter } from "@/models/characters";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { UserSettingsMinimal } from "@/models/userSettings";
 import { defaultUserSettings } from "@/utils/constants/defaultUserSettings";
+import { useSession } from "next-auth/react";
 
 type GameContextType = {
   openCharacterSheets: Set<string>;
@@ -17,6 +18,8 @@ type GameContextType = {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
+  //const session = useSession();
+
   // current character
   const [currentCharacter, setCurrentCharacter] = useState<MinimalCharacter>();
 
