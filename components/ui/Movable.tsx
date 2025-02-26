@@ -2,13 +2,19 @@
 
 import { Button } from "@heroui/react";
 import { Minimize2, X } from "lucide-react";
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Rnd } from "react-rnd";
 import { useTranslations } from "next-intl";
 
 interface MovableProps {
-  width?: number | string;
-  height?: number | string;
+  width: number | string;
+  height: number | string;
   minWidth?: number | string;
   minHeight?: number | string;
   maxWidth?: number | string;
@@ -23,11 +29,16 @@ interface MovableProps {
   componentName: string;
 }
 
+interface MovableSizeInterface {
+  width: number | string;
+  height: number | string;
+}
+
 export default function Movable({
-  width = 600,
-  height = 400,
-  minWidth = 400,
-  minHeight = 300,
+  width,
+  height,
+  minWidth,
+  minHeight,
   maxWidth,
   maxHeight,
   coords = [0, 0],
@@ -41,6 +52,14 @@ export default function Movable({
 }: MovableProps) {
   const t = useTranslations("components");
   const [isMinimized, setIsMinimized] = useState(false);
+  const [movableSize, setMovableSize] = useState<MovableSizeInterface>({
+    width: 0,
+    height: 0,
+  });
+
+  useEffect(() => {
+    setMovableSize({ width, height });
+  }, [width, height]);
 
   const onClose = () => {
     showSetter(false);
@@ -61,6 +80,12 @@ export default function Movable({
         maxWidth={maxWidth}
         maxHeight={maxHeight}
         enableResizing={!isMinimized && enableResizing}
+        onResizeStop={(_e, _direction, ref) => {
+          setMovableSize({
+            width: ref.offsetWidth,
+            height: ref.offsetHeight,
+          });
+        }}
         default={{
           x: coords[0],
           y: coords[1],
@@ -68,22 +93,22 @@ export default function Movable({
           height,
         }}
         size={{
-          width: isMinimized ? 350 : width,
-          height: isMinimized ? 48 : height,
+          width: isMinimized ? 350 : movableSize.width,
+          height: isMinimized ? 48 : movableSize.height,
         }}
       >
         <div
           className={`flex h-12 p-2 ${isMinimized ? "" : "border-b-1 border-gray-200 dark:border-gray-700"}`}
         >
-          {enableMovement && (
-            <div
-              className={`${dragHandleClassName} flex w-full flex-1 cursor-move`}
-            >
-              <span className="ml-2 self-center font-bold">
-                {t(`${componentName}.title`)}
-              </span>
-            </div>
-          )}
+          <div
+            className={`flex w-full flex-1 ${
+              enableMovement && `${dragHandleClassName} cursor-move` // render the handle and cursor classes only when movement is enabled
+            }`}
+          >
+            <span className="ml-2 self-center font-bold">
+              {t(`${componentName}.title`)}
+            </span>
+          </div>
           <Button
             color="primary"
             className="ml-auto h-7 min-h-7 w-7 min-w-7"

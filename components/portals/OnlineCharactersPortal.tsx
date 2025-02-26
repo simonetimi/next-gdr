@@ -3,6 +3,7 @@ import Movable from "@/components/ui/Movable";
 import OnlineUsers from "@/components/game/OnlineUsers";
 import { usePortalRoot } from "@/hooks/usePortalRoot";
 import { Dispatch, SetStateAction } from "react";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function OnlineCharactersPortal({
   isSmallDevice,
@@ -15,6 +16,14 @@ export default function OnlineCharactersPortal({
 }) {
   const portalRef = usePortalRoot();
 
+  const windowSize = useWindowSize();
+
+  const modalWidth = isSmallDevice ? windowSize.width! : 1000;
+  const modalHeight = isSmallDevice ? windowSize.height! : 600;
+
+  const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
+  const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);
+
   return (
     <>
       {show &&
@@ -24,11 +33,11 @@ export default function OnlineCharactersPortal({
             boundsSelector="body"
             dragHandleClassName="handle"
             component={<OnlineUsers />}
-            coords={isSmallDevice ? [0, 140] : [0, 110]}
-            width={isSmallDevice ? "100vw" : 1000}
-            minWidth={isSmallDevice ? "100vw" : 800}
-            minHeight={isSmallDevice ? "calc(99vh - 140px)" : 550}
-            height={isSmallDevice ? "calc(99vh - 140px)" : 600}
+            coords={[centerX, centerY]}
+            width={modalWidth}
+            height={modalHeight}
+            minWidth={modalWidth - 100}
+            minHeight={modalHeight - 50}
             showSetter={setShow}
             enableResizing={!isSmallDevice}
             enableMovement={!isSmallDevice}

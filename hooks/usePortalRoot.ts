@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from "react";
 
 // manage portal creation and access safety
-// it saves the reference of the portal-root div with useRef and it's accessed safety in the template
+// it saves the reference of the portal-root div with useRef and it's accessed safely in the template
 export function usePortalRoot() {
   const portalRef = useRef<HTMLDivElement | null>(null);
 
