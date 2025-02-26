@@ -15,6 +15,7 @@ export const offGameConversations = pgTable("off_game_conversation", {
     .$defaultFn(() => crypto.randomUUID()),
   isGroup: boolean("is_group").default(false).notNull(),
   name: varchar("name", { length: 50 }), // only for groups
+  imageUrl: text("image_url"), // only for groups
   createdAt: date("created_at").defaultNow().notNull(),
   createdBy: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",

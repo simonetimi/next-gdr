@@ -5,6 +5,7 @@ import { GameConfig } from "@/utils/config/GameConfig";
 import { replaceAngleBrackets } from "@/utils/strings";
 import { Interweave } from "interweave";
 import { generateMatchers } from "@/utils/interweaveMatchers";
+import { formatTimeHoursMinutes } from "@/utils/dates";
 
 // TODO insert labels text to be translated
 
@@ -19,13 +20,8 @@ export function ActionMessage({
   character: MinimalCharacter;
   onOpenCharacterSheet: (characterId: string) => void;
 }) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const createdAt = new Date(currentMessage.message.createdAt);
+  const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   // replace single angle brackets with guillemet
   const contentWithoutAngleBrackets = replaceAngleBrackets(
@@ -75,13 +71,8 @@ export function WhisperMessage({
   currentMessage: LocationMessageWithCharacter;
   currentUserCharacterId: string;
 }) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const createdAt = new Date(currentMessage.message.createdAt);
+  const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   // executes when the current user is the recipient of the whisper
   if (currentMessage.whisper?.recipientCharacterId === currentUserCharacterId) {
@@ -162,13 +153,8 @@ export function WhisperAllMessage({
   currentMessage: LocationMessageWithCharacter;
   currentUserCharacterId: string;
 }) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const createdAt = new Date(currentMessage.message.createdAt);
+  const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   // current user whispers to all
   if (currentMessage.character?.id === currentUserCharacterId) {
@@ -213,13 +199,8 @@ export function MasterMessage({
   currentMessage: LocationMessageWithCharacter;
   character: MinimalCharacter;
 }) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const createdAt = new Date(currentMessage.message.createdAt);
+  const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   const contentWithoutAngleBrackets = replaceAngleBrackets(
     currentMessage.message.content,
@@ -251,13 +232,8 @@ export function SystemMessage({
 }: {
   currentMessage: LocationMessageWithCharacter;
 }) {
-  const timeString = new Date(
-    currentMessage.message.createdAt,
-  ).toLocaleTimeString(locale, {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  const createdAt = new Date(currentMessage.message.createdAt);
+  const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   if (currentMessage.system?.systemType === "dice") {
     return (

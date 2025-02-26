@@ -48,14 +48,17 @@
     "characterSheet": {
       "title": "Scheda personaggio"
     },
+    "offGameChat": {
+      "title": "Chat off"
+    },
     "settings": {
       "title": "Impostazioni"
     },
     "controlNavbar": {
       "map": "Mappa",
       "onlineCharacters": "Online",
-      "offGameMessages": "Messaggi off game",
-      "onGameMessages": "Messaggi on game",
+      "offGameMessages": "Messaggi off",
+      "onGameMessages": "Messaggi on",
       "switchCharacter": "Cambia personaggio",
       "settings": "Impostazioni",
       "moderation": "Moderazione",

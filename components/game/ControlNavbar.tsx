@@ -45,6 +45,7 @@ import SettingsPortal from "@/components/portals/SettingsPortal";
 import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal";
 import { Badge } from "@heroui/badge";
 import { useTranslations } from "next-intl";
+import OffGameChatPortal from "@/components/portals/OffGameChatPortal";
 
 function ControlNavbar({
   character,
@@ -123,6 +124,11 @@ function ControlNavbar({
         show={showOnlineUsersMovable}
         setShow={setOnlineUsersMovable}
       />
+      <OffGameChatPortal
+        isSmallDevice={isSmallDevice}
+        show={showOffGameMessagesMovable}
+        setShow={setShowOffGameMessagesMovable}
+      />
       <SettingsPortal
         isSmallDevice={isSmallDevice}
         show={showSettingsMovable}
@@ -162,7 +168,7 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Badge color="primary" content="5">
+            <Badge color="primary" content="4">
               <Tooltip content={t("offGameMessages")}>
                 <Button
                   isIconOnly

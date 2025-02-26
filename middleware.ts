@@ -6,7 +6,7 @@ import {
   SIGNUP_ROUTE,
 } from "@/utils/routes";
 
-// Define protected routes
+// protected routes
 const protectedRoutes = [GAME_ROUTE, CHARACTER_ROUTE];
 const authRoutes = [LOGIN_ROUTE, SIGNUP_ROUTE];
 

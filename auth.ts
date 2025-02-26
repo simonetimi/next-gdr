@@ -34,8 +34,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     authenticatorsTable: authenticators,
   }),
   session: {
-    maxAge: 60 * 30, // in seconds, before expiring (no requests)
-    updateAge: 60, // in seconds, interval for refreshing the age
+    strategy: "database",
+    maxAge: 60 * 30, // in seconds, before expiring (no requests) - 30 mins
+    updateAge: 60 * 2, // in seconds, interval for refreshing the age - 60 seconds
   },
   callbacks: {
     authorized: async ({ auth }) => {

@@ -1,10 +1,11 @@
 import { db } from "@/database/db";
+import { characters } from "@/database/schema/character";
 import {
   offGameConversations,
   offGameMessages,
   offGameParticipants,
   offGameReads,
-} from "@/database/schema/offGameMessage";
+} from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
 import { eq, and, desc, max, lt } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
@@ -12,15 +13,26 @@ import { getTranslations } from "next-intl/server";
 export async function getConversations() {
   const characterId = await getCurrentCharacterIdOnly();
 
-  // fetches all the conversations for this user, grouped by single vs group conversation, ordered by last message exchanged
+  // fetch all the conversations for this user, grouped by single vs group conversation, ordered by last message exchanged
+  // also fetches the last message and the participants
 
   return db
     .select({
       id: offGameConversations.id,
       isGroup: offGameConversations.isGroup,
       name: offGameConversations.name,
+      imageUrl: offGameConversations.imageUrl,
       createdAt: offGameConversations.createdAt,
       lastMessageAt: max(offGameMessages.sentAt),
+      lastMessage: {
+        content: offGameMessages.content,
+        senderId: offGameMessages.senderId,
+      },
+      participants: {
+        id: characters.id,
+        firstName: characters.firstName,
+        avatarUrl: characters.miniAvatarUrl,
+      },
     })
     .from(offGameConversations)
     .innerJoin(
@@ -34,11 +46,17 @@ export async function getConversations() {
       offGameMessages,
       eq(offGameMessages.conversationId, offGameConversations.id),
     )
+    .innerJoin(characters, eq(characters.id, offGameParticipants.characterId))
     .groupBy(
       offGameConversations.id,
       offGameConversations.isGroup,
       offGameConversations.name,
       offGameConversations.createdAt,
+      characters.id,
+      characters.firstName,
+      characters.miniAvatarUrl,
+      offGameMessages.content,
+      offGameMessages.senderId,
     )
     .orderBy(desc(max(offGameMessages.sentAt)));
 }
