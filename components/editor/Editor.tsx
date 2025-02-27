@@ -1,6 +1,11 @@
 "use client";
 
-import { EditorContent, Extension, useEditor } from "@tiptap/react";
+import {
+  ChainedCommands,
+  EditorContent,
+  Extension,
+  useEditor,
+} from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import { RawCommands } from "@tiptap/core";
 import Underline from "@tiptap/extension-underline";
@@ -18,11 +23,13 @@ import EditorToolbar from "@/components/editor/EditorToolbar";
 export default function Editor({
   content,
   onContentChange,
-  className,
+  containerClass,
+  editorClass,
 }: {
   content: string;
   onContentChange: (content: string) => void;
-  className?: string;
+  containerClass?: string;
+  editorClass?: string;
 }) {
   const CustomImage = Image.extend({
     addAttributes() {
@@ -112,10 +119,10 @@ export default function Editor({
       return {
         setFontFamily:
           (fontFamily: string) =>
-          ({ chain }: { chain: CustomChain }) => {
+          ({ chain }: { chain: () => ChainedCommands }) => {
             return chain().setMark("textStyle", { fontFamily });
           },
-      };
+      } as unknown as Partial<RawCommands>;
     },
   });
 
@@ -155,9 +162,12 @@ export default function Editor({
   });
 
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col gap-2 ${containerClass}`}>
       <EditorToolbar editor={editor} />
-      <EditorContent editor={editor} />
+      <EditorContent
+        editor={editor}
+        className={`overflow-y-auto rounded-lg border border-neutral-200 p-2 py-2 dark:border-neutral-700 ${editorClass}`}
+      />
     </div>
   );
 }

@@ -7,7 +7,11 @@ function Test() {
   const [content, setContent] = useState("");
 
   return (
-    <Editor content={content} onContentChange={setContent} className="w-full" />
+    <Editor
+      content={content}
+      onContentChange={setContent}
+      containerClass="w-full"
+    />
   );
 }
 

@@ -126,7 +126,9 @@ export default function Movable({
             startContent={<X className="h-4 w-4" />}
           />
         </div>
-        {!isMinimized && <div className="p-4">{component}</div>}
+        {!isMinimized && (
+          <div className="h-[92vh] p-4 lg:h-full">{component}</div>
+        )}
       </Rnd>
     </div>
   );

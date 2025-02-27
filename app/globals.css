@@ -75,7 +75,7 @@ h1 {
 /* Rich text editor */
 
 .tiptap.prose {
-  @apply h-[250px] w-full max-w-none overflow-y-auto rounded-lg border border-default-200 bg-content1 px-3 py-2 outline-none;
+  @apply w-full outline-none;
 
   a {
     color: var(--primary-color);
