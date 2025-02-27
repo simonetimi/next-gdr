@@ -17,7 +17,7 @@ export const ConversationItem = ({
   navigateToEditor,
 }: {
   conversation: OffGameConversationWithDetails;
-  navigateToEditor: (conversationId: string) => void;
+  navigateToEditor: (conversationId: string | null) => void;
 }) => {
   const locale = GameConfig.getLocale();
 

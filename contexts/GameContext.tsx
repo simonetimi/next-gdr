@@ -3,7 +3,6 @@ import { MinimalCharacter } from "@/models/characters";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { UserSettingsMinimal } from "@/models/userSettings";
 import { defaultUserSettings } from "@/utils/constants/defaultUserSettings";
-import { useSession } from "next-auth/react";
 
 type GameContextType = {
   openCharacterSheets: Set<string>;

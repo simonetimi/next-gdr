@@ -2,18 +2,10 @@
 
 import { ScrollShadow } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { type OffGameConversationWithDetails } from "@/models/offGameChat";
 import { ConversationItem } from "@/components/ui/ConversationItem";
 import { useConversations } from "@/hooks/useConversations";
-
-interface ConversationsProps {
-  type: "on" | "off";
-  navigateToNewChat: () => void;
-  navigateToEditor: (conversationId: string) => void;
-}
-
-// TODO reusable components for both off and on game conversations
-//  take care of type differences (evaluate type union or generic type to support both off and on)
+import { OffGameChatContext } from "@/contexts/OffGameChatContext";
+import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 
 const mockConversations = [
   {
@@ -71,14 +63,14 @@ const mockConversations = [
   },
 ];
 
-export default function ChatConversations({
-  type,
-  navigateToNewChat,
-  navigateToEditor,
-}: ConversationsProps) {
+export default function CjatConversations({
+  chatContext,
+}: {
+  chatContext: OffGameChatContext | OnGameChatContext;
+}) {
   const t = useTranslations();
 
-  const { conversations } = useConversations(type);
+  const { conversations } = useConversations(chatContext.type);
 
   // TODO replace mock with actual values - type error will disappear
   const sortedConversations = mockConversations?.toSorted(
@@ -93,7 +85,7 @@ export default function ChatConversations({
           <ConversationItem
             key={conversation.id}
             conversation={conversation}
-            navigateToEditor={navigateToEditor}
+            navigateToEditor={chatContext.navigateToEditor}
           />
         ))}
       </ScrollShadow>

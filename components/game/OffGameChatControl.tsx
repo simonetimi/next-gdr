@@ -1,62 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import ChatEditor from "@/components/game/messaging/ChatEditor";
 import NewConversation from "@/components/game/messaging/NewConversation";
 import ChatConversations from "@/components/game/messaging/ChatConversations";
+import { useOffGameChat } from "@/contexts/OffGameChatContext";
 
 export function OffGameChatControl() {
-  const [componentInView, setComponentInView] = useState<
-    "conversations" | "editor" | "newChat"
-  >("conversations");
+  const offGameChat = useOffGameChat();
 
-  const [currentConversationId, setCurrentConversationId] = useState<
-    string | null
-  >(null);
-
-  const navigateToConversations = () => {
-    setComponentInView("conversations");
-    setCurrentConversationId(null);
-  };
-
-  const navigateToEditor = (conversationId: string) => {
-    console.log("hello!");
-    setCurrentConversationId(conversationId);
-    setComponentInView("editor");
-  };
-
-  const navigateToNewChat = () => {
-    setComponentInView("newChat");
-    setCurrentConversationId(null);
-  };
-
-  if (componentInView === "editor") {
-    return (
-      <ChatEditor
-        type="off"
-        conversationId={currentConversationId}
-        navigateToConversations={navigateToConversations}
-      />
-    );
+  if (offGameChat.componentInView === "editor") {
+    return <ChatEditor chatContext={offGameChat} />;
   }
 
-  if (componentInView === "newChat") {
-    return (
-      <NewConversation
-        type="off"
-        navigateToConversations={navigateToConversations}
-        navigateToEditor={navigateToEditor}
-      />
-    );
+  if (offGameChat.componentInView === "newChat") {
+    return <NewConversation chatContext={offGameChat} />;
   }
 
-  if (componentInView === "conversations") {
-    return (
-      <ChatConversations
-        type="off"
-        navigateToEditor={navigateToEditor}
-        navigateToNewChat={navigateToNewChat}
-      />
-    );
+  if (offGameChat.componentInView === "conversations") {
+    return <ChatConversations chatContext={offGameChat} />;
   }
 }

@@ -5,25 +5,33 @@ import { Button, ScrollShadow } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
 import { ArrowLeftIcon, Send } from "lucide-react";
-
-interface ChatEditorProps {
-  type: "on" | "off";
-  conversationId: string | null;
-  navigateToConversations: () => void;
-}
+import { OffGameChatContext } from "@/contexts/OffGameChatContext";
+import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 
 export default function ChatEditor({
-  type,
-  conversationId,
-  navigateToConversations,
-}: ChatEditorProps) {
+  chatContext,
+}: {
+  chatContext: OffGameChatContext | OnGameChatContext;
+}) {
   const t = useTranslations();
+
+  // fetch with swr
   const [message, setMessage] = useState("");
+
+  // TODO logic to send message and fetch periodically messages -> make swr + server action
+  //  imp! if it's the first message of the conversation, it should also create the conversation.
+  //  (cae -> conversation id is null)
+
+  // TODO find a way to make texts appear one on the left and one on the right, little bubbles
 
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
       <header className="flex items-center gap-4 p-4">
-        <Button isIconOnly variant="light" onPress={navigateToConversations}>
+        <Button
+          isIconOnly
+          variant="light"
+          onPress={chatContext.navigateToConversations}
+        >
           <ArrowLeftIcon />
         </Button>
         <h2 className="font-semibold">Conversation Title</h2>
