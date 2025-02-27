@@ -3,7 +3,8 @@ import Movable from "@/components/ui/Movable";
 import { usePortalRoot } from "@/hooks/usePortalRoot";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { Dispatch, SetStateAction } from "react";
-import OffGameChat from "@/components/game/OffGameChat";
+import ChatConversations from "@/components/game/messaging/ChatConversations";
+import { OffGameChatControl } from "@/components/game/OffGameChatControl";
 
 export default function OffGameChatPortal({
   isSmallDevice,
@@ -32,7 +33,7 @@ export default function OffGameChatPortal({
           <Movable
             boundsSelector="body"
             dragHandleClassName="handle"
-            component={<OffGameChat />}
+            component={<OffGameChatControl />}
             coords={[centerX, centerY]}
             width={modalWidth}
             height={modalHeight}
