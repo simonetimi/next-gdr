@@ -24,7 +24,7 @@ export const ConversationItem = ({
   return (
     <button
       onClick={() => navigateToEditor(conversation.id)}
-      className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
+      className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
     >
       <div className="flex-shrink-0">
         <ParticipantsAvatars participants={conversation.participants} />

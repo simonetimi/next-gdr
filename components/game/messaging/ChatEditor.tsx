@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Button, ScrollShadow } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
@@ -24,6 +24,15 @@ export default function ChatEditor({
 
   // TODO find a way to make texts appear one on the left and one on the right, little bubbles
 
+  // in alternative flex-column is enough. this only adds some animation
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    //  small delay to ensure content is rendered
+    setTimeout(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 10);
+  }, []);
+
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
       <header className="flex items-center gap-4 p-4">
@@ -37,12 +46,24 @@ export default function ChatEditor({
         <h2 className="font-semibold">Conversation Title</h2>
       </header>
 
-      <ScrollShadow className="min-h-0 flex-1 overflow-y-auto p-2">
-        <p>Content</p> <p>Content</p> <p>Content</p>
-        <p>Content</p> <p>Content</p> <p>Content</p>
-        <p>Content</p> <p>Content</p> <p>Content</p>
-        <p>Content</p> <p>Content</p> <p>Content</p>
-        <p>Content</p> <p>Content</p> <p>Content</p>
+      <ScrollShadow
+        visibility="top"
+        className="min-h-0 flex-1 flex-col overflow-y-auto p-2"
+      >
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div className="h-6">Prova</div>
+        <div ref={bottomRef} className="mt-auto h-1" />
       </ScrollShadow>
 
       <div className="flex items-end gap-2 p-2">

@@ -75,7 +75,7 @@ h1 {
 /* Rich text editor */
 
 .tiptap.prose {
-  @apply w-full outline-none;
+  @apply h-full w-full outline-none;
 
   a {
     color: var(--primary-color);
