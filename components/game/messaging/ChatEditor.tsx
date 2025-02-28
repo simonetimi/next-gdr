@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { Button, ScrollShadow } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
@@ -31,6 +31,16 @@ export default function ChatEditor({
     setTimeout(() => {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 10);
+  }, []);
+
+  // reset the movable to the conversation lists when the user closes it
+  const isFirstMount = useRef(true);
+  useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    return () => chatContext.navigateToConversations();
   }, []);
 
   return (

@@ -175,6 +175,7 @@ function ControlNavbar({
                   startContent={<Mail />}
                   size="sm"
                   onPress={toggleOffGameMessagesMovable}
+                  color={showOffGameMessagesMovable ? "primary" : "default"}
                   variant="light"
                 />
               </Tooltip>
