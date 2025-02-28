@@ -7,7 +7,7 @@ import { OffGameConversationWithDetails } from "@/models/offGameChat";
 export function useConversations(chatType: "on" | "off") {
   const { data, error, isLoading, mutate } = useSWR<
     OffGameConversationWithDetails[]
-  >(`/api/${chatType}-game-chat/conversations/`, fetcher, {
+  >(`/api/game/chat/${chatType}/conversations/`, fetcher, {
     refreshInterval: 1000 * 60, // 1 minute
   });
 

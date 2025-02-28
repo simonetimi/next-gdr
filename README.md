@@ -97,3 +97,12 @@ Chat-based RPG app built with Next.js
 - [Hero UI](https://www.heroui.com/)
 - [react-rnd](https://github.com/bokuweb/react-rnd)
 - [Interweave](https://interweave.dev/docs/)
+
+### Documentation
+
+- Auth
+- Database
+- Structure: pages, components
+- Fetching: server functions, server actions, API routes
+- Contexts: Game context, Chat context
+- Portals

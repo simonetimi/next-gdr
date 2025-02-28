@@ -45,7 +45,7 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
     setComponentInView("editor");
   };
 
-  const navigateToNewChat = () => {
+  const navigateToNewConversation = () => {
     setComponentInView("newChat");
     setCurrentConversationId(null);
   };
@@ -55,7 +55,7 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
       value={{
         navigateToConversations,
         navigateToEditor,
-        navigateToNewChat,
+        navigateToNewChat: navigateToNewConversation,
         setNewConversationParticipants,
         newConversationParticipants,
         currentConversationId,

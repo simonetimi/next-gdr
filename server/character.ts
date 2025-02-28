@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { db } from "@/database/db";
-import { sessions } from "@/database/schema/auth";
+import { sessions, users } from "@/database/schema/auth";
 import { characters, characterSheets } from "@/database/schema/character";
 import { and, desc, eq, gt, isNotNull, sql } from "drizzle-orm";
 import {
@@ -9,6 +9,7 @@ import {
   characterSheetSchemaWithCharacter,
   charactersSelectSchema,
   minimalCharacterSchema,
+  minimalCharactersSchema,
 } from "@/zod/schemas/character";
 import { locationGroups, locations } from "@/database/schema/location";
 import { isAdmin, isMaster } from "@/server/role";
@@ -225,4 +226,20 @@ export async function isInvisible() {
     .limit(1);
 
   return results[0].invisibleMode;
+}
+
+export async function getAllNonBannedCharacters() {
+  const charactersList = await db
+    .select({
+      id: characters.id,
+      firstName: characters.firstName,
+      middleName: characters.middleName,
+      lastName: characters.lastName,
+      miniAvatarUrl: characters.miniAvatarUrl,
+    })
+    .from(characters)
+    .innerJoin(users, eq(characters.userId, users.id))
+    .where(eq(users.isBanned, false));
+
+  return minimalCharactersSchema.parse(charactersList);
 }

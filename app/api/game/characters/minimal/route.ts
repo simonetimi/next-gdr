@@ -1,11 +1,11 @@
+import { getAllNonBannedCharacters } from "@/server/character";
 import { NextResponse } from "next/server";
 import { Logger } from "@/utils/logger";
-import { getConversations } from "@/server/offGameChat";
 
 export async function GET() {
   try {
-    const conversations = await getConversations();
-    return NextResponse.json(conversations);
+    const nonBannedCharacters = await getAllNonBannedCharacters();
+    return NextResponse.json(nonBannedCharacters);
   } catch (error) {
     Logger.error(error);
     const message = error instanceof Error ? error.message : "Unknown error";

@@ -1,11 +1,13 @@
 "use client";
 
-import { ScrollShadow } from "@heroui/react";
+import { ScrollShadow, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { ConversationItem } from "@/components/ui/ConversationItem";
 import { useConversations } from "@/hooks/useConversations";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { OnGameChatContext } from "@/contexts/OnGameChatContext";
+import { MailPlus } from "lucide-react";
+import { Button } from "@heroui/button";
 
 const mockConversations = [
   {
@@ -70,7 +72,7 @@ export default function CjatConversations({
 }) {
   const t = useTranslations();
 
-  const { conversations } = useConversations(chatContext.type);
+  const { conversations, isLoading } = useConversations(chatContext.type);
 
   // TODO replace mock with actual values - type error will disappear
   const sortedConversations = mockConversations?.toSorted(
@@ -79,7 +81,19 @@ export default function CjatConversations({
   );
 
   return (
-    <section className="flex h-full w-full flex-col">
+    <section className="flex h-full w-full flex-col gap-2">
+      <div className="flex pl-4 pr-5">
+        <Button
+          isIconOnly
+          startContent={<MailPlus className="h-5 w-5" />}
+          color="primary"
+          variant="flat"
+          size="sm"
+          onPress={() => chatContext.navigateToNewChat()}
+        />
+        {isLoading && <Spinner variant="wave" size="sm" className="ml-auto" />}
+      </div>
+
       <ScrollShadow className="flex h-full w-full flex-col">
         {sortedConversations?.map((conversation) => (
           <ConversationItem

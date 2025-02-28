@@ -7,7 +7,10 @@ import {
 } from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
 
-export async function createSingleConversation(targetCharacterId: string) {
+export async function createSingleConversation(
+  targetCharacterId: string,
+  message: string,
+) {
   const currentCharacter = await getCurrentCharacterIdOnly();
 
   // create the conversation
@@ -30,12 +33,15 @@ export async function createSingleConversation(targetCharacterId: string) {
     },
   ]);
 
+  // TODO add first message
+
   return conversation;
 }
 
 export async function createGroupConversation(
   name: string,
   participantIds: string[],
+  message: string,
 ) {
   const currentCharacter = await getCurrentCharacterIdOnly();
 
@@ -56,6 +62,8 @@ export async function createGroupConversation(
       characterId,
     }),
   );
+
+  // TODO add first message
 
   await db.insert(offGameParticipants).values(participants);
 

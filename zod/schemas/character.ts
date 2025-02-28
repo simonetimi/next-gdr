@@ -50,3 +50,5 @@ export const minimalCharacterSchema = characterSelectSchema.pick({
   middleName: true,
   miniAvatarUrl: true,
 });
+
+export const minimalCharactersSchema = z.array(minimalCharacterSchema);

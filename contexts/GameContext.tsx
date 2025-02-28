@@ -3,13 +3,13 @@ import { MinimalCharacter } from "@/models/characters";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { UserSettingsMinimal } from "@/models/userSettings";
 import { defaultUserSettings } from "@/utils/constants/defaultUserSettings";
+import { useCurrentCharacter } from "@/hooks/useCurrentCharacter";
 
 type GameContextType = {
   openCharacterSheets: Set<string>;
   toggleCharacterSheet: (characterId: string) => void;
   closeAllCharacterSheets: () => void;
   currentCharacter?: MinimalCharacter;
-  setCurrentCharacter: (character: MinimalCharacter) => void;
   userSettings: UserSettingsMinimal;
   refreshUserSettings: () => void;
 };
@@ -17,15 +17,14 @@ type GameContextType = {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  //const session = useSession();
-
   // current character
-  const [currentCharacter, setCurrentCharacter] = useState<MinimalCharacter>();
+  const { currentCharacter } = useCurrentCharacter();
 
   // character sheets movable
   const [openCharacterSheets, setOpenCharacterSheets] = useState<Set<string>>(
     new Set(),
   );
+
   const toggleCharacterSheet = (characterId: string) => {
     setOpenCharacterSheets((prev) => {
       const newSet = new Set(prev);
@@ -37,6 +36,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       return newSet;
     });
   };
+
   const closeAllCharacterSheets = () => {
     setOpenCharacterSheets(new Set());
   };
@@ -53,7 +53,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
         toggleCharacterSheet,
         closeAllCharacterSheets,
         currentCharacter,
-        setCurrentCharacter,
         userSettings,
         refreshUserSettings,
       }}

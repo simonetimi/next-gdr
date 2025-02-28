@@ -11,8 +11,8 @@ export default async function NewChacterPage() {
   const session = await auth();
   if (session?.user) {
     const characters = await getUserCharacters();
-    const macCharactersAllowed = GameConfig.getMaxCharacters() || 1;
-    if (characters.length >= macCharactersAllowed) {
+    const maxCharactersAllowed = GameConfig.getMaxCharacters() || 1;
+    if (characters.length >= maxCharactersAllowed) {
       redirect(GAME_ROUTE);
     }
   }
