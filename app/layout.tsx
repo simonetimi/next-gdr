@@ -28,7 +28,11 @@ export default async function RootLayout({
   const locale = await getLocale();
   const messages = await getMessages();
   return (
-    <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
+    <html
+      lang={locale}
+      className="overflow-hidden scroll-smooth"
+      suppressHydrationWarning
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} max-h-screen bg-gray-50 antialiased dark:bg-black`}
       >
