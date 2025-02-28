@@ -1,9 +1,9 @@
 import {
   boolean,
-  date,
   index,
   pgTable,
   text,
+  timestamp,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -16,7 +16,7 @@ export const offGameConversations = pgTable("off_game_conversation", {
   isGroup: boolean("is_group").default(false).notNull(),
   name: varchar("name", { length: 50 }), // only for groups
   imageUrl: text("image_url"), // only for groups
-  createdAt: date("created_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   createdBy: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
   }),
@@ -35,7 +35,7 @@ export const offGameParticipants = pgTable("off_game_participant", {
   characterId: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
   }),
-  joinedAt: date("joined_at").defaultNow().notNull(),
+  joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
 export const offGameMessages = pgTable(
@@ -54,7 +54,7 @@ export const offGameMessages = pgTable(
     senderId: uuid("sender_id").references(() => characters.id, {
       onDelete: "cascade",
     }),
-    sentAt: date("sent_at").defaultNow().notNull(),
+    sentAt: timestamp("sent_at").defaultNow().notNull(),
   },
   (table) => ({
     conversationIdIdx: index("conversation_id_idx").on(table.conversationId),
@@ -74,7 +74,7 @@ export const offGameReads = pgTable(
     readBy: uuid("read_by").references(() => characters.id, {
       onDelete: "cascade",
     }),
-    readAt: date("read_at").defaultNow().notNull(),
+    readAt: timestamp("read_at").defaultNow().notNull(),
   },
   (table) => ({
     messageReadIdx: index("message_read_idx").on(table.messageId, table.readBy),

@@ -5,7 +5,6 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { Button } from "@heroui/button";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import Test from "@/components/Test";
 
 export default async function Home() {
   const session = await auth();
@@ -23,7 +22,6 @@ export default async function Home() {
             <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
               {t("enter")}
             </Button>
-            <Test />
           </div>
         ) : (
           <Login />

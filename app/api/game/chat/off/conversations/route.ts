@@ -4,9 +4,6 @@ import { getConversations } from "@/server/offGameChat";
 
 export async function GET() {
   try {
-    return NextResponse.json([]);
-    // TODO remote this response, placeholder for now
-
     const conversations = await getConversations();
     return NextResponse.json(conversations);
   } catch (error) {

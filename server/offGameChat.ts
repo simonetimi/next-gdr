@@ -7,58 +7,108 @@ import {
   offGameReads,
 } from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
-import { eq, and, desc, max, lt } from "drizzle-orm";
+import { eq, and, desc, lt, sql, inArray, ne } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 
 export async function getConversations() {
   const characterId = await getCurrentCharacterIdOnly();
 
-  // fetch all the conversations for this user, grouped by single vs group conversation, ordered by last message exchanged
-  // also fetches the last message and the participants
-
-  return db
+  // fetch conversations with their latest message
+  const conversations = await db
     .select({
       id: offGameConversations.id,
       isGroup: offGameConversations.isGroup,
       name: offGameConversations.name,
       imageUrl: offGameConversations.imageUrl,
       createdAt: offGameConversations.createdAt,
-      lastMessageAt: max(offGameMessages.sentAt),
-      lastMessage: {
-        content: offGameMessages.content,
-        senderId: offGameMessages.senderId,
-      },
-      participants: {
-        id: characters.id,
-        firstName: characters.firstName,
-        avatarUrl: characters.miniAvatarUrl,
-      },
+      createdBy: offGameConversations.createdBy,
+      lastMessageContent: offGameMessages.content,
+      lastMessageSenderId: offGameMessages.senderId,
+      lastMessageSentAt: offGameMessages.sentAt,
     })
     .from(offGameConversations)
     .innerJoin(
       offGameParticipants,
-      and(
-        eq(offGameParticipants.conversationId, offGameConversations.id),
-        eq(offGameParticipants.characterId, characterId.id!),
-      ),
+      eq(offGameParticipants.conversationId, offGameConversations.id),
     )
     .leftJoin(
       offGameMessages,
-      eq(offGameMessages.conversationId, offGameConversations.id),
+      and(
+        eq(offGameMessages.conversationId, offGameConversations.id),
+        eq(
+          offGameMessages.sentAt,
+          sql`(
+                  SELECT MAX(${offGameMessages.sentAt})
+                  FROM ${offGameMessages}
+                  WHERE ${offGameMessages.conversationId} = ${offGameConversations.id}
+              )`,
+        ),
+      ),
     )
+    .where(eq(offGameParticipants.characterId, characterId.id!))
+    .orderBy(desc(offGameMessages.sentAt));
+
+  // extract conversation IDs
+  const conversationIds = conversations.map((conv) => conv.id);
+
+  // fetch participants for these conversations
+  const participants = await db
+    .select({
+      conversationId: offGameParticipants.conversationId,
+      participantId: characters.id,
+      participantFirstName: characters.firstName,
+      participantMiniAvatarUrl: characters.miniAvatarUrl,
+    })
+    .from(offGameParticipants)
     .innerJoin(characters, eq(characters.id, offGameParticipants.characterId))
-    .groupBy(
-      offGameConversations.id,
-      offGameConversations.isGroup,
-      offGameConversations.name,
-      offGameConversations.createdAt,
-      characters.id,
-      characters.firstName,
-      characters.miniAvatarUrl,
-      offGameMessages.content,
-      offGameMessages.senderId,
-    )
-    .orderBy(desc(max(offGameMessages.sentAt)));
+    .where(
+      and(
+        inArray(offGameParticipants.conversationId, conversationIds),
+        // Fflter out current user
+        ne(offGameParticipants.characterId, characterId.id!),
+      ),
+    );
+
+  // group participants by conversationId
+  const participantsMap = participants.reduce(
+    (acc, participant) => {
+      if (participant.conversationId) {
+        if (!acc[participant.conversationId]) {
+          acc[participant.conversationId] = [];
+        }
+        acc[participant.conversationId].push({
+          id: participant.participantId,
+          firstName: participant.participantFirstName,
+          miniAvatarUrl: participant.participantMiniAvatarUrl ?? "",
+        });
+      }
+      return acc;
+    },
+    {} as Record<
+      string,
+      Array<{ id: string; firstName: string; miniAvatarUrl: string }>
+    >,
+  );
+
+  // combine conversations with their participants
+  const results = conversations.map((conv) => ({
+    id: conv.id,
+    isGroup: conv.isGroup,
+    name: conv.name,
+    imageUrl: conv.imageUrl,
+    createdAt: conv.createdAt,
+    createdBy: conv.createdBy,
+    lastMessageAt: conv.lastMessageSentAt || null,
+    lastMessage: conv.lastMessageContent
+      ? {
+          content: conv.lastMessageContent,
+          senderId: conv.lastMessageSenderId,
+        }
+      : null,
+    participants: participantsMap[conv.id] || [],
+  }));
+
+  return results;
 }
 
 export async function getConversationMessages(

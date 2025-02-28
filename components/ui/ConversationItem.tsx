@@ -4,6 +4,7 @@ import type { OffGameConversationWithDetails } from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { Avatar } from "@heroui/react";
 import { formatTimeHoursMinutes } from "@/utils/dates";
+import { Markup } from "interweave";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
@@ -39,7 +40,7 @@ export const ConversationItem = ({
   );
 };
 
-// limit avatars to  4
+// limit avatars to 4
 export const ParticipantsAvatars = ({ participants }: ParticipantsProps) => (
   <div className="w-20">
     <div className="flex -space-x-3">
@@ -68,15 +69,23 @@ const ConversationDetails = ({ conversation }: ConversationProps) => (
         : conversation.participants.map((p) => p.firstName).join(", ")}
     </span>
     {conversation.lastMessage && (
-      <span className="w-full truncate text-xs text-default-500">
-        {conversation.lastMessage.content}
-      </span>
+      <Markup
+        className="w-full truncate text-xs text-default-500"
+        content={
+          conversation.lastMessage.content.length > 20
+            ? conversation.lastMessage.content.slice(0, 15) + "..."
+            : conversation.lastMessage.content
+        }
+        allowList={[]}
+      />
     )}
   </div>
 );
 
-const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => (
-  <span className="whitespace-nowrap text-xs text-default-400">
-    {date ? formatTimeHoursMinutes(date, locale) : ""}
-  </span>
-);
+const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => {
+  return (
+    <span className="whitespace-nowrap text-xs text-default-400">
+      {date ? formatTimeHoursMinutes(date, locale) : ""}
+    </span>
+  );
+};

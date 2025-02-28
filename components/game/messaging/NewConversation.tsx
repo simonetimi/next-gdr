@@ -1,6 +1,7 @@
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 import {
+  addToast,
   Autocomplete,
   AutocompleteItem,
   Avatar,
@@ -12,7 +13,12 @@ import { useMinimalCharacters } from "@/hooks/useMinimalCharacters";
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import Editor from "@/components/editor/Editor";
-import { Send } from "lucide-react";
+import { ArrowLeftIcon, Send } from "lucide-react";
+import { useTranslations } from "next-intl";
+import {
+  createGroupOffGameConversation,
+  createSingleOffGameConversation,
+} from "@/server/actions/offGameChat";
 
 type SelectedParticipant = {
   id: string;
@@ -25,6 +31,7 @@ export default function NewConversation({
 }: {
   chatContext: OffGameChatContext | OnGameChatContext;
 }) {
+  const t = useTranslations();
   const { currentCharacter } = useGame();
   const { characters, isLoading } = useMinimalCharacters();
 
@@ -33,6 +40,7 @@ export default function NewConversation({
   >(new Set());
   const [message, setMessage] = useState("");
   const [groupName, setGroupName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // filter the user themselves from the list
   const filteredCharacters = characters?.filter(
@@ -69,6 +77,50 @@ export default function NewConversation({
 
   const isGroup = selectedParticipants.size > 1;
 
+  const handleSubmitNewConversation = async () => {
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+
+      const participantIds = [...selectedParticipants].map(
+        (participant) => participant.id,
+      );
+
+      // determine the action to call based on chat type and group status
+      let conversationId;
+
+      if (chatContext.type === "off") {
+        if (isGroup) {
+          conversationId = await createGroupOffGameConversation(
+            groupName,
+            participantIds,
+            message,
+          );
+        } else {
+          conversationId = await createSingleOffGameConversation(
+            participantIds[0],
+            message,
+          );
+        }
+      } else {
+        // On-game chat logic here
+      }
+
+      // navigate to the editor with the right conversation id
+      chatContext.navigateToEditor(conversationId ?? null);
+    } catch (error) {
+      addToast({
+        title: t("errors.title"),
+        description:
+          error instanceof Error ? error.message : t("errors.generic"),
+        color: "danger",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // reset the movable to the conversation lists when the user closes it
   const isFirstMount = useRef(true);
   useEffect(() => {
@@ -81,9 +133,16 @@ export default function NewConversation({
 
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
-      <div className="flex flex-1 flex-col items-center gap-4 overflow-y-auto p-4">
+      <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
+        <Button
+          isIconOnly
+          variant="light"
+          onPress={chatContext.navigateToConversations}
+        >
+          <ArrowLeftIcon />
+        </Button>
         <Autocomplete
-          className="w-full max-w-sm"
+          className="max-w-sm justify-self-center"
           label="Select character"
           isLoading={isLoading}
           onSelectionChange={(key) => {
@@ -113,8 +172,11 @@ export default function NewConversation({
               </AutocompleteItem>
             ))}
         </Autocomplete>
+        <div />
+      </header>
 
-        <div className="flex w-full max-w-sm flex-wrap justify-center gap-2">
+      <section className="flex flex-1 overflow-y-auto p-4">
+        <div className="mx-auto flex w-full max-w-sm flex-wrap justify-center gap-2">
           {[...selectedParticipants].map((participant) => (
             <Chip
               key={participant.id}
@@ -132,12 +194,12 @@ export default function NewConversation({
             </Chip>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="mt-auto flex flex-col gap-2 p-2">
+      <footer className="mt-auto space-y-2 p-2">
         {isGroup && (
           <Input
-            className="w-full"
+            className="w-[200px]"
             label="Group name"
             placeholder="Enter group name"
             value={groupName}
@@ -153,21 +215,21 @@ export default function NewConversation({
           />
           <Button
             isIconOnly
-            startContent={<Send className="h-5 w-5" />}
+            startContent={isSubmitting ? null : <Send className="h-5 w-5" />}
             color="primary"
             size="sm"
             className="mb-0.5"
+            isLoading={isSubmitting}
             isDisabled={
+              isSubmitting ||
               !message.trim() ||
               (isGroup && !groupName.trim()) ||
               selectedParticipants.size === 0
             }
-            onPress={() => {
-              setMessage("");
-            }}
+            onPress={handleSubmitNewConversation}
           />
         </div>
-      </div>
+      </footer>
     </div>
   );
 }
