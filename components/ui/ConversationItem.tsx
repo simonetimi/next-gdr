@@ -2,7 +2,7 @@
 
 import type { OffGameConversationWithDetails } from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { Avatar } from "@heroui/react";
+import { Avatar, Badge } from "@heroui/react";
 import { formatTimeHoursMinutes } from "@/utils/dates";
 import { Markup } from "interweave";
 
@@ -27,13 +27,22 @@ export const ConversationItem = ({
       onClick={() => navigateToEditor(conversation.id)}
       className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
     >
+      <Badge
+        color="primary"
+        className="p-[7px]"
+        content={conversation.unreadCount}
+        size="sm"
+        isInvisible={!conversation.unreadCount}
+      >
+        <span></span>
+      </Badge>
       <div className="flex-shrink-0">
         <ParticipantsAvatars participants={conversation.participants} />
       </div>
-      <div className="min-w-0 flex-grow">
+      <div className="mr-7 min-w-0 flex-grow">
         <ConversationDetails conversation={conversation} />
       </div>
-      <div className="flex-shrink-0">
+      <div className="flex flex-shrink-0 flex-col items-end gap-1">
         <TimeStamp date={conversation.lastMessageAt} locale={locale} />
       </div>
     </button>

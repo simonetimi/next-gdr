@@ -28,4 +28,5 @@ export const offGameConversationWithDetailsSchema = createSelectSchema(
   lastMessageAt: z.date().nullable(),
   lastMessage: lastMessageSchema.nullable(),
   participants: z.array(participantSchema),
+  unreadCount: z.number(),
 });

@@ -7,7 +7,7 @@ import {
   offGameReads,
 } from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
-import { eq, and, desc, lt, sql, inArray, ne } from "drizzle-orm";
+import { eq, and, desc, lt, sql, inArray, ne, isNull } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 
 export async function getConversations() {
@@ -90,7 +90,40 @@ export async function getConversations() {
     >,
   );
 
-  // combine conversations with their participants
+  // Get unread messages count for each conversation
+  const unreadCounts = await db
+    .select({
+      conversationId: offGameMessages.conversationId,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(offGameMessages)
+    .leftJoin(
+      offGameReads,
+      and(
+        eq(offGameReads.messageId, offGameMessages.id),
+        eq(offGameReads.readBy, characterId.id!),
+      ),
+    )
+    .where(
+      and(
+        inArray(offGameMessages.conversationId, conversationIds),
+        isNull(offGameReads.id),
+      ),
+    )
+    .groupBy(offGameMessages.conversationId);
+
+  // Create a map of conversation IDs to unread counts
+  const unreadCountMap = unreadCounts.reduce(
+    (acc, { conversationId, count }) => {
+      if (conversationId) {
+        acc[conversationId] = count;
+      }
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+
+  // combine conversations with their participants and unread counts
   const results = conversations.map((conv) => ({
     id: conv.id,
     isGroup: conv.isGroup,
@@ -106,6 +139,7 @@ export async function getConversations() {
         }
       : null,
     participants: participantsMap[conv.id] || [],
+    unreadCount: unreadCountMap[conv.id] || 0,
   }));
 
   return results;
