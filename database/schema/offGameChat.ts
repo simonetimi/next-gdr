@@ -9,15 +9,13 @@ import {
 } from "drizzle-orm/pg-core";
 import { characters } from "@/database/schema/character";
 
-// TODO fix deprecated syntax on tables
-
 export const offGameConversations = pgTable("off_game_conversation", {
   id: uuid()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   isGroup: boolean("is_group").default(false).notNull(),
-  name: varchar("name", { length: 50 }), // only for groups
-  imageUrl: text("image_url"), // only for groups
+  name: varchar("name", { length: 50 }),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   createdBy: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
@@ -31,9 +29,7 @@ export const offGameParticipants = pgTable("off_game_participant", {
     .$defaultFn(() => crypto.randomUUID()),
   conversationId: uuid("conversation_id").references(
     () => offGameConversations.id,
-    {
-      onDelete: "cascade",
-    },
+    { onDelete: "cascade" },
   ),
   characterId: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
@@ -49,9 +45,7 @@ export const offGameMessages = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     conversationId: uuid("conversation_id").references(
       () => offGameConversations.id,
-      {
-        onDelete: "cascade",
-      },
+      { onDelete: "cascade" },
     ),
     content: text("content").notNull(),
     senderId: uuid("sender_id").references(() => characters.id, {
@@ -59,10 +53,10 @@ export const offGameMessages = pgTable(
     }),
     sentAt: timestamp("sent_at").defaultNow().notNull(),
   },
-  (table) => ({
-    conversationIdIdx: index("conversation_id_idx").on(table.conversationId),
-    sentAtIdx: index("sent_at_idx").on(table.sentAt),
-  }),
+  (table) => [
+    index("conversation_id_idx").on(table.conversationId),
+    index("sent_at_idx").on(table.sentAt),
+  ],
 );
 
 export const offGameReads = pgTable(
@@ -79,9 +73,7 @@ export const offGameReads = pgTable(
     }),
     readAt: timestamp("read_at").defaultNow().notNull(),
   },
-  (table) => ({
-    messageReadIdx: index("message_read_idx").on(table.messageId, table.readBy),
-  }),
+  (table) => [index("message_read_idx").on(table.messageId, table.readBy)],
 );
 
 export const offGameParticipantDeletions = pgTable(
@@ -92,9 +84,7 @@ export const offGameParticipantDeletions = pgTable(
       .$defaultFn(() => crypto.randomUUID()),
     participantId: uuid("participant_id").references(
       () => offGameParticipants.id,
-      {
-        onDelete: "cascade",
-      },
+      { onDelete: "cascade" },
     ),
     deletedAt: timestamp("deleted_at").defaultNow().notNull(),
   },
