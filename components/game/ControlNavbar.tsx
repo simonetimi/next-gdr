@@ -39,7 +39,7 @@ import dynamic from "next/dynamic";
 import { Tooltip } from "@heroui/tooltip";
 import { resetCurrentCharacter } from "@/server/actions/character";
 import { toggleInvisible } from "@/server/actions/app";
-import { useInvisibleStatus } from "@/hooks/useInvisibleStatus";
+import { useInvisibleStatus } from "@/hooks/swr/useInvisibleStatus";
 import CharacterSheetPortal from "@/components/portals/CharacterSheetPortal";
 import SettingsPortal from "@/components/portals/SettingsPortal";
 import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal";

@@ -31,7 +31,6 @@ export function OnGameChatProvider({ children }: { children: ReactNode }) {
     string | null
   >(null);
 
-  // TODO specify types for participants
   const [newConversationParticipants, setNewConversationParticipants] =
     useState(null);
 

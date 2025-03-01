@@ -2,8 +2,6 @@ import useSWR from "swr";
 import { fetcher } from "@/utils/swr";
 import { OffGameConversationWithDetails } from "@/models/offGameChat";
 
-// todo implement param to switch between off and on game fetching
-
 export function useConversations(chatType: "on" | "off") {
   const { data, error, isLoading, mutate } = useSWR<
     OffGameConversationWithDetails[]

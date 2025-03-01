@@ -9,6 +9,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { characters } from "@/database/schema/character";
 
+// TODO fix deprecated syntax on tables
+
 export const offGameConversations = pgTable("off_game_conversation", {
   id: uuid()
     .primaryKey()

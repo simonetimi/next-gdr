@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { MinimalCharacter } from "@/models/characters";
-import { useUserSettings } from "@/hooks/useUserSettings";
+import { useUserSettings } from "@/hooks/swr/useUserSettings";
 import { UserSettingsMinimal } from "@/models/userSettings";
 import { defaultUserSettings } from "@/utils/constants/defaultUserSettings";
-import { useCurrentCharacter } from "@/hooks/useCurrentCharacter";
+import { useCurrentCharacter } from "@/hooks/swr/useCurrentCharacter";
 
 type GameContextType = {
   openCharacterSheets: Set<string>;

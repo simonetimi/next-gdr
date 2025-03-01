@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 interface ImageSizeModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (width: number, height: number) => void;
+  onSubmit: (width: number, height: number, remove?: boolean) => void;
   initialWidth?: number;
   initialHeight?: number;
 }
@@ -33,18 +33,35 @@ export default function ImageSizeModal({
 
   const t = useTranslations("components.editor");
 
+  // update width, height, and aspect ratio when initial values change
+  useEffect(() => {
+    setWidth(initialWidth);
+    setHeight(initialHeight);
+    setAspect(initialWidth / initialHeight);
+  }, [initialWidth, initialHeight]);
+
+  // handle aspect ratio maintenance when width or height changes
   useEffect(() => {
     if (maintainRatio) {
-      if (width !== initialWidth) {
+      // only calculate if the change was initiated by the user
+      const isWidthChanged = width !== initialWidth;
+      const isHeightChanged = height !== initialHeight;
+
+      if (isWidthChanged) {
         setHeight(Math.round(width / aspect));
-      } else if (height !== initialHeight) {
+      } else if (isHeightChanged) {
         setWidth(Math.round(height * aspect));
       }
     }
-  }, [width, height, maintainRatio]);
+  }, [width, height, maintainRatio, aspect]);
 
   const handleSubmit = () => {
     onSubmit(width, height);
+    onOpenChange(false);
+  };
+
+  const handleRemove = () => {
+    onSubmit(0, 0, true);
     onOpenChange(false);
   };
 
@@ -80,17 +97,22 @@ export default function ImageSizeModal({
               {t("keepAspectRatio")}
             </Checkbox>
           </ModalBody>
-          <ModalFooter>
-            <Button
-              color="danger"
-              variant="light"
-              onPress={() => onOpenChange(false)}
-            >
-              {t("cancel")}
+          <ModalFooter className="flex justify-between">
+            <Button color="danger" variant="solid" onPress={handleRemove}>
+              {t("removeImage")}
             </Button>
-            <Button color="primary" type="submit">
-              {t("apply")}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                color="danger"
+                variant="light"
+                onPress={() => onOpenChange(false)}
+              >
+                {t("cancel")}
+              </Button>
+              <Button color="primary" type="submit">
+                {t("apply")}
+              </Button>
+            </div>
           </ModalFooter>
         </form>
       </ModalContent>

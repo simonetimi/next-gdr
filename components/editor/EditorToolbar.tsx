@@ -48,8 +48,6 @@ const fontSizes = {
   "text-2xl": "24px",
   "text-3xl": "30px",
   "text-4xl": "36px",
-  "text-5xl": "48px",
-  "text-6xl": "60px",
 };
 
 const fontFamilies = [
@@ -104,18 +102,26 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
 
   if (!editor) return null;
 
-  const handleImageSize = (width: number, height: number) => {
+  const handleImageSize = (
+    width: number,
+    height: number,
+    remove: boolean = false,
+  ) => {
     if (selectedImage) {
-      editor
-        .chain()
-        .focus()
-        .updateAttributes("image", {
-          src: selectedImage.src,
-          width: width,
-          height: height,
-          alt: selectedImage.alt || "Image",
-        })
-        .run();
+      if (remove) {
+        editor.commands.deleteSelection();
+      } else {
+        editor
+          .chain()
+          .focus()
+          .updateAttributes("image", {
+            src: selectedImage.src,
+            width: width,
+            height: height,
+            alt: selectedImage.alt || "Image",
+          })
+          .run();
+      }
     }
   };
 

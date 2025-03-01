@@ -3,17 +3,18 @@
 import { ScrollShadow, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { ConversationItem } from "@/components/ui/ConversationItem";
-import { useConversations } from "@/hooks/useConversations";
+import { useConversations } from "@/hooks/swr/useConversations";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 import { MailPlus } from "lucide-react";
 import { Button } from "@heroui/button";
 
-export default function CjatConversations({
+export default function ChatConversations({
   chatContext,
 }: {
-  chatContext: OffGameChatContext | OnGameChatContext;
+  chatContext: OffGameChatContext;
 }) {
+  // TODO translations
   const t = useTranslations();
 
   const { conversations, isLoading } = useConversations(chatContext.type);

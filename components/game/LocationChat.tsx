@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/LocationChatMessages";
 import LocationControls from "@/components/game/LocationControls";
 import { MinimalCharacter } from "@/models/characters";
-import { useLocationMessages } from "@/hooks/useLocationMessages";
+import { useLocationMessages } from "@/hooks/swr/useLocationMessages";
 import { useLayoutEffect, useRef } from "react";
 
 function messageRender(

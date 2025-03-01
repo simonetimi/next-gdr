@@ -102,7 +102,8 @@
       "insertLink": "Inserisci link",
       "insertImage": "Inserisci immagine",
       "imageSize": "Dimensione immagine",
-      "keepAspectRatio": "Matieni proporzioni",
+      "keepAspectRatio": "Mantieni proporzioni",
+      "removeImage": "Rimuovi immagine",
       "table": "Tabella",
       "tableOptions": "Opzioni tabella",
       "insertTable": "Inserisci tabella",
@@ -180,6 +181,9 @@
       "retrievingMessages": "Errore nel recupero della chat. Attendi o aggiorna la pagina",
       "notFound": "Chat non trovata",
       "savingChat": "Errore nel salvataggio della chat"
+    },
+    "gameChat": {
+      "notInConversation": "Non sei nella conversazione"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",

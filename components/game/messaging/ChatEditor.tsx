@@ -1,37 +1,99 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import { Button, ScrollShadow } from "@heroui/react";
+import { addToast, Button, ScrollShadow, Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
 import { ArrowLeftIcon, Send } from "lucide-react";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
-import { OnGameChatContext } from "@/contexts/OnGameChatContext";
+import { useChatMessagesInfinite } from "@/hooks/swr/useChatMessagesInfinite";
+import { sendOffGameMessage } from "@/server/actions/offGameChat";
+import { useGame } from "@/contexts/GameContext";
+import { useConversationDetails } from "@/hooks/swr/useConversationDetails";
+import { Markup } from "interweave";
 
 export default function ChatEditor({
   chatContext,
 }: {
-  chatContext: OffGameChatContext | OnGameChatContext;
+  chatContext: OffGameChatContext;
 }) {
   const t = useTranslations();
+  const { currentCharacter } = useGame();
 
-  // fetch with swr
+  const {
+    messages,
+    isLoading,
+    isLoadingMore,
+    isReachingEnd,
+    loadMore,
+    refreshMessages,
+  } = useChatMessagesInfinite(
+    chatContext.type,
+    chatContext.currentConversation?.id ?? "",
+  );
+  const { conversationDetails } = useConversationDetails(
+    chatContext.type,
+    chatContext.currentConversation?.id ?? "",
+  );
+
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  const [hasInitialScroll, setHasInitialScroll] = useState(false);
 
-  // TODO logic to send message and fetch periodically messages -> make swr + server action
-  //  imp! if it's the first message of the conversation, it should also create the conversation.
-  //  (cae -> conversation id is null)
+  const editorRef = useRef<{ clearContent: () => void }>(null);
 
-  // TODO find a way to make texts appear one on the left and one on the right, little bubbles
+  const handleClearContent = () => {
+    if (editorRef.current) {
+      editorRef.current.clearContent();
+    }
+  };
 
-  // in alternative flex-column is enough. this only adds some animation
-  const bottomRef = useRef<HTMLDivElement | null>(null);
-  useLayoutEffect(() => {
-    //  small delay to ensure content is rendered
-    setTimeout(() => {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 10);
-  }, []);
+  const handleOnSubmit = async () => {
+    if (!message.trim() || isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await sendOffGameMessage(
+        chatContext.currentConversation?.id ?? "",
+        message,
+      );
+      handleClearContent();
+      setMessage("");
+      await refreshMessages();
+      setTimeout(() => {
+        lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } catch (error) {
+      let errorMessage = t("errors.generic");
+      if (error instanceof Error) errorMessage = error.message;
+      addToast({
+        title: t("errors.title"),
+        description: errorMessage,
+        color: "danger",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleScroll = () => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer || !hasInitialScroll) return;
+
+    if (scrollContainer.scrollTop <= 100 && !isLoadingMore && !isReachingEnd) {
+      loadMore();
+    }
+  };
+
+  // first scroll into view when messages are loaded the first time
+  useEffect(() => {
+    if (!hasInitialScroll && messages?.length) {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => setHasInitialScroll(true), 1000);
+    }
+  }, [messages, hasInitialScroll]);
 
   // reset the movable to the conversation lists when the user closes it
   const isFirstMount = useRef(true);
@@ -41,11 +103,26 @@ export default function ChatEditor({
       return;
     }
     return () => chatContext.navigateToConversations();
-  }, []);
+  }, [chatContext]);
+
+  const isGroup = conversationDetails?.isGroup;
+  const participants = conversationDetails?.participants || [];
+  const otherParticipant = participants.find((p) => !p.isCurrentUser);
+  const conversationTitle = isGroup
+    ? conversationDetails?.name
+    : otherParticipant?.name;
+
+  const participantsMap = participants.reduce(
+    (acc, p) => {
+      acc[p.id] = p;
+      return acc;
+    },
+    {} as Record<string, (typeof participants)[0]>,
+  );
 
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
-      <header className="flex items-center gap-4 p-4">
+      <header className="flex items-center gap-4 border-b p-4">
         <Button
           isIconOnly
           variant="light"
@@ -53,46 +130,130 @@ export default function ChatEditor({
         >
           <ArrowLeftIcon />
         </Button>
-        <h2 className="font-semibold">Conversation Title</h2>
+
+        <div className="flex items-center gap-3">
+          {isLoading ? (
+            <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200"></div>
+          ) : isGroup ? (
+            <div className="relative h-8 w-8">
+              {participants
+                .filter((p) => !p.isCurrentUser)
+                .slice(0, 2)
+                .map((participant, i) => (
+                  <Avatar
+                    key={participant.id}
+                    src={participant.avatarUrl || undefined}
+                    name={participant.name?.[0] || "?"}
+                    className={`absolute ${i === 0 ? "left-0 top-0" : "bottom-0 right-0"} h-6 w-6`}
+                    showFallback
+                    size="sm"
+                  />
+                ))}
+            </div>
+          ) : (
+            <Avatar
+              src={otherParticipant?.avatarUrl || undefined}
+              name={(otherParticipant?.name?.[0] || "?").toUpperCase()}
+              className="h-8 w-8"
+              showFallback
+            />
+          )}
+          <h2 className="font-semibold">{conversationTitle}</h2>
+        </div>
       </header>
 
       <ScrollShadow
+        ref={scrollContainerRef}
         visibility="top"
-        className="min-h-0 flex-1 flex-col overflow-y-auto p-2"
+        className="min-h-0 flex-1 flex-col overflow-y-auto p-4"
+        onScroll={handleScroll}
       >
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div> <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div className="h-6">Prova</div>
-        <div ref={bottomRef} className="mt-auto h-1" />
+        {isReachingEnd && messages && messages.length > 0 && (
+          <div className="py-2 text-center text-xs text-gray-500">
+            No more messages
+          </div>
+        )}
+
+        {isLoadingMore && (
+          <div className="flex justify-center py-2">
+            <Spinner variant="dots" />
+          </div>
+        )}
+
+        {messages && messages.length > 0 && (
+          <div className="flex flex-col-reverse gap-3">
+            {messages.map((message, index) => {
+              const isCurrentUser = message.senderId === currentCharacter?.id;
+              const sender = participantsMap[message.senderId ?? ""];
+
+              return (
+                <div
+                  key={message.id}
+                  ref={index === 0 ? lastMessageRef : null}
+                  className={`flex items-end gap-2 ${isCurrentUser ? "flex-row-reverse" : "flex-row"}`}
+                >
+                  {(!isCurrentUser || isGroup) && (
+                    <Avatar
+                      src={sender?.avatarUrl || undefined}
+                      name={sender?.name?.[0]}
+                      className="h-6 w-6"
+                      showFallback
+                      size="sm"
+                    />
+                  )}
+
+                  <div
+                    className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
+                      isCurrentUser
+                        ? "bg-primary/10 text-foreground"
+                        : "bg-muted/30"
+                    }`}
+                  >
+                    {!isCurrentUser && isGroup && (
+                      <div className="mb-1 text-xs">{sender?.name}</div>
+                    )}
+                    <Markup content={message.content} />
+                    <div className="mt-1 text-right text-[10px] opacity-70">
+                      {new Date(message.sentAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {isLoading && (
+          <div className="flex h-full items-center justify-center">
+            <Spinner />
+          </div>
+        )}
       </ScrollShadow>
 
-      <div className="flex items-end gap-2 p-2">
+      <div className="flex items-end gap-2 border-t p-3">
         <Editor
           content={message}
           onContentChange={setMessage}
           containerClass="flex-1"
           editorClass="h-[100px]"
+          onKeyDown={async (e) => {
+            if (e.key === "Enter" && !e.shiftKey && message.trim()) {
+              await handleOnSubmit();
+            }
+          }}
         />
         <Button
           isIconOnly
-          startContent={<Send className="h-5 w-5" />}
+          startContent={isSubmitting ? null : <Send className="h-5 w-5" />}
           color="primary"
           size="sm"
           className="mb-0.5"
+          isLoading={isSubmitting}
           isDisabled={!message.trim()}
-          onPress={() => {
-            setMessage("");
-          }}
+          onPress={handleOnSubmit}
         />
       </div>
     </div>

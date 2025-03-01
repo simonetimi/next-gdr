@@ -73,4 +73,8 @@ export class GameConfig {
       chance: parseInt(process.env.EXTREME_WEATHER_CHANCE ?? "10"),
     };
   }
+
+  public static getMessagesLimitPerFetch() {
+    return parseInt(process.env.MAX_MESSAGES_FETCHED_PER_LOAD ?? "50");
+  }
 }

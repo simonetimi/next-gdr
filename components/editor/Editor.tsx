@@ -19,18 +19,52 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import EditorToolbar from "@/components/editor/EditorToolbar";
+import {
+  KeyboardEvent as ReactKeyboardEvent,
+  Ref,
+  useImperativeHandle,
+} from "react";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 export default function Editor({
   content,
   onContentChange,
   containerClass,
   editorClass,
+  onKeyDown,
+  editorRef,
 }: {
   content: string;
   onContentChange: (content: string) => void;
   containerClass?: string;
   editorClass?: string;
+  onKeyDown?: (e: ReactKeyboardEvent) => void;
+  editorRef?: Ref<{ clearContent: () => void }>;
 }) {
+  const isMobile = useMediaQuery("only screen and (max-width : 850px)");
+
+  const EnterHandler = Extension.create({
+    name: "enterHandler",
+    addPriority() {
+      return 100;
+    },
+    addKeyboardShortcuts() {
+      return {
+        Enter: ({ editor }) => {
+          if (!this.options.onEnter) {
+            return false;
+          }
+          return this.options.onEnter();
+        },
+      };
+    },
+    addOptions() {
+      return {
+        onEnter: () => false,
+      };
+    },
+  });
+
   const CustomImage = Image.extend({
     addAttributes() {
       return {
@@ -148,6 +182,23 @@ export default function Editor({
       TableRow,
       TableCell,
       TableHeader,
+      EnterHandler.configure({
+        onEnter: () => {
+          if (onKeyDown) {
+            if (isMobile) {
+              return false;
+            }
+            const syntheticEvent = {
+              key: "Enter",
+              preventDefault: () => {},
+              stopPropagation: () => {},
+            } as ReactKeyboardEvent;
+            onKeyDown(syntheticEvent);
+            return true;
+          }
+          return false;
+        },
+      }),
     ],
     content: content,
     editorProps: {
@@ -161,10 +212,24 @@ export default function Editor({
     },
   });
 
+  useImperativeHandle(
+    editorRef,
+    () => ({
+      clearContent: () => {
+        if (editor) {
+          editor.commands.clearContent(true);
+          editor.commands.focus();
+        }
+      },
+    }),
+    [editor],
+  );
+
   return (
     <div className={`flex flex-col gap-2 ${containerClass}`}>
       <EditorToolbar editor={editor} />
       <EditorContent
+        onKeyDown={onKeyDown}
         editor={editor}
         className={`overflow-y-auto rounded-lg border border-neutral-200 p-2 py-2 dark:border-neutral-700 ${editorClass}`}
       />

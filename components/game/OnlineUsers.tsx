@@ -3,7 +3,7 @@
 import { OnlineUsers as OnlineUsersType } from "@/models/sessions";
 import { useTranslations } from "next-intl";
 import { Avatar, Spinner } from "@heroui/react";
-import { useOnlineCharacters } from "@/hooks/useOnlineCharacters";
+import { useOnlineCharacters } from "@/hooks/swr/useOnlineCharacters";
 import { useGame } from "@/contexts/GameContext";
 
 export default function OnlineUsers() {

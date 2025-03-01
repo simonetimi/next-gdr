@@ -1,8 +1,11 @@
 "use client";
 
-import type { OffGameConversationWithDetails } from "@/models/offGameChat";
+import {
+  OffGameConversation,
+  OffGameConversationWithDetails,
+} from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { Avatar, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { Avatar } from "@heroui/react";
 import { formatTimeHoursMinutes } from "@/utils/dates";
 import { Markup } from "interweave";
 
@@ -18,7 +21,7 @@ export const ConversationItem = ({
   navigateToEditor,
 }: {
   conversation: OffGameConversationWithDetails;
-  navigateToEditor: (conversationId: string | null) => void;
+  navigateToEditor: (conversation: OffGameConversation) => void;
 }) => {
   const locale = GameConfig.getLocale();
 
@@ -26,20 +29,17 @@ export const ConversationItem = ({
 
   return (
     <button
-      onClick={() => navigateToEditor(conversation.id)}
+      onClick={() => navigateToEditor(conversation)}
       className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
     >
-      <Popover>
-        <PopoverTrigger>
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
-          </span>
-        </PopoverTrigger>
-        <PopoverContent>
-          <span>New messages</span>
-        </PopoverContent>
-      </Popover>
+      {conversation.unreadCount > 0 ? (
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
+        </span>
+      ) : (
+        <span className="relative flex h-2 w-2"></span>
+      )}
       <div className="flex-shrink-0">
         <ParticipantsAvatars participants={conversation.participants} />
       </div>
@@ -85,8 +85,8 @@ const ConversationDetails = ({ conversation }: ConversationProps) => (
       <Markup
         className="w-full truncate text-xs text-default-500"
         content={
-          conversation.lastMessage.content.length > 20
-            ? conversation.lastMessage.content.slice(0, 15) + "..."
+          conversation.lastMessage.content.length > 30
+            ? conversation.lastMessage.content.slice(0, 27) + "..."
             : conversation.lastMessage.content
         }
         allowList={[]}

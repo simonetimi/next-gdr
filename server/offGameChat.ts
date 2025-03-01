@@ -7,8 +7,9 @@ import {
   offGameReads,
 } from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
-import { eq, and, desc, lt, sql, inArray, ne, isNull } from "drizzle-orm";
+import { eq, and, desc, lt, sql, inArray, ne, isNull, SQL } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export async function getConversations() {
   const characterId = await getCurrentCharacterIdOnly();
@@ -148,8 +149,9 @@ export async function getConversations() {
 export async function getConversationMessages(
   conversationId: string,
   cursor?: string,
-  limit: number = 50,
 ) {
+  const limit = GameConfig.getMessagesLimitPerFetch();
+
   const t = await getTranslations("errors");
   const characterId = await getCurrentCharacterIdOnly();
 
@@ -169,34 +171,83 @@ export async function getConversationMessages(
     throw new Error(t("auth.unauthorized"));
   }
 
-  // fetch messages with cursor-based pagination
+  // base query for messages in this conversation
+  let whereCondition: SQL | undefined = eq(
+    offGameMessages.conversationId,
+    conversationId,
+  );
+
+  // if cursor exists, find the timestamp of that message first
+  if (cursor) {
+    const cursorMessage = await db
+      .select({ sentAt: offGameMessages.sentAt })
+      .from(offGameMessages)
+      .where(eq(offGameMessages.id, cursor))
+      .limit(1);
+
+    if (cursorMessage.length > 0) {
+      // use that timestamp for consistent pagination
+      whereCondition = and(
+        whereCondition,
+        lt(offGameMessages.sentAt, cursorMessage[0].sentAt),
+      );
+    }
+  }
+
   const messages = await db
-    .select({
-      id: offGameMessages.id,
-      content: offGameMessages.content,
-      sentAt: offGameMessages.sentAt,
-      senderId: offGameMessages.senderId,
-    })
+    .select()
     .from(offGameMessages)
-    .where(
-      and(
-        eq(offGameMessages.conversationId, conversationId),
-        cursor ? lt(offGameMessages.id, cursor) : undefined,
-      ),
-    )
+    .where(whereCondition)
     .orderBy(desc(offGameMessages.sentAt))
     .limit(limit);
 
   // mark messages as read
-  await db
-    .insert(offGameReads)
-    .values(
-      messages.map((message) => ({
-        messageId: message.id,
-        readBy: characterId.id!,
-      })),
-    )
-    .onConflictDoNothing();
+  if (messages.length > 0) {
+    await db
+      .insert(offGameReads)
+      .values(
+        messages.map((message) => ({
+          messageId: message.id,
+          readBy: characterId.id!,
+        })),
+      )
+      .onConflictDoNothing();
+  }
 
   return messages;
+}
+
+export async function getConversationDetails(conversationId: string) {
+  const characterId = await getCurrentCharacterIdOnly();
+
+  // get the conversation details
+  const conversation = await db
+    .select({
+      id: offGameConversations.id,
+      isGroup: offGameConversations.isGroup,
+      name: offGameConversations.name,
+      imageUrl: offGameConversations.imageUrl,
+      createdAt: offGameConversations.createdAt,
+      createdBy: offGameConversations.createdBy,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  // get all participants with detailed information
+  const participants = await db
+    .select({
+      id: characters.id,
+      name: characters.firstName,
+      avatarUrl: characters.miniAvatarUrl,
+      isCurrentUser: sql<boolean>`${characters.id} = ${characterId.id}`,
+    })
+    .from(offGameParticipants)
+    .innerJoin(characters, eq(characters.id, offGameParticipants.characterId))
+    .where(eq(offGameParticipants.conversationId, conversationId));
+
+  return {
+    ...conversation[0],
+    participants,
+  };
 }

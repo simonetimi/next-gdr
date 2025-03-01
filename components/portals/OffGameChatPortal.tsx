@@ -20,7 +20,7 @@ export default function OffGameChatPortal({
   const windowSize = useWindowSize();
 
   const modalWidth = isSmallDevice ? windowSize.width! : 800;
-  const modalHeight = isSmallDevice ? windowSize.height! : 600;
+  const modalHeight = isSmallDevice ? windowSize.height! : 650;
 
   const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
   const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);

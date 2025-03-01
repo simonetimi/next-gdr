@@ -6,14 +6,15 @@ import {
   useContext,
   useState,
 } from "react";
+import { OffGameConversation } from "@/models/offGameChat";
 
 export type OffGameChatContext = {
   navigateToConversations: () => void;
-  navigateToEditor: (conversationId: string | null) => void;
+  navigateToEditor: (conversation: OffGameConversation | null) => void;
   navigateToNewChat: () => void;
   setNewConversationParticipants: Dispatch<SetStateAction<null>>;
   newConversationParticipants: null;
-  currentConversationId: string | null;
+  currentConversation: OffGameConversation | null;
   componentInView: "conversations" | "editor" | "newChat";
   type: "off";
 };
@@ -27,27 +28,25 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
     "conversations" | "editor" | "newChat"
   >("conversations");
 
-  const [currentConversationId, setCurrentConversationId] = useState<
-    string | null
-  >(null);
+  const [currentConversation, setCurrentConversation] =
+    useState<OffGameConversation | null>(null);
 
-  // TODO specify types for participants
   const [newConversationParticipants, setNewConversationParticipants] =
     useState(null);
 
   const navigateToConversations = () => {
     setComponentInView("conversations");
-    setCurrentConversationId(null);
+    setCurrentConversation(null);
   };
 
-  const navigateToEditor = (conversationId: string | null) => {
-    setCurrentConversationId(conversationId);
+  const navigateToEditor = (conversation: OffGameConversation | null) => {
+    setCurrentConversation(conversation);
     setComponentInView("editor");
   };
 
   const navigateToNewConversation = () => {
     setComponentInView("newChat");
-    setCurrentConversationId(null);
+    setCurrentConversation(null);
   };
 
   return (
@@ -58,7 +57,7 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
         navigateToNewChat: navigateToNewConversation,
         setNewConversationParticipants,
         newConversationParticipants,
-        currentConversationId,
+        currentConversation,
         componentInView,
         type: "off",
       }}

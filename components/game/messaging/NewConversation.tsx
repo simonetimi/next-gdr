@@ -9,7 +9,7 @@ import {
   Chip,
   Input,
 } from "@heroui/react";
-import { useMinimalCharacters } from "@/hooks/useMinimalCharacters";
+import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import Editor from "@/components/editor/Editor";
@@ -29,7 +29,7 @@ type SelectedParticipant = {
 export default function NewConversation({
   chatContext,
 }: {
-  chatContext: OffGameChatContext | OnGameChatContext;
+  chatContext: OffGameChatContext;
 }) {
   const t = useTranslations();
   const { currentCharacter } = useGame();
@@ -89,17 +89,17 @@ export default function NewConversation({
       );
 
       // determine the action to call based on chat type and group status
-      let conversationId;
+      let conversation;
 
       if (chatContext.type === "off") {
         if (isGroup) {
-          conversationId = await createGroupOffGameConversation(
+          conversation = await createGroupOffGameConversation(
             groupName,
             participantIds,
             message,
           );
         } else {
-          conversationId = await createSingleOffGameConversation(
+          conversation = await createSingleOffGameConversation(
             participantIds[0],
             message,
           );
@@ -110,7 +110,7 @@ export default function NewConversation({
 
       hasSubmittedRef.current = true;
       // navigate to the editor with the right conversation id
-      chatContext.navigateToEditor(conversationId ?? null);
+      chatContext.navigateToEditor(conversation ?? null);
     } catch (error) {
       addToast({
         title: t("errors.title"),
@@ -221,6 +221,13 @@ export default function NewConversation({
             onContentChange={setMessage}
             containerClass="flex-1"
             editorClass="h-[100px]"
+            onKeyDown={async (e) => {
+              // send message on enter without shift (shift+enter is for new line)
+              if (e.key === "Enter" && !e.shiftKey && message.trim()) {
+                e.preventDefault(); // prevent default to avoid new line
+                await handleSubmitNewConversation();
+              }
+            }}
           />
           <Button
             isIconOnly

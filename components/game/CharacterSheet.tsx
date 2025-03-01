@@ -2,7 +2,7 @@
 
 import { Avatar, Spinner } from "@heroui/react";
 import { useTranslations } from "next-intl";
-import { useCharacterSheet } from "@/hooks/useCharacterSheet";
+import { useCharacterSheet } from "@/hooks/swr/useCharacterSheet";
 
 function CharacterSheet({ characterId }: { characterId: string }) {
   const t = useTranslations();
