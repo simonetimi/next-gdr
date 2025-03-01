@@ -168,7 +168,13 @@ function ControlNavbar({
             </Tooltip>
           </NavbarItem>
           <NavbarItem>
-            <Badge color="primary" content="4">
+            <Badge
+              color="primary"
+              content="4"
+              size="sm"
+              className="-mx-[3px] -my-[5px] animate-[bounce_1.5s_ease-in-out_infinite] text-[0.7rem]"
+              showOutline={false}
+            >
               <Tooltip content={t("offGameMessages")}>
                 <Button
                   isIconOnly

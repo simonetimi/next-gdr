@@ -41,6 +41,7 @@ export default function NewConversation({
   const [message, setMessage] = useState("");
   const [groupName, setGroupName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasSubmittedRef = useRef(false);
 
   // filter the user themselves from the list
   const filteredCharacters = characters?.filter(
@@ -48,7 +49,7 @@ export default function NewConversation({
   );
 
   const handleSelect = (character: (typeof characters)[0]) => {
-    // dont allow duplicates
+    // don't allow duplicates
     const isDuplicate = [...selectedParticipants].some(
       (participant) => participant.id === character.id,
     );
@@ -107,6 +108,7 @@ export default function NewConversation({
         // On-game chat logic here
       }
 
+      hasSubmittedRef.current = true;
       // navigate to the editor with the right conversation id
       chatContext.navigateToEditor(conversationId ?? null);
     } catch (error) {
@@ -121,15 +123,21 @@ export default function NewConversation({
     }
   };
 
-  // reset the movable to the conversation lists when the user closes it
+  // reset the movable to the conversation lists when the user closes it - runs on dismount
   const isFirstMount = useRef(true);
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
       return;
     }
-    return () => chatContext.navigateToConversations();
-  }, []);
+
+    // condition !hasSubmittedRef avoids resetting after successful submission
+    return () => {
+      if (!hasSubmittedRef.current) {
+        chatContext.navigateToConversations();
+      }
+    };
+  }, [chatContext]);
 
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
@@ -138,6 +146,7 @@ export default function NewConversation({
           isIconOnly
           variant="light"
           onPress={chatContext.navigateToConversations}
+          disabled={isSubmitting}
         >
           <ArrowLeftIcon />
         </Button>
