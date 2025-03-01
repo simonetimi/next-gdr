@@ -21,6 +21,17 @@ const lastMessageSchema = offGameMessageSchema.pick({
   senderId: true,
 });
 
+export const offGameMessageWithReadsSchema = offGameMessageSchema.extend({
+  readers: z.array(
+    z.object({
+      id: z.string(),
+      firstName: z.string(),
+      miniAvatarUrl: z.string().nullable(),
+      readAt: z.date(),
+    }),
+  ),
+});
+
 export const offGameConversation = createSelectSchema(offGameConversations);
 
 // full conversation schema with participants and last message

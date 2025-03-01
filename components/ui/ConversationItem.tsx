@@ -8,6 +8,7 @@ import { GameConfig } from "@/utils/config/GameConfig";
 import { Avatar } from "@heroui/react";
 import { formatTimeHoursMinutes } from "@/utils/dates";
 import { Markup } from "interweave";
+import { Tooltip } from "@heroui/tooltip";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
@@ -33,10 +34,12 @@ export const ConversationItem = ({
       className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
     >
       {conversation.unreadCount > 0 ? (
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
-        </span>
+        <Tooltip content="New messages">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
+          </span>
+        </Tooltip>
       ) : (
         <span className="relative flex h-2 w-2"></span>
       )}
@@ -62,7 +65,7 @@ export const ParticipantsAvatars = ({ participants }: ParticipantsProps) => (
           key={participant.id}
           src={participant.miniAvatarUrl ?? ""}
           name={participant.firstName}
-          className="h-8 w-8 border-2 border-background"
+          className="h-8 w-8"
         />
       ))}
       {participants.length > 4 && (

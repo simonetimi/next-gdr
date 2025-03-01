@@ -7,6 +7,8 @@ export function useConversations(chatType: "on" | "off") {
     OffGameConversationWithDetails[]
   >(`/api/game/chat/${chatType}/conversations/`, fetcher, {
     refreshInterval: 1000 * 60, // 1 minute
+    revalidateOnFocus: true,
+    revalidateOnMount: true,
   });
 
   return {

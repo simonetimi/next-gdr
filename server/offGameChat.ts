@@ -91,7 +91,7 @@ export async function getConversations() {
     >,
   );
 
-  // Get unread messages count for each conversation
+  // get unread messages count for each conversation
   const unreadCounts = await db
     .select({
       conversationId: offGameMessages.conversationId,
@@ -109,6 +109,8 @@ export async function getConversations() {
       and(
         inArray(offGameMessages.conversationId, conversationIds),
         isNull(offGameReads.id),
+        // Add this condition to exclude messages sent by the current user
+        ne(offGameMessages.senderId, characterId.id!),
       ),
     )
     .groupBy(offGameMessages.conversationId);
@@ -201,20 +203,70 @@ export async function getConversationMessages(
     .orderBy(desc(offGameMessages.sentAt))
     .limit(limit);
 
-  // mark messages as read
+  // fetch readers for these messages
+  const messageIds = messages.map((message) => message.id);
+  const readers = await db
+    .select({
+      messageId: offGameReads.messageId,
+      readerId: characters.id,
+      readerFirstName: characters.firstName,
+      readerMiniAvatarUrl: characters.miniAvatarUrl,
+      readAt: offGameReads.readAt,
+    })
+    .from(offGameReads)
+    .innerJoin(characters, eq(characters.id, offGameReads.readBy))
+    .where(inArray(offGameReads.messageId, messageIds));
+
+  // group readers by messageId
+  const readersMap = readers.reduce(
+    (acc, reader) => {
+      if (reader.messageId) {
+        if (!acc[reader.messageId]) {
+          acc[reader.messageId] = [];
+        }
+        acc[reader.messageId].push({
+          id: reader.readerId,
+          firstName: reader.readerFirstName,
+          miniAvatarUrl: reader.readerMiniAvatarUrl ?? "",
+          readAt: reader.readAt,
+        });
+      }
+      return acc;
+    },
+    {} as Record<
+      string,
+      Array<{
+        id: string;
+        firstName: string;
+        miniAvatarUrl: string;
+        readAt: Date;
+      }>
+    >,
+  );
+
+  // mark messages as read, but skip messages sent by current user
   if (messages.length > 0) {
-    await db
-      .insert(offGameReads)
-      .values(
-        messages.map((message) => ({
-          messageId: message.id,
-          readBy: characterId.id!,
-        })),
-      )
-      .onConflictDoNothing();
+    const messagesToMark = messages.filter(
+      (message) => message.senderId !== characterId.id,
+    );
+
+    if (messagesToMark.length > 0) {
+      await db
+        .insert(offGameReads)
+        .values(
+          messagesToMark.map((message) => ({
+            messageId: message.id,
+            readBy: characterId.id!,
+          })),
+        )
+        .onConflictDoNothing();
+    }
   }
 
-  return messages;
+  return messages.map((message) => ({
+    ...message,
+    readers: readersMap[message.id] || [],
+  }));
 }
 
 export async function getConversationDetails(conversationId: string) {

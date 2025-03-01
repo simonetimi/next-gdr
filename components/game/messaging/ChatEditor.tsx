@@ -1,16 +1,25 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, useEffect } from "react";
-import { addToast, Button, ScrollShadow, Avatar, Spinner } from "@heroui/react";
+import { useRef, useState, useEffect } from "react";
+import {
+  addToast,
+  Button,
+  ScrollShadow,
+  Avatar,
+  Spinner,
+  Tooltip,
+} from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
-import { ArrowLeftIcon, Send } from "lucide-react";
+import { ArrowLeftIcon, Check, Send } from "lucide-react";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { useChatMessagesInfinite } from "@/hooks/swr/useChatMessagesInfinite";
 import { sendOffGameMessage } from "@/server/actions/offGameChat";
 import { useGame } from "@/contexts/GameContext";
 import { useConversationDetails } from "@/hooks/swr/useConversationDetails";
 import { Markup } from "interweave";
+import { formatTimeHoursMinutes } from "@/utils/dates";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export default function ChatEditor({
   chatContext,
@@ -19,6 +28,7 @@ export default function ChatEditor({
 }) {
   const t = useTranslations();
   const { currentCharacter } = useGame();
+  const locale = GameConfig.getLocale();
 
   const {
     messages,
@@ -193,31 +203,89 @@ export default function ChatEditor({
                   className={`flex items-end gap-2 ${isCurrentUser ? "flex-row-reverse" : "flex-row"}`}
                 >
                   {(!isCurrentUser || isGroup) && (
-                    <Avatar
-                      src={sender?.avatarUrl || undefined}
-                      name={sender?.name?.[0]}
-                      className="h-6 w-6"
-                      showFallback
-                      size="sm"
-                    />
+                    <Tooltip content={sender?.name}>
+                      <Avatar
+                        src={sender?.avatarUrl || undefined}
+                        name={sender?.name?.[0]}
+                        className="h-6 w-6"
+                        showFallback
+                        size="sm"
+                      />
+                    </Tooltip>
                   )}
 
                   <div
                     className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
                       isCurrentUser
                         ? "bg-primary/10 text-foreground"
-                        : "bg-muted/30"
+                        : "bg-neutral-100 dark:bg-neutral-800"
                     }`}
                   >
-                    {!isCurrentUser && isGroup && (
-                      <div className="mb-1 text-xs">{sender?.name}</div>
-                    )}
                     <Markup content={message.content} />
-                    <div className="mt-1 text-right text-[10px] opacity-70">
-                      {new Date(message.sentAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                    <div
+                      className={`mt-1 flex items-center gap-1 text-[10px] opacity-70 ${
+                        isCurrentUser ? "text-right" : "text-left"
+                      }`}
+                    >
+                      {formatTimeHoursMinutes(message.sentAt, locale)}
+                      {message.readers?.length > 0 &&
+                        (isGroup
+                          ? message.readers.some(
+                              (reader) =>
+                                reader.id !== currentCharacter?.id &&
+                                reader.id !== message.senderId,
+                            )
+                          : isCurrentUser) && (
+                          <Tooltip
+                            content={
+                              <div className="flex flex-col gap-1">
+                                {isGroup ? (
+                                  <div className="flex flex-wrap gap-1">
+                                    Read by:
+                                    {Array.from(
+                                      new Map(
+                                        message.readers
+                                          .filter(
+                                            (reader) =>
+                                              reader.id !==
+                                                currentCharacter?.id &&
+                                              reader.id !== message.senderId,
+                                          )
+                                          .map((reader) => [reader.id, reader]),
+                                      ).values(),
+                                    ).map((reader) => (
+                                      <div
+                                        key={reader.id}
+                                        className="flex items-center gap-1"
+                                      >
+                                        <Avatar
+                                          src={
+                                            reader.miniAvatarUrl || undefined
+                                          }
+                                          name={reader.firstName?.[0]}
+                                          className="h-4 w-4"
+                                          showFallback
+                                          size="sm"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="text-xs">
+                                    Read at:{" "}
+                                    {message.readers[0]?.readAt &&
+                                      formatTimeHoursMinutes(
+                                        message.readers[0].readAt,
+                                        locale,
+                                      )}
+                                  </div>
+                                )}
+                              </div>
+                            }
+                          >
+                            <Check className="h-2 w-2" />
+                          </Tooltip>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -239,6 +307,7 @@ export default function ChatEditor({
           onContentChange={setMessage}
           containerClass="flex-1"
           editorClass="h-[100px]"
+          editorRef={editorRef}
           onKeyDown={async (e) => {
             if (e.key === "Enter" && !e.shiftKey && message.trim()) {
               await handleOnSubmit();

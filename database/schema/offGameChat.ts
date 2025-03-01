@@ -22,6 +22,7 @@ export const offGameConversations = pgTable("off_game_conversation", {
   createdBy: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
   }),
+  isDeleted: boolean("is_deleted").default(false).notNull(),
 });
 
 export const offGameParticipants = pgTable("off_game_participant", {
@@ -81,4 +82,20 @@ export const offGameReads = pgTable(
   (table) => ({
     messageReadIdx: index("message_read_idx").on(table.messageId, table.readBy),
   }),
+);
+
+export const offGameParticipantDeletions = pgTable(
+  "off_game_participant_deletions",
+  {
+    id: uuid()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    participantId: uuid("participant_id").references(
+      () => offGameParticipants.id,
+      {
+        onDelete: "cascade",
+      },
+    ),
+    deletedAt: timestamp("deleted_at").defaultNow().notNull(),
+  },
 );

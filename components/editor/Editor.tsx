@@ -50,7 +50,7 @@ export default function Editor({
     },
     addKeyboardShortcuts() {
       return {
-        Enter: ({ editor }) => {
+        Enter: () => {
           if (!this.options.onEnter) {
             return false;
           }

@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import useSWRInfinite from "swr/infinite";
 import { fetcher } from "@/utils/swr";
-import { OffGameMessage } from "@/models/offGameChat";
+import { OffGameMessageWithReads } from "@/models/offGameChat";
 
-type MessagesResponse = OffGameMessage[];
+type MessagesResponse = OffGameMessageWithReads[];
 
 export function useChatMessagesInfinite(
   chatType: "on" | "off",
