@@ -28,7 +28,7 @@ export default function ChatEditor({
   chatContext: OffGameChatContext;
 }) {
   const t = useTranslations();
-  const { currentCharacter } = useGame();
+  const { currentCharacter, toggleCharacterSheet } = useGame();
   const locale = GameConfig.getLocale();
 
   const {
@@ -207,6 +207,7 @@ export default function ChatEditor({
                   currentCharacterId={currentCharacter?.id}
                   locale={locale}
                   ref={index === 0 ? lastMessageRef : null}
+                  onOpenCharacterSheet={toggleCharacterSheet}
                 />
               );
             })}
@@ -256,6 +257,7 @@ const ChatMessage = ({
   currentCharacterId,
   locale,
   ref,
+  onOpenCharacterSheet,
 }: {
   message: OffGameMessageWithReads;
   isCurrentUser: boolean;
@@ -269,6 +271,7 @@ const ChatMessage = ({
   currentCharacterId?: string;
   locale: string;
   ref: Ref<HTMLDivElement>;
+  onOpenCharacterSheet: (characterId: string) => void;
 }) => {
   return (
     <div
@@ -278,9 +281,10 @@ const ChatMessage = ({
       {(!isCurrentUser || isGroup) && (
         <Tooltip content={sender?.name}>
           <Avatar
+            onClick={() => onOpenCharacterSheet(sender.id)}
             src={sender?.avatarUrl || undefined}
             name={sender?.name?.[0]}
-            className="h-6 w-6"
+            className="h-6 w-6 cursor-pointer"
             showFallback
             size="sm"
           />
