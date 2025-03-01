@@ -46,6 +46,7 @@ import OnlineCharactersPortal from "@/components/portals/OnlineCharactersPortal"
 import { Badge } from "@heroui/badge";
 import { useTranslations } from "next-intl";
 import OffGameChatPortal from "@/components/portals/OffGameChatPortal";
+import { useUnreadMessagesCount } from "@/hooks/swr/useUnreadMessagesCount";
 
 function ControlNavbar({
   character,
@@ -70,6 +71,7 @@ function ControlNavbar({
   }, [isMaxWidth850]);
 
   const { isInvisible, mutate } = useInvisibleStatus();
+  const { offCount, onCount } = useUnreadMessagesCount();
 
   const handleToggleInvisible = async () => {
     await toggleInvisible(isInvisible);
@@ -170,7 +172,7 @@ function ControlNavbar({
           <NavbarItem>
             <Badge
               color="primary"
-              content="4"
+              content={offCount && offCount > 0 ? offCount : null}
               size="sm"
               className="-mx-[3px] -my-[5px] animate-[bounce_1.5s_ease-in-out_infinite] text-[0.7rem]"
               showOutline={false}

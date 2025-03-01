@@ -303,3 +303,33 @@ export async function getConversationDetails(conversationId: string) {
     participants,
   };
 }
+
+export async function getOffGameUnreadMessagesCount() {
+  const characterId = await getCurrentCharacterIdOnly();
+
+  const result = await db
+    .select({
+      count: sql<number>`count(*)::int`,
+    })
+    .from(offGameMessages)
+    .innerJoin(
+      offGameParticipants,
+      eq(offGameParticipants.conversationId, offGameMessages.conversationId),
+    )
+    .leftJoin(
+      offGameReads,
+      and(
+        eq(offGameReads.messageId, offGameMessages.id),
+        eq(offGameReads.readBy, characterId.id!),
+      ),
+    )
+    .where(
+      and(
+        eq(offGameParticipants.characterId, characterId.id!),
+        isNull(offGameReads.id),
+        ne(offGameMessages.senderId, characterId.id!),
+      ),
+    );
+
+  return result[0].count;
+}
