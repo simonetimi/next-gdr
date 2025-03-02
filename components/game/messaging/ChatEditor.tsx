@@ -148,7 +148,7 @@ export default function ChatEditor({
           ) : isGroup ? (
             <div className="relative h-8 w-8">
               {participants
-                .filter((p) => !p.isCurrentUser)
+                .filter((p) => !p.isRemoved)
                 .slice(0, 2)
                 .map((participant, i) => (
                   <Avatar
@@ -267,6 +267,7 @@ const ChatMessage = ({
     name: string;
     avatarUrl: string | null;
     isCurrentUser: boolean;
+    isRemoved?: boolean;
   };
   currentCharacterId?: string;
   locale: string;
@@ -289,12 +290,12 @@ const ChatMessage = ({
       className={`flex items-end gap-2 ${isCurrentUser ? "flex-row-reverse" : "flex-row"}`}
     >
       {(!isCurrentUser || isGroup) && (
-        <Tooltip content={sender?.name}>
+        <Tooltip content={sender.name}>
           <Avatar
             onClick={() => onOpenCharacterSheet(sender.id)}
             src={sender?.avatarUrl || undefined}
             name={sender?.name?.[0]}
-            className="h-6 w-6 cursor-pointer"
+            className={`h-6 w-6 cursor-pointer ${sender?.isRemoved ? "opacity-70" : ""}`}
             showFallback
             size="sm"
           />

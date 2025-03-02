@@ -49,6 +49,7 @@ export const conversationParticipantSchema = z.object({
   name: z.string(),
   avatarUrl: z.string().nullable(),
   isCurrentUser: z.boolean(),
+  isRemoved: z.boolean().optional(),
 });
 
 export const conversationDetailsSchema = offGameConversation.extend({

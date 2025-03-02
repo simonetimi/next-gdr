@@ -68,31 +68,34 @@ export async function getConversations() {
   const participants = await db
     .select({
       conversationId: offGameParticipants.conversationId,
-      participantId: characters.id,
-      participantFirstName: characters.firstName,
-      participantMiniAvatarUrl: characters.miniAvatarUrl,
+      characterId: characters.id,
+      firstName: characters.firstName,
+      miniAvatarUrl: characters.miniAvatarUrl,
     })
     .from(offGameParticipants)
     .innerJoin(characters, eq(characters.id, offGameParticipants.characterId))
+    .leftJoin(
+      offGameParticipantDeletions,
+      eq(offGameParticipantDeletions.participantId, offGameParticipants.id),
+    )
     .where(
       and(
         inArray(offGameParticipants.conversationId, conversationIds),
-        // Fflter out current user
-        ne(offGameParticipants.characterId, characterId.id!),
+        isNull(offGameParticipantDeletions.id), // only include participants without deletion records
       ),
     );
 
   // group participants by conversationId
   const participantsMap = participants.reduce(
-    (acc, participant) => {
-      if (participant.conversationId) {
-        if (!acc[participant.conversationId]) {
-          acc[participant.conversationId] = [];
+    (acc, { conversationId, characterId, firstName, miniAvatarUrl }) => {
+      if (conversationId) {
+        if (!acc[conversationId]) {
+          acc[conversationId] = [];
         }
-        acc[participant.conversationId].push({
-          id: participant.participantId,
-          firstName: participant.participantFirstName,
-          miniAvatarUrl: participant.participantMiniAvatarUrl ?? "",
+        acc[conversationId].push({
+          id: characterId,
+          firstName,
+          miniAvatarUrl: miniAvatarUrl ?? "",
         });
       }
       return acc;
@@ -305,9 +308,15 @@ export async function getConversationDetails(conversationId: string) {
       name: characters.firstName,
       avatarUrl: characters.miniAvatarUrl,
       isCurrentUser: sql<boolean>`${characters.id} = ${characterId.id}`,
+      participantId: offGameParticipants.id,
+      isRemoved: sql<boolean>`${offGameParticipantDeletions.id} IS NOT NULL`,
     })
     .from(offGameParticipants)
     .innerJoin(characters, eq(characters.id, offGameParticipants.characterId))
+    .leftJoin(
+      offGameParticipantDeletions,
+      eq(offGameParticipantDeletions.participantId, offGameParticipants.id),
+    )
     .where(eq(offGameParticipants.conversationId, conversationId));
 
   return {
