@@ -24,14 +24,6 @@ Chat-based RPG app built with Next.js
 - Run `npx auth secret` to generate an auth secret in .env
 - Additional setup for the auth providers
 
-### Guidelines
-
-- In vercel.json, cron jobs can be defined on the select API routes. Eg., for weather, it will be executed everyday at 5 ( "schedule": "0 5 \* \* \*") using the key CRON_SECRET in the env variables
-- Fetch is mostly made on server (directory @/server). When it's need to fetch client side, use an API route. The API route can call the functions inside the @/server directory (not the actions!). Server actions (@server/actions) are only used for mutations, both server and client side.
-- Error messages are set with NextIntl on the server (server action or server function). Client-side, it will be catched (try/catch) if it's a server action (mutation) or catched in the API route and handled with SWR error if it's a GET request.
-- If the data validation (Zod - parse) is made server side and we check there are no errors, we can be sure of the type, else we'd have an error.
-- Important: not every error should be displayed to the user, because of how the application works. For example, "invalid character" should never happen, so there's no need to show the user a toast message for that. SWR retries on error if there's a network problem.
-
 ### Features to implement
 
 - [x] Zod for validation (should be configurable with drizzle)
@@ -50,10 +42,10 @@ Chat-based RPG app built with Next.js
 - [ ] Properly manage arriving to a location that is hidden (redirect to game)
 - [ ] Game documentation (Wiki-like system, admins can add or modify pages)
 - [ ] Character sheets (find a system to parse custom HTML/CSS)
-- [ ] Weather icons / labels
+- [x] Weather icons / labels
 - [ ] Game system (stats, abilities, powers) and logics
 - [ ] Private chats (on and off game)
-- [ ] Forum
+- [ ] Forum (with private threads and search functionality)
 - [ ] Internal market
 - [ ] Admin and master controls (especially for managing users, banning, locations, forum, docs)
 - [ ] News section on login (but before entering the game) that the admin can set up and update
@@ -61,11 +53,12 @@ Chat-based RPG app built with Next.js
 - [ ] Pins for locations
 - [ ] Implement user settings in the client store, updated on login
 - [ ] Add the ability for masters to post a picture in chat
+- [ ] Ticket management system for masters
 
 ### TODO
 
 - [ ] Update labels in messages/it.json (evergoing)
-- [ ] Put translation labels of weather
+- [x] Put translation labels of weather
 - [x] Investigate on a way to save location chats (generating html or similar, with a specific call)
 - [x] Make labels for error messages to call in server functions
 - [x] Implement string sanitization in the chat (Interweave)
@@ -74,22 +67,22 @@ Chat-based RPG app built with Next.js
 - [ ] Add all cron jobs
 - [x] Evaluate to migrate all get requests to API routes
 - [x] Investigate a way to cache information you don't want to fetch too often (like weather)
-- [ ] Movables should be able to reduce to icon or at least temporarely hide with a button
+- [x] Movables should be able to reduce to icon or at least temporarely hide with a button
 
 ### Bugs
 
 - [x] White flashing on route navigation
 - [x] Only render the navbar when starts with "/game" but it's also valid
-- [ ] Movable will increase height and width limits when pushed on the edges
+- [x] Movable will increase height and width limits when pushed on the edges
 - [x] Fix positioning of the avatar
 - [x] When in a location and mobile mode, the movable will not take full screen
 
 ### Cron jobs to implement
 - [x] Weather (to run daily)
-- [ ] Delete chat messages (older than 1 month)
+- [ ] Delete chat messages (older than x months)
 - [ ] Delete sessions older than a week
 - [ ] Delete messages older than x
-- [ ] Delete private locations not accessed for longer than 1 day 
+- [ ] Delete private locations not accessed for longer than 7 days 
 
 ### Utils and Docs
 
@@ -106,3 +99,26 @@ Chat-based RPG app built with Next.js
 - Fetching: server functions, server actions, API routes
 - Contexts: Game context, Chat context
 - Portals
+
+#### Cron jobs
+In the vercel.json file, cron jobs can be defined on the select API routes.<br />
+Eg., for weather, it will be executed everyday at 5 ( "schedule": "0 5 \* \* \*") using the key CRON_SECRET in the env variables.
+
+#### Fetching data
+Fetch is primarily made on server, when possible (directory @/server).<br />
+When it's needed to fetch client side, use an API route. The API route can call the functions inside the @/server directory (not the actions!).<br />
+Server actions (@server/actions) are only used for mutations (POST), both server and client side.<br />
+Error messages are set with NextIntl on the server (server action or server function).
+Client-side, it will be catched (try/catch)if it's a server action (mutation) or catched in the API route and handled with SWR error if it's a GET request.<br />
+If the data validation (Zod - parse) is made server side and we check there are no errors, we can be sure of the type, else we'd have an error.<br />
+Important: not every error should be displayed to the user, because of how the application works. For example, "invalid character" should never happen, so there's no need to show the user a toast message for that. SWR retries on error if there's a network problem.
+
+#### Messaging
+User can create a new conversation by adding one or more characters. If adding more than one character, it's considered
+to be a group conversation, and they'll be able to add a name for the group. The rules change slighly between the two types
+of conversations. <br />
+User is able to soft delete a conversation. The other user will still be able to see the conversation, and if a message
+it's sent to the user who delete the conversation, that same conversation will reappear in the list with the previous messages.
+If both users delete the conversation, it will still be accessible if they decide to text each other again.
+If it's a group conversation, deleting it will effectively quit the group, with a message send to the other members.
+Only the creator of the group can re-add a person who previously left.
