@@ -43,6 +43,10 @@ export const ConversationItem = ({
       if (isDeleting) return;
       await deleteOffGameConversationForParticipant(conversation.id);
       refreshConversations();
+      addToast({
+        title: t("components.gameChat.conversationRemoved"),
+        color: "success",
+      });
     } catch (error) {
       let errorMessage = t("errors.generic");
       if (error instanceof Error) errorMessage = error.message;
@@ -58,7 +62,7 @@ export const ConversationItem = ({
 
   return (
     <div className="flex w-full items-center gap-4 px-2 py-1">
-      {conversation.unreadCount == 0 ? (
+      {conversation.unreadCount > 0 ? (
         <Tooltip content="New messages">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
@@ -90,6 +94,7 @@ export const ConversationItem = ({
         color="danger"
         onPress={handleDeletion}
         isLoading={isDeleting}
+        className="cursor-pointer"
       />
     </div>
   );
@@ -127,8 +132,8 @@ const ConversationDetails = ({ conversation }: ConversationProps) => (
       <Markup
         className="w-full truncate text-xs text-default-500"
         content={
-          conversation.lastMessage.content.length > 30
-            ? conversation.lastMessage.content.slice(0, 27) + "..."
+          conversation.lastMessage.content.length > 40
+            ? conversation.lastMessage.content.slice(0, 37) + "..."
             : conversation.lastMessage.content
         }
         allowList={[]}

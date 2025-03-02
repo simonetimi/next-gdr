@@ -48,6 +48,10 @@
     "characterSheet": {
       "title": "Scheda personaggio"
     },
+    "gameChat": {
+      "conversationRemoved": "Conversazione rimossa con successo",
+      "noConversationFound": "Nessuna conversazione trovata"
+    },
     "offGameChat": {
       "title": "Messaggi off"
     },

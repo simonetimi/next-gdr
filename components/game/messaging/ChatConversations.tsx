@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { ConversationItem } from "@/components/ui/ConversationItem";
 import { useConversations } from "@/hooks/swr/useConversations";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
-import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 import { MailPlus } from "lucide-react";
 import { Button } from "@heroui/button";
 
@@ -44,7 +43,11 @@ export default function ChatConversations({
       </div>
 
       <ScrollShadow className="flex h-full w-full flex-col">
-        {conversations?.length == 0 && "No conversation found."}
+        {conversations?.length === 0 && (
+          <div className="flex h-full items-center justify-center">
+            {t("components.gameChat.noConversationFound")}
+          </div>
+        )}
         {sortedConversations?.map((conversation) => (
           <ConversationItem
             key={conversation.id}

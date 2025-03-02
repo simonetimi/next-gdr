@@ -180,8 +180,7 @@ export default function LocationControls({
     try {
       await navigator.clipboard.writeText(link);
       addToast({
-        title: t("general.success"),
-        description: t("components.locationControls.chatSavedOnClipboard"),
+        title: t("components.locationControls.chatSavedOnClipboard"),
         color: "success",
       });
     } catch (error) {
