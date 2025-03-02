@@ -28,3 +28,12 @@ export const replaceAngleBrackets = (text: string) => {
   // replaces angle brackets with «...»
   return text.replace(/<(.*?)>/g, "&laquo;$1&raquo;");
 };
+
+export const shortenText = (text: string, maxLength: number) => {
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "...";
+};
+
+export const stripTags = (text: string) => {
+  return text.replace(/<\/?[^>]+(>|$)/g, "");
+};

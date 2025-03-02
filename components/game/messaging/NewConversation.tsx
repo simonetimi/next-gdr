@@ -26,7 +26,7 @@ export default function NewConversation({
 }) {
   const t = useTranslations();
   const { currentCharacter } = useGame();
-  const { characters } = useMinimalCharacters();
+  const { characters, isLoading } = useMinimalCharacters();
 
   const [selectedParticipants, setSelectedParticipants] = useState<
     Set<SelectedParticipant>
@@ -119,17 +119,19 @@ export default function NewConversation({
     }
   };
 
-  // reset the movable to the conversation lists when the user closes it - runs on dismount
-  const isFirstMount = useRef(true);
+  // reset the movable to the conversation lists when the user closes it
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
-    }
+    // set a flag to track if we've been mounted long enough
+    let isMountedLongEnough = false;
 
-    // condition !hasSubmittedRef avoids resetting after successful submission
+    // timeout delay to get past React's strict mode double mount (development only)
+    const timer = setTimeout(() => {
+      isMountedLongEnough = true;
+    }, 10);
+
     return () => {
-      if (!hasSubmittedRef.current) {
+      clearTimeout(timer);
+      if (isMountedLongEnough && !hasSubmittedRef.current) {
         chatContext.navigateToConversations();
       }
     };
@@ -154,6 +156,8 @@ export default function NewConversation({
         </Button>
         <div className="max-w-sm justify-self-center">
           <ParticipantSelector
+            characters={characters}
+            isLoading={isLoading}
             value={selectedCharacterId}
             onChange={handleCharacterSelect}
             excludeIds={excludeIds}

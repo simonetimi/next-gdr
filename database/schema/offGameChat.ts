@@ -17,7 +17,7 @@ export const offGameConversations = pgTable("off_game_conversation", {
   name: varchar("name", { length: 50 }),
   imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  createdBy: uuid("character_id").references(() => characters.id, {
+  adminId: uuid("admin_id").references(() => characters.id, {
     onDelete: "cascade",
   }),
 });

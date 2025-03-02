@@ -23,7 +23,7 @@ export async function getConversations() {
       name: offGameConversations.name,
       imageUrl: offGameConversations.imageUrl,
       createdAt: offGameConversations.createdAt,
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
       lastMessageContent: offGameMessages.content,
       lastMessageSenderId: offGameMessages.senderId,
       lastMessageSentAt: offGameMessages.sentAt,
@@ -148,7 +148,7 @@ export async function getConversations() {
     name: conv.name,
     imageUrl: conv.imageUrl,
     createdAt: conv.createdAt,
-    createdBy: conv.createdBy,
+    adminId: conv.adminId,
     lastMessageAt: conv.lastMessageSentAt || null,
     lastMessage: conv.lastMessageContent
       ? {
@@ -295,7 +295,7 @@ export async function getConversationDetails(conversationId: string) {
       name: offGameConversations.name,
       imageUrl: offGameConversations.imageUrl,
       createdAt: offGameConversations.createdAt,
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
     })
     .from(offGameConversations)
     .where(eq(offGameConversations.id, conversationId))

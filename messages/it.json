@@ -52,7 +52,26 @@
       "selectCharacter": "Aggiungi un personaggio",
       "conversationRemoved": "Conversazione rimossa con successo",
       "noConversationFound": "Nessuna conversazione trovata",
-      "noMoreCharacters": "Non ci sono più personaggi da aggiungere"
+      "noMoreCharacters": "Non ci sono più personaggi da aggiungere",
+      "settings": {
+        "title": "Impostazioni conversazione",
+        "groupName": "Nome del gruppo",
+        "enterName": "Inserisci un nome",
+        "admin": "Amministratore del gruppo",
+        "participants": "Partecipanti",
+        "deleteConversation": "Elimina conversazione",
+        "changeAdmin": "Cambia amministratore",
+        "cancel": "Annulla",
+        "confirm": "Conferma",
+        "confirmDeleteMessage": "Vuoi davvero eliminare la conversazione?",
+        "selectNewAdmin": "Seleziona un nuovo amministratore",
+        "selectParticipant": "Seleziona un partecipante",
+        "adminChanged": "Amministratore cambiato con successo",
+        "participantAdded": "Partecipante aggiunto alla conversazione",
+        "participantRemoved": "Partecipante rimosso dalla conversazione",
+        "conversationRemoved": "Conversazione eliminata con successo",
+        "conversationRenamed": "Conversazione rinominata con successo"
+      }
     },
     "offGameChat": {
       "title": "Messaggi off"
@@ -195,8 +214,10 @@
     "gameChat": {
       "notInConversation": "Non sei nella conversazione",
       "participantNotFound": "Partecipante non trovato",
-      "onlyCreator": "Solo il creatore della conversazione può eseguire l'azione",
-      "conversationNotFound": "Conversazione non trovata"
+      "onlyChatAdmin": "Solo l'amministratore della conversazione può eseguire l'azione",
+      "conversationNotFound": "Conversazione non trovata",
+      "newAdminNotInParticipants": "Il nuovo amministratore deve essere tra i partecipanti",
+      "onlyTwoParticipantsLeft": "Non puoi rimuovere tutti i partecipanti"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",

@@ -11,6 +11,10 @@ export function useConversationDetails(
       ? `/api/game/chat/${chatType}/conversation/details/${conversationId}`
       : null,
     fetcher,
+    {
+      revalidateOnMount: true,
+      revalidateIfStale: true,
+    },
   );
 
   return {

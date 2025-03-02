@@ -15,6 +15,7 @@ import { deleteOffGameConversationForParticipant } from "@/server/actions/offGam
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useGame } from "@/contexts/GameContext";
+import { shortenText, stripTags } from "@/utils/strings";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
@@ -68,7 +69,7 @@ export const ConversationItem = ({
   };
 
   return (
-    <div className="flex w-full items-center gap-4 px-2 py-1">
+    <div className="flex w-full items-center py-1 lg:gap-4 lg:px-2">
       {conversation.unreadCount > 0 ? (
         <Tooltip content="New messages">
           <span className="relative flex h-2 w-2">
@@ -132,17 +133,13 @@ const ConversationDetails = ({ conversation }: ConversationProps) => (
   <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
     <span className="w-full truncate text-sm font-medium">
       {conversation.isGroup
-        ? conversation.name
-        : conversation.participants.map((p) => p.firstName).join(", ")}
+        ? shortenText(conversation.name ?? "", 15)
+        : conversation.participants.map((p) => p.firstName)}
     </span>
     {conversation.lastMessage && (
       <Markup
         className="w-full truncate text-xs text-default-500"
-        content={
-          conversation.lastMessage.content.length > 40
-            ? conversation.lastMessage.content.slice(0, 37) + "..."
-            : conversation.lastMessage.content
-        }
+        content={stripTags(shortenText(conversation.lastMessage.content, 15))}
         allowList={[]}
       />
     )}

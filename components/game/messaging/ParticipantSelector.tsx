@@ -1,20 +1,24 @@
 import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
 import { Autocomplete, AutocompleteItem, Avatar } from "@heroui/react";
 import { useTranslations } from "next-intl";
+import { MinimalCharacter } from "@/models/characters";
 
 interface ParticipantSelectorProps {
+  characters: MinimalCharacter[];
+  isLoading: boolean;
   value: string;
   onChange: (characterId: string) => void;
   excludeIds?: string[];
 }
 
 export default function ParticipantSelector({
+  characters,
+  isLoading,
   value,
   onChange,
   excludeIds = [],
 }: ParticipantSelectorProps) {
   const t = useTranslations();
-  const { characters, isLoading } = useMinimalCharacters();
 
   // filter out excluded characters
   const filteredCharacters = characters?.filter(

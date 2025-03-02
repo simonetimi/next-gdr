@@ -105,7 +105,7 @@ export async function createGroupOffGameConversation(
     .values({
       isGroup: true,
       name,
-      createdBy: currentCharacter.id,
+      adminId: currentCharacter.id,
     })
     .returning();
 
@@ -269,7 +269,7 @@ export async function addParticipantToConversation(
   // check if the conversation exists and is a group
   const conversation = await db
     .select({
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
     })
     .from(offGameConversations)
     .where(eq(offGameConversations.id, conversationId))
@@ -279,9 +279,9 @@ export async function addParticipantToConversation(
     throw new Error(t("errors.gameChat.conversationNotFound"));
   }
 
-  // only the creator can add participants
-  if (conversation[0].createdBy !== currentCharacter.id) {
-    throw new Error(t("errors.gameChat.onlyCreator"));
+  // only the administrator can add participants
+  if (conversation[0].adminId !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyChatAdmin"));
   }
 
   // check if the character to add exists
@@ -355,7 +355,7 @@ export async function removeParticipantFromConversation(
   const conversation = await db
     .select({
       isGroup: offGameConversations.isGroup,
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
     })
     .from(offGameConversations)
     .where(eq(offGameConversations.id, conversationId))
@@ -365,9 +365,9 @@ export async function removeParticipantFromConversation(
     throw new Error(t("errors.gameChat.conversationNotFound"));
   }
 
-  // only the creator can remove participants
-  if (conversation[0].createdBy !== currentCharacter.id) {
-    throw new Error(t("errors.gameChat.onlyCreator"));
+  // only the administrator can remove participants
+  if (conversation[0].adminId !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyChatAdmin"));
   }
 
   // find the participant to remove
@@ -419,7 +419,7 @@ export async function removeParticipantFromConversation(
 export async function editGroupConversationName(
   conversationId: string,
   newName: string,
-): Promise<{ success: boolean }> {
+) {
   const t = await getTranslations();
   const currentCharacter = await getCurrentCharacterIdOnly();
 
@@ -430,7 +430,7 @@ export async function editGroupConversationName(
   const conversation = await db
     .select({
       name: offGameConversations.name,
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
     })
     .from(offGameConversations)
     .where(eq(offGameConversations.id, conversationId))
@@ -440,12 +440,10 @@ export async function editGroupConversationName(
     throw new Error(t("errors.gameChat.conversationNotFound"));
   }
 
-  // only the creator can edit the name
-  if (conversation[0].createdBy !== currentCharacter.id) {
-    throw new Error(t("errors.gameChat.onlyCreator"));
+  // only the administrator can edit the name
+  if (conversation[0].adminId !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyChatAdmin"));
   }
-
-  const oldName = conversation[0].name;
 
   // update the conversation name
   await db
@@ -460,7 +458,7 @@ export async function editGroupConversationName(
     isSystem: true,
   });
 
-  return { success: true };
+  return newName;
 }
 
 // used in group conversations
@@ -476,7 +474,7 @@ export async function deleteGroupConversation(
   // check if the conversation exists and is a group
   const conversation = await db
     .select({
-      createdBy: offGameConversations.createdBy,
+      adminId: offGameConversations.adminId,
       name: offGameConversations.name,
     })
     .from(offGameConversations)
@@ -487,9 +485,9 @@ export async function deleteGroupConversation(
     throw new Error(t("errors.gameChat.conversationNotFound"));
   }
 
-  // only the creator can delete the conversation
-  if (conversation[0].createdBy !== currentCharacter.id) {
-    throw new Error(t("errors.gameChat.onlyCreator"));
+  // only the administrator can delete the conversation
+  if (conversation[0].adminId !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyChatAdmin"));
   }
 
   // get all participants in the conversation
@@ -510,4 +508,47 @@ export async function deleteGroupConversation(
   }
 
   return { success: true };
+}
+
+export async function changeGroupConversationAdmin(
+  conversationId: string,
+  newAdminId: string,
+): Promise<void> {
+  const t = await getTranslations();
+
+  const character = await getCurrentCharacterIdOnly();
+
+  // verify the conversation exists and is a group chat
+  const [conversation] = await db
+    .select()
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  // check if current user is the admin
+  if (conversation.adminId !== character.id) {
+    throw new Error(t("errors.gameChat.onlyChatAdmin"));
+  }
+
+  // check if the new admin is a participant in the conversation
+  const [newAdminParticipant] = await db
+    .select()
+    .from(offGameParticipants)
+    .where(
+      and(
+        eq(offGameParticipants.conversationId, conversationId),
+        eq(offGameParticipants.characterId, newAdminId),
+      ),
+    )
+    .limit(1);
+
+  if (!newAdminParticipant) {
+    throw new Error(t("errors.gameChat.newAdminNotInParticipants"));
+  }
+
+  // update the admin ID
+  await db
+    .update(offGameConversations)
+    .set({ adminId: newAdminId })
+    .where(eq(offGameConversations.id, conversationId));
 }

@@ -19,8 +19,6 @@ export type OffGameChatContext = {
   navigateToEditor: (conversation: OffGameConversation | null) => void;
   navigateToNewChat: () => void;
   navigateToGroupChatSettings: () => void;
-  setNewConversationParticipants: Dispatch<SetStateAction<null>>;
-  newConversationParticipants: null;
   currentConversation: OffGameConversation | null;
   componentInView: ComponentInView;
   type: "off";
@@ -36,9 +34,6 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
 
   const [currentConversation, setCurrentConversation] =
     useState<OffGameConversation | null>(null);
-
-  const [newConversationParticipants, setNewConversationParticipants] =
-    useState(null);
 
   const navigateToConversations = () => {
     setComponentInView("conversations");
@@ -66,8 +61,6 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
         navigateToEditor,
         navigateToNewChat: navigateToNewConversation,
         navigateToGroupChatSettings,
-        setNewConversationParticipants,
-        newConversationParticipants,
         currentConversation,
         componentInView,
         type: "off",

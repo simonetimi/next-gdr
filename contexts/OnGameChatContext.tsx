@@ -67,7 +67,7 @@ export function OnGameChatProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const useOffGameChat = () => {
+export const useOnGameChat = () => {
   const context = useContext(OnGameChatContext);
   if (!context) {
     throw new Error("useGame must be used within a GameProvider");

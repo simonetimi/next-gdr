@@ -35,7 +35,7 @@
     "drizzle-zod": "^0.7.0",
     "framer-motion": "^12.4.2",
     "interweave": "^13.1.1",
-    "lucide-react": "^0.475.0",
+    "lucide-react": "^0.477.0",
     "lunarphase-js": "^2.0.3",
     "next": "^15.1.7",
     "next-auth": "^5.0.0-beta.25",

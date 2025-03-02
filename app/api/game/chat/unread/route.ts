@@ -8,7 +8,9 @@ export async function GET() {
     // TODO expand with on messages when ready
 
     const session = await auth();
-    if (!session) return NextResponse.json({ status: 500 });
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const unreadOffGameMessages = await getOffGameUnreadMessagesCount();
     return NextResponse.json({ off: unreadOffGameMessages, on: 0 });

@@ -11,7 +11,7 @@ import {
 } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import Editor from "@/components/editor/Editor";
-import { ArrowLeftIcon, Check, Send } from "lucide-react";
+import { ArrowLeftIcon, Check, Send, UserCog } from "lucide-react";
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { useChatMessagesInfinite } from "@/hooks/swr/useChatMessagesInfinite";
 import { sendOffGameMessage } from "@/server/actions/offGameChat";
@@ -52,6 +52,7 @@ export default function ChatEditor({
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const [hasInitialScroll, setHasInitialScroll] = useState(false);
+  const hasClickedConversationSettings = useRef(false);
 
   const editorRef = useRef<{ clearContent: () => void }>(null);
 
@@ -107,13 +108,21 @@ export default function ChatEditor({
   }, [messages, hasInitialScroll]);
 
   // reset the movable to the conversation lists when the user closes it
-  const isFirstMount = useRef(true);
   useEffect(() => {
-    if (isFirstMount.current) {
-      isFirstMount.current = false;
-      return;
-    }
-    return () => chatContext.navigateToConversations();
+    // set a flag to track if we've been mounted long enough
+    let isMountedLongEnough = false;
+
+    // timeout delay to get past React's strict mode double mount (development only)
+    const timer = setTimeout(() => {
+      isMountedLongEnough = true;
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (isMountedLongEnough && !hasClickedConversationSettings.current) {
+        chatContext.navigateToConversations();
+      }
+    };
   }, [chatContext]);
 
   const isGroup = conversationDetails?.isGroup;
@@ -148,7 +157,7 @@ export default function ChatEditor({
           ) : isGroup ? (
             <div className="relative h-8 w-8">
               {participants
-                .filter((p) => !p.isRemoved)
+                .filter((p) => !p.isRemoved && !p.isCurrentUser)
                 .slice(0, 2)
                 .map((participant, i) => (
                   <Avatar
@@ -171,6 +180,19 @@ export default function ChatEditor({
           )}
           <h2 className="font-semibold">{conversationTitle}</h2>
         </div>
+        {isGroup && conversationDetails?.adminId === currentCharacter?.id && (
+          <Button
+            isIconOnly
+            variant="light"
+            onPress={() => {
+              hasClickedConversationSettings.current = true;
+              chatContext.navigateToGroupChatSettings();
+            }}
+            aria-label={t("components.gameChat.settings.title")}
+          >
+            <UserCog className="h-5 w-5" />
+          </Button>
+        )}
       </header>
 
       <ScrollShadow
