@@ -13,7 +13,6 @@ export default function ChatConversations({
 }: {
   chatContext: OffGameChatContext;
 }) {
-  // TODO translations
   const t = useTranslations();
 
   const { conversations, isLoading, refreshConversations } = useConversations(

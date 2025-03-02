@@ -14,6 +14,7 @@ import { Trash2 } from "lucide-react";
 import { deleteOffGameConversationForParticipant } from "@/server/actions/offGameChat";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useGame } from "@/contexts/GameContext";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
@@ -34,7 +35,15 @@ export const ConversationItem = ({
   const locale = GameConfig.getLocale();
   const t = useTranslations();
 
+  const { currentCharacter } = useGame();
+
   const [isDeleting, setIsDeleting] = useState(false);
+
+  conversation.participants = conversation.isGroup
+    ? conversation.participants
+    : conversation.participants.filter(
+        (p) => p.firstName !== currentCharacter?.firstName,
+      );
 
   // TODO translations
 
