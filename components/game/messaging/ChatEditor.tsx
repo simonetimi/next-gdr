@@ -142,7 +142,7 @@ export default function ChatEditor({
 
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
-      <header className="flex items-center gap-4 border-b p-4">
+      <header className="flex items-center gap-4 p-4">
         <Button
           isIconOnly
           variant="light"
@@ -243,7 +243,7 @@ export default function ChatEditor({
         )}
       </ScrollShadow>
 
-      <div className="flex items-end gap-2 border-t p-3">
+      <div className="flex items-end gap-2 p-2">
         <Editor
           content={message}
           onContentChange={setMessage}

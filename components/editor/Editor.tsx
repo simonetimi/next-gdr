@@ -231,7 +231,7 @@ export default function Editor({
       <EditorContent
         onKeyDown={onKeyDown}
         editor={editor}
-        className={`overflow-y-auto rounded-lg border border-neutral-200 p-2 py-2 dark:border-neutral-700 ${editorClass}`}
+        className={`overflow-y-auto rounded-lg border border-default-200 p-2 py-2 dark:border-default-100 ${editorClass}`}
       />
     </div>
   );

@@ -276,7 +276,7 @@ export default function GroupChatSettings({
             {t("components.gameChat.settings.admin")}
           </label>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1">
+            <div className="flex items-center gap-2 rounded-full bg-primary/10 px-3 py-2 dark:bg-primary/30">
               <Avatar
                 showFallback
                 className="h-5 w-5"

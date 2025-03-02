@@ -142,7 +142,7 @@ function EditorToolbar({ editor }: { editor: Editor | null }) {
   };
   return (
     <>
-      <div className="border-input flex flex-wrap gap-0.5 rounded-2xl border bg-transparent p-1 sm:gap-1 sm:p-1.5">
+      <div className="border-input flex flex-wrap gap-0.5 rounded-2xl border border-default-200 bg-transparent p-1 dark:border-default-100 sm:gap-1 sm:p-1.5">
         <Tooltip content={t("bold")}>
           <Button
             isIconOnly
