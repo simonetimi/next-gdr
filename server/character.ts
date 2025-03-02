@@ -62,6 +62,20 @@ export async function getCurrentCharacterIdOnly() {
   return results[0];
 }
 
+export async function getCurrentCharacterIdOnlyFromuserId(userId: string) {
+  const now = new Date();
+
+  // retrieves the last non-expired session
+  const results = await db
+    .select({ id: sessions.selectedCharacterId })
+    .from(sessions)
+    .where(and(eq(sessions.userId, userId), gt(sessions.expires, now)))
+    .orderBy(desc(sessions.expires))
+    .limit(1);
+
+  return results[0];
+}
+
 export async function getCharacterSheet(characterId: string) {
   const session = await auth();
   const userId = session?.user?.id;

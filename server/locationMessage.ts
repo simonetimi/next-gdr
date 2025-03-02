@@ -14,6 +14,7 @@ import {
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 import { Logger } from "@/utils/logger";
 import { GameConfig } from "@/utils/config/GameConfig";
+import { getCurrentCharacterIdOnlyFromuserId } from "@/server/character";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -125,14 +126,11 @@ export async function fetchAllLocationMessagesWithCharacters(
   const t = await getTranslations("errors");
   if (!session || !userId) throw new Error(t("unauthenticated"));
 
-  const isUsermaster = await isMaster(userId);
+  const isUserMaster = await isMaster(userId);
 
-  const character = await db
-    .select({ id: characters.id })
-    .from(characters)
-    .where(eq(characters.userId, userId))
-    .limit(1);
-  const userCharacterId = character[0].id;
+  const character = await getCurrentCharacterIdOnlyFromuserId(userId);
+
+  const userCharacterId = character.id ?? "";
 
   const fetchLocationMessagesLastHours =
     GameConfig.getLocationSettings().fetchLastHours;
@@ -167,7 +165,7 @@ export async function fetchAllLocationMessagesWithCharacters(
   }
 
   // apply filtering only if the user is NOT a master
-  if (!isUsermaster) {
+  if (!isUserMaster) {
     conditions = and(
       conditions, // time and location conditions
       or(
@@ -246,11 +244,12 @@ export async function fetchAllLocationMessagesWithCharacters(
     )
     .leftJoin(
       sql`${characters} as recipientCharacters`,
-      eq(locationWhispers.recipientCharacterId, characters.id),
+      eq(locationWhispers.recipientCharacterId, sql`recipientCharacters.id`),
     )
     // desc, from the newest to the oldest
     .orderBy(desc(locationMessage.createdAt));
 
+  console.log(result);
   return result;
 }
 
