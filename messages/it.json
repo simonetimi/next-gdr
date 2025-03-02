@@ -183,7 +183,10 @@
       "savingChat": "Errore nel salvataggio della chat"
     },
     "gameChat": {
-      "notInConversation": "Non sei nella conversazione"
+      "notInConversation": "Non sei nella conversazione",
+      "participantNotFound": "Partecipante non trovato",
+      "onlyCreator": "Solo il creatore della conversazione può eseguire l'azione",
+      "conversationNotFound": "Conversazione non trovata"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",
@@ -191,6 +194,14 @@
       "maxCharsLimit": "L'azione non può essere più lunga di {maxChars} caratteri",
       "minCharsLimit": "L'azione deve essere almeno di {minChars} caratteri",
       "maxCharsLimitWhisper": "Il sussurro non può essere più lungo di {maxChars} caratteri"
+    }
+  },
+  "system": {
+    "gameChat": {
+      "hasLeftConversation": "{characterName} ha lasciato la conversazione",
+      "removedFromConversation": "{characterName} è stato rimosso dalla conversazione",
+      "addedToConversation": "{characterName} è stato aggiunto alla conversazione",
+      "conversationRenamed": "La conversazione è stata rinominata in {newName}"
     }
   }
 }

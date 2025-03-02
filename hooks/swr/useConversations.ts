@@ -15,6 +15,6 @@ export function useConversations(chatType: "on" | "off") {
     conversations: data,
     isLoading,
     isError: error,
-    mutate,
+    refreshConversations: mutate,
   };
 }

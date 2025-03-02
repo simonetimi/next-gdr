@@ -273,6 +273,16 @@ const ChatMessage = ({
   ref: Ref<HTMLDivElement>;
   onOpenCharacterSheet: (characterId: string) => void;
 }) => {
+  if (message.isSystem) {
+    return (
+      <div ref={ref} className="my-2 flex justify-center">
+        <div className="text-xs text-gray-500">
+          <Markup content={message.content} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}

@@ -20,7 +20,6 @@ export const offGameConversations = pgTable("off_game_conversation", {
   createdBy: uuid("character_id").references(() => characters.id, {
     onDelete: "cascade",
   }),
-  isDeleted: boolean("is_deleted").default(false).notNull(),
 });
 
 export const offGameParticipants = pgTable("off_game_participant", {
@@ -37,17 +36,18 @@ export const offGameParticipants = pgTable("off_game_participant", {
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
+// "isSystem" will allow for system messages like "user left the conversation"
 export const offGameMessages = pgTable(
   "off_game_message",
   {
     id: uuid()
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
-    conversationId: uuid("conversation_id").references(
-      () => offGameConversations.id,
-      { onDelete: "cascade" },
-    ),
+    conversationId: uuid("conversation_id")
+      .references(() => offGameConversations.id, { onDelete: "cascade" })
+      .notNull(),
     content: text("content").notNull(),
+    isSystem: boolean("is_system").default(false),
     senderId: uuid("sender_id").references(() => characters.id, {
       onDelete: "cascade",
     }),

@@ -4,12 +4,14 @@ import { db } from "@/database/db";
 import {
   offGameConversations,
   offGameMessages,
+  offGameParticipantDeletions,
   offGameParticipants,
 } from "@/database/schema/offGameChat";
 import { getCurrentCharacterIdOnly } from "@/server/character";
-import { aliasedTable, and, eq } from "drizzle-orm";
+import { aliasedTable, and, eq, inArray } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { OffGameConversation } from "@/models/offGameChat";
+import { characters } from "@/database/schema/character";
 
 export async function createSingleOffGameConversation(
   targetCharacterId: string,
@@ -51,6 +53,11 @@ export async function createSingleOffGameConversation(
       content: message,
       senderId: currentCharacter.id,
     });
+
+    // remove deletion records for the target user so conversation reappears
+    await removeConversationDeletionRecords(
+      existingConversation.conversation.id,
+    );
 
     return existingConversation.conversation;
   }
@@ -159,4 +166,348 @@ export async function sendOffGameMessage(
     .returning();
 
   return message;
+}
+
+// delete a conversation just for the current participant
+export async function deleteOffGameConversationForParticipant(
+  conversationId: string,
+): Promise<{ success: boolean }> {
+  const t = await getTranslations();
+  const currentCharacter = await getCurrentCharacterIdOnly();
+
+  if (!currentCharacter.id)
+    throw new Error(t("errors.gameChat.notInConversation"));
+
+  // find the participant record for this character in this conversation
+  const participant = await db
+    .select()
+    .from(offGameParticipants)
+    .where(
+      and(
+        eq(offGameParticipants.conversationId, conversationId),
+        eq(offGameParticipants.characterId, currentCharacter.id),
+      ),
+    )
+    .limit(1);
+
+  if (!participant.length) {
+    throw new Error(t("errors.gameChat.notInConversation"));
+  }
+
+  // check if this is a group conversation
+  const conversation = await db
+    .select({
+      isGroup: offGameConversations.isGroup,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  // for group conversations, add a system message about the participant leaving
+  if (conversation.length && conversation[0].isGroup) {
+    // get the character's name for the system message
+    const character = await db
+      .select({ firstName: characters.firstName })
+      .from(characters)
+      .where(eq(characters.id, currentCharacter.id))
+      .limit(1);
+
+    if (character.length) {
+      await db.insert(offGameMessages).values({
+        conversationId,
+        content: t("system.gameChat.hasLeftConversation", {
+          characterName: character[0].firstName,
+        }),
+        isSystem: true,
+      });
+    }
+  }
+
+  // mark the conversation as deleted for this participant
+  await db.insert(offGameParticipantDeletions).values({
+    participantId: participant[0].id,
+  });
+
+  return { success: true };
+}
+
+// used in single conversations
+async function removeConversationDeletionRecords(
+  conversationId: string,
+): Promise<void> {
+  // get all participants of the conversation including the sender
+  const participants = await db
+    .select({
+      participantId: offGameParticipants.id,
+    })
+    .from(offGameParticipants)
+    .where(eq(offGameParticipants.conversationId, conversationId));
+
+  if (participants.length > 0) {
+    const participantIds = participants.map((p) => p.participantId);
+
+    // remove deletion records for all participants
+    await db
+      .delete(offGameParticipantDeletions)
+      .where(
+        inArray(offGameParticipantDeletions.participantId, participantIds),
+      );
+  }
+}
+
+// used in group conversations
+export async function addParticipantToConversation(
+  conversationId: string,
+  participantCharacterId: string,
+): Promise<{ success: boolean }> {
+  const t = await getTranslations();
+  const currentCharacter = await getCurrentCharacterIdOnly();
+
+  if (!currentCharacter.id)
+    throw new Error(t("errors.game.characters.notFound"));
+
+  // check if the conversation exists and is a group
+  const conversation = await db
+    .select({
+      createdBy: offGameConversations.createdBy,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  if (!conversation.length) {
+    throw new Error(t("errors.gameChat.conversationNotFound"));
+  }
+
+  // only the creator can add participants
+  if (conversation[0].createdBy !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyCreator"));
+  }
+
+  // check if the character to add exists
+  const characterToAdd = await db
+    .select({
+      id: characters.id,
+      firstName: characters.firstName,
+    })
+    .from(characters)
+    .where(eq(characters.id, participantCharacterId))
+    .limit(1);
+
+  if (!characterToAdd.length) {
+    throw new Error(t("errors.game.characters.notFound"));
+  }
+
+  // check if the participant is already in the conversation
+  const existingParticipant = await db
+    .select()
+    .from(offGameParticipants)
+    .where(
+      and(
+        eq(offGameParticipants.conversationId, conversationId),
+        eq(offGameParticipants.characterId, participantCharacterId),
+      ),
+    )
+    .limit(1);
+
+  if (existingParticipant.length) {
+    // if the participant exists but was previously removed, remove the deletion record
+    await db
+      .delete(offGameParticipantDeletions)
+      .where(
+        eq(
+          offGameParticipantDeletions.participantId,
+          existingParticipant[0].id,
+        ),
+      );
+  } else {
+    // add the new participant to the conversation
+    await db.insert(offGameParticipants).values({
+      conversationId,
+      characterId: participantCharacterId,
+    });
+  }
+
+  // add system message about addition
+  await db.insert(offGameMessages).values({
+    conversationId,
+    content: t("system.gameChat.addedToConversation", {
+      characterName: characterToAdd[0].firstName,
+    }),
+    isSystem: true,
+  });
+
+  return { success: true };
+}
+
+// used in group conversations
+export async function removeParticipantFromConversation(
+  conversationId: string,
+  participantCharacterId: string,
+): Promise<{ success: boolean }> {
+  const t = await getTranslations();
+  const currentCharacter = await getCurrentCharacterIdOnly();
+
+  if (!currentCharacter.id)
+    throw new Error(t("errors.game.characters.notFound"));
+
+  // check if the conversation exists and is a group
+  const conversation = await db
+    .select({
+      isGroup: offGameConversations.isGroup,
+      createdBy: offGameConversations.createdBy,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  if (!conversation.length) {
+    throw new Error(t("errors.gameChat.conversationNotFound"));
+  }
+
+  // only the creator can remove participants
+  if (conversation[0].createdBy !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyCreator"));
+  }
+
+  // find the participant to remove
+  const participantToRemove = await db
+    .select({
+      id: offGameParticipants.id,
+      characterId: offGameParticipants.characterId,
+    })
+    .from(offGameParticipants)
+    .where(
+      and(
+        eq(offGameParticipants.conversationId, conversationId),
+        eq(offGameParticipants.characterId, participantCharacterId),
+      ),
+    )
+    .limit(1);
+
+  if (!participantToRemove.length) {
+    throw new Error(t("errors.gameChat.participantNotFound"));
+  }
+
+  // get the participant's name for the system message
+  const removedCharacter = await db
+    .select({ firstName: characters.firstName })
+    .from(characters)
+    .where(eq(characters.id, participantCharacterId))
+    .limit(1);
+
+  // mark the participant as deleted
+  await db.insert(offGameParticipantDeletions).values({
+    participantId: participantToRemove[0].id,
+  });
+
+  // add system message about removal
+  if (removedCharacter.length) {
+    await db.insert(offGameMessages).values({
+      conversationId,
+      content: t("system.gameChat.removedFromConversation", {
+        characterName: removedCharacter[0].firstName,
+      }),
+      isSystem: true,
+    });
+  }
+
+  return { success: true };
+}
+
+// used in group conversations
+export async function editGroupConversationName(
+  conversationId: string,
+  newName: string,
+): Promise<{ success: boolean }> {
+  const t = await getTranslations();
+  const currentCharacter = await getCurrentCharacterIdOnly();
+
+  if (!currentCharacter.id)
+    throw new Error(t("errors.game.characters.notFound"));
+
+  // check if the conversation exists and is a group
+  const conversation = await db
+    .select({
+      name: offGameConversations.name,
+      createdBy: offGameConversations.createdBy,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  if (!conversation.length) {
+    throw new Error(t("errors.gameChat.conversationNotFound"));
+  }
+
+  // only the creator can edit the name
+  if (conversation[0].createdBy !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyCreator"));
+  }
+
+  const oldName = conversation[0].name;
+
+  // update the conversation name
+  await db
+    .update(offGameConversations)
+    .set({ name: newName })
+    .where(eq(offGameConversations.id, conversationId));
+
+  // add system message about the name change
+  await db.insert(offGameMessages).values({
+    conversationId,
+    content: t("system.gameChat.conversationRenamed", { newName }),
+    isSystem: true,
+  });
+
+  return { success: true };
+}
+
+// used in group conversations
+export async function deleteGroupConversation(
+  conversationId: string,
+): Promise<{ success: boolean }> {
+  const t = await getTranslations();
+  const currentCharacter = await getCurrentCharacterIdOnly();
+
+  if (!currentCharacter.id)
+    throw new Error(t("errors.game.characters.notFound"));
+
+  // check if the conversation exists and is a group
+  const conversation = await db
+    .select({
+      createdBy: offGameConversations.createdBy,
+      name: offGameConversations.name,
+    })
+    .from(offGameConversations)
+    .where(eq(offGameConversations.id, conversationId))
+    .limit(1);
+
+  if (!conversation.length) {
+    throw new Error(t("errors.gameChat.conversationNotFound"));
+  }
+
+  // only the creator can delete the conversation
+  if (conversation[0].createdBy !== currentCharacter.id) {
+    throw new Error(t("errors.gameChat.onlyCreator"));
+  }
+
+  // get all participants in the conversation
+  const participants = await db
+    .select({
+      id: offGameParticipants.id,
+    })
+    .from(offGameParticipants)
+    .where(eq(offGameParticipants.conversationId, conversationId));
+
+  // mark all participants as deleted
+  if (participants.length > 0) {
+    await db.insert(offGameParticipantDeletions).values(
+      participants.map((p) => ({
+        participantId: p.id,
+      })),
+    );
+  }
+
+  return { success: true };
 }

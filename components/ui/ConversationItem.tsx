@@ -5,10 +5,15 @@ import {
   OffGameConversationWithDetails,
 } from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { Avatar } from "@heroui/react";
+import { addToast, Avatar } from "@heroui/react";
 import { formatTimeHoursMinutes } from "@/utils/dates";
 import { Markup } from "interweave";
 import { Tooltip } from "@heroui/tooltip";
+import { Button } from "@heroui/button";
+import { Trash2 } from "lucide-react";
+import { deleteOffGameConversationForParticipant } from "@/server/actions/offGameChat";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
@@ -20,20 +25,40 @@ interface ParticipantsProps {
 export const ConversationItem = ({
   conversation,
   navigateToEditor,
+  refreshConversations,
 }: {
   conversation: OffGameConversationWithDetails;
   navigateToEditor: (conversation: OffGameConversation) => void;
+  refreshConversations: () => void;
 }) => {
   const locale = GameConfig.getLocale();
+  const t = useTranslations();
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // TODO translations
 
+  const handleDeletion = async () => {
+    try {
+      if (isDeleting) return;
+      await deleteOffGameConversationForParticipant(conversation.id);
+      refreshConversations();
+    } catch (error) {
+      let errorMessage = t("errors.generic");
+      if (error instanceof Error) errorMessage = error.message;
+      addToast({
+        title: t("errors.title"),
+        description: errorMessage,
+        color: "danger",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <button
-      onClick={() => navigateToEditor(conversation)}
-      className="flex w-full items-center gap-4 rounded-2xl px-4 py-5 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
-    >
-      {conversation.unreadCount > 0 ? (
+    <div className="flex w-full items-center gap-4 px-2 py-1">
+      {conversation.unreadCount == 0 ? (
         <Tooltip content="New messages">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
@@ -43,16 +68,30 @@ export const ConversationItem = ({
       ) : (
         <span className="relative flex h-2 w-2"></span>
       )}
-      <div className="flex-shrink-0">
-        <ParticipantsAvatars participants={conversation.participants} />
-      </div>
-      <div className="mr-7 min-w-0 flex-grow">
-        <ConversationDetails conversation={conversation} />
-      </div>
-      <div className="flex flex-shrink-0 flex-col items-end gap-1">
-        <TimeStamp date={conversation.lastMessageAt} locale={locale} />
-      </div>
-    </button>
+      <button
+        onClick={() => navigateToEditor(conversation)}
+        className="flex w-full items-center gap-4 rounded-2xl px-3 py-3 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-800"
+      >
+        <div className="flex-shrink-0">
+          <ParticipantsAvatars participants={conversation.participants} />
+        </div>
+        <div className="mr-7 min-w-0 flex-grow">
+          <ConversationDetails conversation={conversation} />
+        </div>
+        <div className="flex flex-shrink-0 flex-col items-end gap-1">
+          <TimeStamp date={conversation.lastMessageAt} locale={locale} />
+        </div>
+      </button>
+      <Button
+        isIconOnly
+        startContent={<Trash2 className="h-4 w-4" />}
+        size="sm"
+        variant="light"
+        color="danger"
+        onPress={handleDeletion}
+        isLoading={isDeleting}
+      />
+    </div>
   );
 };
 

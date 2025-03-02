@@ -17,7 +17,9 @@ export default function ChatConversations({
   // TODO translations
   const t = useTranslations();
 
-  const { conversations, isLoading } = useConversations(chatContext.type);
+  const { conversations, isLoading, refreshConversations } = useConversations(
+    chatContext.type,
+  );
 
   const sortedConversations =
     conversations &&
@@ -48,6 +50,7 @@ export default function ChatConversations({
             key={conversation.id}
             conversation={conversation}
             navigateToEditor={chatContext.navigateToEditor}
+            refreshConversations={refreshConversations}
           />
         ))}
       </ScrollShadow>

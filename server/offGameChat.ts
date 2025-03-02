@@ -3,6 +3,7 @@ import { characters } from "@/database/schema/character";
 import {
   offGameConversations,
   offGameMessages,
+  offGameParticipantDeletions,
   offGameParticipants,
   offGameReads,
 } from "@/database/schema/offGameChat";
@@ -32,6 +33,11 @@ export async function getConversations() {
       offGameParticipants,
       eq(offGameParticipants.conversationId, offGameConversations.id),
     )
+    // left join with participant deletions to check if conversation was deleted or quitted
+    .leftJoin(
+      offGameParticipantDeletions,
+      eq(offGameParticipantDeletions.participantId, offGameParticipants.id),
+    )
     .leftJoin(
       offGameMessages,
       and(
@@ -46,7 +52,13 @@ export async function getConversations() {
         ),
       ),
     )
-    .where(eq(offGameParticipants.characterId, characterId.id!))
+    .where(
+      and(
+        eq(offGameParticipants.characterId, characterId.id!),
+        // only include conversations that haven't been deleted or quitted by this participant
+        isNull(offGameParticipantDeletions.id),
+      ),
+    )
     .orderBy(desc(offGameMessages.sentAt));
 
   // extract conversation IDs
@@ -323,11 +335,18 @@ export async function getOffGameUnreadMessagesCount() {
         eq(offGameReads.readBy, characterId.id!),
       ),
     )
+    // left join with participant deletions to check if conversation was deleted
+    .leftJoin(
+      offGameParticipantDeletions,
+      eq(offGameParticipantDeletions.participantId, offGameParticipants.id),
+    )
     .where(
       and(
         eq(offGameParticipants.characterId, characterId.id!),
         isNull(offGameReads.id),
         ne(offGameMessages.senderId, characterId.id!),
+        // only include messages from conversations that haven't been deleted or quitted
+        isNull(offGameParticipantDeletions.id),
       ),
     );
 
