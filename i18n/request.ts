@@ -1,13 +1,16 @@
 import { getRequestConfig } from "next-intl/server";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export default getRequestConfig(async () => {
   // default locale
-  const locale = "it";
+  const defaultLocale = "it";
 
-  // provide here any custom logic to fetch a different locale (eg. user settings)
+  // read config
+  const locale = GameConfig.getLocale();
 
   return {
     locale,
-    messages: (await import(`@/messages/${locale}.json`)).default,
+    messages: (await import(`@/messages/${locale ?? defaultLocale}.json`))
+      .default,
   };
 });
