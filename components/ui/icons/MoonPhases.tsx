@@ -8,8 +8,7 @@ export const FullMoon = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="full-moon"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -26,8 +25,7 @@ export const WaningGibbous = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="waning-gibbous"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -44,8 +42,7 @@ export const LastQuarter = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="last-quarter"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -62,8 +59,7 @@ export const WaningCrescent = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="waning-crescent"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -80,11 +76,10 @@ export const NewMoon = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="new-moon"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
-    fill="none"
   >
     <path d="M 199.988281 104.476563 C 199.988281 157.824219 156.761719 201.027344 103.441406 201.027344 C 77.839844 201.027344 53.28125 190.878906 35.21875 172.761719 C 17.121094 154.648438 6.941406 130.085938 6.941406 104.476563 C 6.941406 78.914063 17.121094 54.351563 35.21875 36.238281 C 53.28125 18.121094 77.839844 7.972656 103.441406 7.972656 C 156.761719 7.972656 199.988281 51.175781 199.988281 104.476563 Z M 199.988281 104.476563" />
   </svg>
@@ -98,8 +93,7 @@ export const WaxingCrescent = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="waxing-crescent"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -116,8 +110,7 @@ export const FirstQuarter = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="first-quarter"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}
@@ -134,8 +127,7 @@ export const WaxingGibbous = (props: SVGProps<SVGSVGElement>) => (
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     id="waxing-gibbous"
-    fill="#241f21"
-    stroke="#241f21"
+    className={props.className}
     strokeWidth={12}
     strokeLinecap="square"
     {...props}

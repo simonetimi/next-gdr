@@ -168,10 +168,10 @@
         "flashFlood": "alluvione lampo"
       },
       "moon": {
-        "full": "piena",
-        "new": "nuova",
-        "waxingCrescent": "crescente",
-        "waningCrescent": "calante",
+        "full": "luna piena",
+        "new": "luna nuova",
+        "waxingCrescent": "luna crescente",
+        "waningCrescent": "luna calante",
         "waxingGibbous": "gibbosa crescente",
         "waningGibbous": "gibbosa calante",
         "firstQuarter": "primo quarto",

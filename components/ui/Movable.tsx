@@ -72,7 +72,7 @@ export default function Movable({
   return (
     <div className="absolute z-20">
       <Rnd
-        className="rounded-2xl border-1 border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-700 dark:bg-black/80"
+        className="rounded-2xl border-1 border-default-200 bg-white/80 backdrop-blur-md dark:border-default-100 dark:bg-black/80"
         bounds={boundsSelector}
         dragHandleClassName={dragHandleClassName}
         minWidth={isMinimized ? 350 : minWidth}
@@ -98,7 +98,7 @@ export default function Movable({
         }}
       >
         <div
-          className={`flex h-12 p-2 ${isMinimized ? "" : "border-b-1 border-gray-200 dark:border-gray-700"}`}
+          className={`flex h-12 p-2 ${isMinimized ? "" : "border-b-1 border-default-200 dark:border-default-100"}`}
         >
           <div
             className={`flex w-full flex-1 ${

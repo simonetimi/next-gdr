@@ -137,7 +137,7 @@ function ControlNavbar({
         setShow={setShowSettingsMovable}
       />
       <Navbar
-        className="w-18 rounded-2xl border-0 bg-transparent dark:border-gray-800 sm:w-fit sm:border-1 sm:border-gray-200 sm:dark:bg-black"
+        className="w-18 rounded-2xl border-0 bg-transparent dark:border-default-100 sm:w-fit sm:border-1 sm:border-default-200"
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >

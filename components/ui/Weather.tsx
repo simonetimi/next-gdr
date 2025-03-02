@@ -19,7 +19,7 @@ export default function Weather({
   const t = useTranslations("game.weather");
 
   return (
-    <div className="flex w-full items-center justify-evenly rounded-2xl border border-gray-200 p-1 text-sm">
+    <div className="flex w-full items-center justify-evenly rounded-2xl border border-default-200 p-1 text-sm dark:border-default-100">
       <Tooltip content={capitalize(t("condition." + weather.condition))}>
         {ForecastMap[weather.condition as keyof typeof ForecastMap]}
       </Tooltip>
@@ -27,10 +27,10 @@ export default function Weather({
         <Thermometer style={{ color: temperatureColor }} />
       </Tooltip>
       <Tooltip content={fromCamelCase(t("moon." + weather.lunarPhase))}>
-        {cloneElement(
-          MoonMap[weather.lunarPhase as keyof typeof MoonMap],
-          svgProps,
-        )}
+        {cloneElement(MoonMap[weather.lunarPhase as keyof typeof MoonMap], {
+          ...svgProps,
+          className: `stroke-neutral-800 dark:stroke-neutral-200 ${weather.lunarPhase === "new" ? "fill-none" : "fill-neutral-800  dark:fill-neutral-200"}`,
+        })}
       </Tooltip>
     </div>
   );

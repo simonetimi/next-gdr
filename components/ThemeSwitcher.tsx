@@ -27,7 +27,7 @@ export default function ThemeSwitcher({ className }: { className: string }) {
           isSelected ? (
             <Sun className="p-0.5" />
           ) : (
-            <Moon className="p-0.5 text-gray-500" />
+            <Moon className="p-0.5 text-neutral-500" />
           )
         }
         onChange={

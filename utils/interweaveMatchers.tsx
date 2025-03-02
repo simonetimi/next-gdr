@@ -11,10 +11,10 @@ interface Props {
 export const generateMatchers = (wordMatcherTerm: string) => {
   // matchers to customize dialogs and tags in some location messages
   const guillemetMatcher = new GuillemetMatcher("guillemet", {
-    className: "font-semibold italic text-neutral-800 dark:text-neutral-200",
+    className: "font-semibold italic text-foreground dark:text-foreground-800",
   });
   const squareBracketsMatcher = new BracketMatcher("bracket", {
-    className: "font-bold text-neutral-900 dark:text-white",
+    className: "font-bold text-foreground dark:text-white",
   });
   const wordmatcher = new WordMatcher(wordMatcherTerm, {
     className: "font-semibold text-primary-500",

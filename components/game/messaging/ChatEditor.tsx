@@ -153,7 +153,7 @@ export default function ChatEditor({
 
         <div className="flex items-center gap-3">
           {isLoading ? (
-            <div className="h-8 w-8 animate-pulse rounded-full bg-gray-200"></div>
+            <div className="h-8 w-8 animate-pulse rounded-full bg-default-200"></div>
           ) : isGroup ? (
             <div className="relative h-8 w-8">
               {participants
@@ -202,7 +202,7 @@ export default function ChatEditor({
         onScroll={handleScroll}
       >
         {isReachingEnd && messages && messages.length > 0 && (
-          <div className="py-2 text-center text-xs text-gray-500">
+          <div className="py-2 text-center text-xs text-default-400">
             No more messages
           </div>
         )}
@@ -299,7 +299,7 @@ const ChatMessage = ({
   if (message.isSystem) {
     return (
       <div ref={ref} className="my-2 flex justify-center">
-        <div className="text-xs text-gray-500">
+        <div className="text-xs text-default-400">
           <Markup content={message.content} />
         </div>
       </div>
@@ -327,8 +327,8 @@ const ChatMessage = ({
       <div
         className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
           isCurrentUser
-            ? "bg-primary/10 text-foreground"
-            : "bg-neutral-100 dark:bg-neutral-800"
+            ? "bg-primary-400 text-white"
+            : "bg-default-200 dark:bg-default-100"
         }`}
       >
         <Markup content={message.content} />

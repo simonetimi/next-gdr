@@ -32,7 +32,7 @@ export function ActionMessage({
     generateMatchers(character.firstName);
 
   return (
-    <div className="flex gap-3 py-1">
+    <div className="flex gap-3 py-1 text-foreground-700 dark:text-foreground-600">
       <div className="flex flex-shrink-0 flex-col items-center gap-1">
         <Avatar
           onClick={() => onOpenCharacterSheet(character.id)}
@@ -44,18 +44,18 @@ export function ActionMessage({
         <span className="text-xs">{timeString}</span>
       </div>
       <div className="text-red flex flex-col text-justify">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <span className="font-semibold">
-            {`${currentMessage.character?.firstName} ${currentMessage.character?.lastName}`}
+            {currentMessage.character?.firstName}{" "}
+            {currentMessage.character?.lastName}
           </span>
-          <span className="text-xs italic text-neutral-600 dark:text-neutral-500">
+          <span className="text-xs italic text-foreground-600 dark:text-foreground-500">
             {currentMessage.action?.tag}
           </span>
         </div>
         <Interweave
           disableLineBreaks
           noHtmlExceptMatchers
-          className="text-neutral-700 dark:text-neutral-400"
           matchers={[guillemetMatcher, squareBracketsMatcher, wordmatcher]}
           content={contentWithoutAngleBrackets}
         />
@@ -77,19 +77,13 @@ export function WhisperMessage({
   // executes when the current user is the recipient of the whisper
   if (currentMessage.whisper?.recipientCharacterId === currentUserCharacterId) {
     return (
-      <div className="flex items-center gap-2 py-1">
+      <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="font-semibold">
-            {currentMessage.character?.firstName}
+          <span className="italic">
+            {currentMessage.character?.firstName} ti dice:{" "}
           </span>
-          <span className="italic text-neutral-600 dark:text-neutral-500">
-            {" "}
-            ti dice:{" "}
-          </span>
-          <span className="text-neutral-700 dark:text-neutral-300">
-            {currentMessage.message.content}
-          </span>
+          <span>{currentMessage.message.content}</span>
         </div>
       </div>
     );
@@ -101,21 +95,13 @@ export function WhisperMessage({
     currentMessage.character?.id === currentUserCharacterId
   ) {
     return (
-      <div className="flex items-center gap-2 py-1">
+      <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="italic text-neutral-600 dark:text-neutral-500">
-            Dici a{" "}
+          <span className="italic">
+            Dici a {currentMessage.recipientCharacter?.firstName}:{" "}
           </span>
-          <span className="font-semibold">
-            ${currentMessage.character?.firstName}
-          </span>
-          <span className="italic text-neutral-600 dark:text-neutral-500">
-            :{" "}
-          </span>
-          <span className="text-neutral-700 dark:text-neutral-300">
-            {currentMessage.message.content}
-          </span>
+          <span>{currentMessage.message.content}</span>
         </div>
       </div>
     );
@@ -123,24 +109,14 @@ export function WhisperMessage({
 
   // execute when the user is the master (they can see all whispers - so their id isn't there)
   return (
-    <div className="flex items-center gap-2 py-1">
+    <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
-        <span className="font-semibold">
-          ${currentMessage.character?.firstName}
+        <span className="italic">
+          {currentMessage.character?.firstName} dice a{" "}
+          {currentMessage.recipientCharacter?.firstName}:{" "}
         </span>
-        <span className="italic text-neutral-600 dark:text-neutral-500">
-          dice a{" "}
-        </span>
-        <span className="font-semibold">
-          ${currentMessage.character?.firstName}
-        </span>
-        <span className="italic text-neutral-600 dark:text-neutral-500">
-          :{" "}
-        </span>
-        <span className="text-neutral-700 dark:text-neutral-300">
-          {currentMessage.message.content}
-        </span>
+        <span>{currentMessage.message.content}</span>
       </div>
     </div>
   );
@@ -159,15 +135,11 @@ export function WhisperAllMessage({
   // current user whispers to all
   if (currentMessage.character?.id === currentUserCharacterId) {
     return (
-      <div className="flex items-center gap-2 py-1">
+      <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="italic text-neutral-600 dark:text-neutral-500">
-            Dici a tutti:{" "}
-          </span>
-          <span className="text-neutral-700 dark:text-neutral-300">
-            {currentMessage.message.content}
-          </span>
+          <span className="italic">Dici a tutti: </span>
+          <span>{currentMessage.message.content}</span>
         </div>
       </div>
     );
@@ -175,18 +147,13 @@ export function WhisperAllMessage({
 
   // some user whispers to all
   return (
-    <div className="flex items-center gap-2 py-1">
+    <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
-        <span className="font-semibold">
-          ${currentMessage.character?.firstName}
+        <span className="italic">
+          {currentMessage.character?.firstName} dice a tutti:{" "}
         </span>
-        <span className="italic text-neutral-600 dark:text-neutral-500">
-          dice a tutti:{" "}
-        </span>
-        <span className="text-neutral-700 dark:text-neutral-300">
-          {currentMessage.message.content}
-        </span>
+        <span>{currentMessage.message.content}</span>
       </div>
     </div>
   );
@@ -209,16 +176,16 @@ export function MasterMessage({
     generateMatchers(character.firstName);
 
   return (
-    <div className="flex flex-col gap-3 py-1">
+    <div className="flex flex-col gap-3 py-1 text-foreground-700 dark:text-foreground-600">
       <div className="flex flex-col justify-center">
         <span className="text-center text-xs">{timeString}</span>
         <span className="text-center">Master screen</span>
       </div>
-      <div className="w-full rounded-xl border border-gray-200 p-2 text-justify dark:border-neutral-800">
+      <div className="w-full rounded-xl border border-default-200 p-2 text-justify dark:border-default-100">
         <Interweave
           disableLineBreaks
           noHtmlExceptMatchers
-          className="text-neutral-700 dark:text-neutral-400"
+          className="text-foreground-700 dark:text-foreground-700"
           matchers={[guillemetMatcher, squareBracketsMatcher, wordmatcher]}
           content={contentWithoutAngleBrackets}
         />

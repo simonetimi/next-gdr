@@ -89,7 +89,11 @@ const LocationGroupSection = ({
   locations: Record<string, OnlineUsersType>;
 }) => (
   <div className="space-y-4">
-    {name && <h2 className="border-b pb-2 text-xl font-bold">{name}</h2>}
+    {name && (
+      <h2 className="border-b border-default-200 pb-2 text-xl font-bold">
+        {name}
+      </h2>
+    )}
     <div className="space-y-4 pl-4">
       {Object.entries(locations)
         .sort(([a], [b]) => a.localeCompare(b))
@@ -114,7 +118,9 @@ const LocationGroup = ({
 }) => (
   <div>
     {name && (
-      <h3 className="mb-2 rounded border p-4 text-center font-bold">{name}</h3>
+      <h3 className="mb-2 rounded rounded-2xl border border-default-200 p-4 text-center font-bold">
+        {name}
+      </h3>
     )}
     <ul className="space-y-2">
       {characters
@@ -163,7 +169,7 @@ const CharacterItem = ({
       <span>
         {character.firstName} {character.lastName}
       </span>
-      <span className="text-sm text-gray-500">({race.name})</span>
+      <span className="text-sm text-foreground-600">({race.name})</span>
     </li>
   );
 };

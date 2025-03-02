@@ -93,7 +93,7 @@ export default function LocationChat({
   }, [messages, game]);
 
   return (
-    <section className="align-center flex w-screen flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-gray-700 lg:w-[80vw]">
+    <section className="align-center flex w-screen flex-col justify-center rounded-2xl shadow-xl dark:shadow dark:shadow-default-200 lg:w-[80vw]">
       <div className="flex h-full flex-[3]">
         {initialLoading ? (
           <div className="flex h-full w-full items-center justify-center">
@@ -101,7 +101,10 @@ export default function LocationChat({
           </div>
         ) : (
           <div className="relative h-full w-full" id="chat-messages">
-            <ScrollShadow className="absolute inset-0 overflow-y-auto">
+            <ScrollShadow
+              className="absolute inset-0 overflow-y-auto"
+              offset={10}
+            >
               <div
                 className={`flex ${game.userSettings.chatDirection === "reverse" ? "flex-col-reverse" : "flex-col"} p-5 text-sm`}
               >
