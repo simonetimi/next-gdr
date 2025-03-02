@@ -49,8 +49,10 @@
       "title": "Scheda personaggio"
     },
     "gameChat": {
+      "selectCharacter": "Aggiungi un personaggio",
       "conversationRemoved": "Conversazione rimossa con successo",
-      "noConversationFound": "Nessuna conversazione trovata"
+      "noConversationFound": "Nessuna conversazione trovata",
+      "noMoreCharacters": "Non ci sono più personaggi da aggiungere"
     },
     "offGameChat": {
       "title": "Messaggi off"
@@ -118,6 +120,10 @@
       "removeRow": "Rimuovi riga",
       "apply": "Applica"
     }
+  },
+  "dateTime": {
+    "today": "Oggi",
+    "yesterday": "Ieri"
   },
   "game": {
     "dices": {

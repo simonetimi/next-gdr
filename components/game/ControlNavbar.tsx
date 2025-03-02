@@ -75,7 +75,7 @@ function ControlNavbar({
 
   const handleToggleInvisible = async () => {
     await toggleInvisible(isInvisible);
-    mutate();
+    await mutate();
   };
 
   const toggleCharacterSheetMovable = () => {

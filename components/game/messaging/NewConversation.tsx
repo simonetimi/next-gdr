@@ -1,14 +1,6 @@
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { OnGameChatContext } from "@/contexts/OnGameChatContext";
-import {
-  addToast,
-  Autocomplete,
-  AutocompleteItem,
-  Avatar,
-  Button,
-  Chip,
-  Input,
-} from "@heroui/react";
+import { addToast, Button, Chip, Input, Avatar } from "@heroui/react";
 import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "@/contexts/GameContext";
@@ -19,6 +11,7 @@ import {
   createGroupOffGameConversation,
   createSingleOffGameConversation,
 } from "@/server/actions/offGameChat";
+import ParticipantSelector from "@/components/game/messaging/ParticipantSelector";
 
 type SelectedParticipant = {
   id: string;
@@ -33,22 +26,23 @@ export default function NewConversation({
 }) {
   const t = useTranslations();
   const { currentCharacter } = useGame();
-  const { characters, isLoading } = useMinimalCharacters();
+  const { characters } = useMinimalCharacters();
 
   const [selectedParticipants, setSelectedParticipants] = useState<
     Set<SelectedParticipant>
   >(new Set());
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string>("");
   const [message, setMessage] = useState("");
   const [groupName, setGroupName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasSubmittedRef = useRef(false);
 
-  // filter the user themselves from the list
-  const filteredCharacters = characters?.filter(
-    (character) => character.id !== currentCharacter?.id,
-  );
+  const handleCharacterSelect = (characterId: string) => {
+    if (!characters) return;
 
-  const handleSelect = (character: (typeof characters)[0]) => {
+    const character = characters.find((c) => c.id === characterId);
+    if (!character) return;
+
     // don't allow duplicates
     const isDuplicate = [...selectedParticipants].some(
       (participant) => participant.id === character.id,
@@ -62,6 +56,8 @@ export default function NewConversation({
         miniAvatarUrl: character.miniAvatarUrl,
       });
       setSelectedParticipants(newParticipants);
+      // reset selected character ID after adding to set
+      setSelectedCharacterId("");
     }
   };
 
@@ -139,6 +135,12 @@ export default function NewConversation({
     };
   }, [chatContext]);
 
+  // get excluded IDs (current character + already selected participants)
+  const excludeIds = [
+    ...(currentCharacter ? [currentCharacter.id] : []),
+    ...[...selectedParticipants].map((p) => p.id),
+  ];
+
   return (
     <div className="flex h-full flex-col lg:h-[90%]">
       <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
@@ -150,37 +152,13 @@ export default function NewConversation({
         >
           <ArrowLeftIcon />
         </Button>
-        <Autocomplete
-          className="max-w-sm justify-self-center"
-          label="Select character"
-          isLoading={isLoading}
-          onSelectionChange={(key) => {
-            if (key && characters) {
-              const selectedCharacter = characters.find((c) => c.id === key);
-              if (selectedCharacter) {
-                handleSelect(selectedCharacter);
-              }
-            }
-          }}
-        >
-          {filteredCharacters &&
-            filteredCharacters.map((character) => (
-              <AutocompleteItem
-                key={character.id}
-                textValue={character.firstName}
-                startContent={
-                  <Avatar
-                    showFallback
-                    className="h-6 w-6"
-                    name={character.firstName[0]}
-                    src={character.miniAvatarUrl ?? undefined}
-                  />
-                }
-              >
-                {character.firstName}
-              </AutocompleteItem>
-            ))}
-        </Autocomplete>
+        <div className="max-w-sm justify-self-center">
+          <ParticipantSelector
+            value={selectedCharacterId}
+            onChange={handleCharacterSelect}
+            excludeIds={excludeIds}
+          />
+        </div>
         <div />
       </header>
 

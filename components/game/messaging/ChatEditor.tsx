@@ -18,7 +18,7 @@ import { sendOffGameMessage } from "@/server/actions/offGameChat";
 import { useGame } from "@/contexts/GameContext";
 import { useConversationDetails } from "@/hooks/swr/useConversationDetails";
 import { Markup } from "interweave";
-import { formatTimeHoursMinutes } from "@/utils/dates";
+import { formatDateTime } from "@/utils/dates";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { OffGameMessageWithReads } from "@/models/offGameChat";
 
@@ -315,7 +315,7 @@ const ChatMessage = ({
             isCurrentUser ? "text-right" : "text-left"
           }`}
         >
-          {formatTimeHoursMinutes(message.sentAt, locale)}
+          {formatDateTime(message.sentAt, locale)}
           {message.readers?.length > 0 &&
             (isGroup
               ? message.readers.some(
@@ -357,12 +357,9 @@ const ChatMessage = ({
                       </div>
                     ) : (
                       <div className="text-xs">
-                        Read at:{" "}
+                        Read:{" "}
                         {message.readers[0]?.readAt &&
-                          formatTimeHoursMinutes(
-                            message.readers[0].readAt,
-                            locale,
-                          )}
+                          formatDateTime(message.readers[0].readAt, locale)}
                       </div>
                     )}
                   </div>

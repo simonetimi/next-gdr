@@ -6,7 +6,7 @@ import {
 } from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { addToast, Avatar } from "@heroui/react";
-import { formatTimeHoursMinutes } from "@/utils/dates";
+import { formatDateTime, formatTimeHoursMinutes } from "@/utils/dates";
 import { Markup } from "interweave";
 import { Tooltip } from "@heroui/tooltip";
 import { Button } from "@heroui/button";
@@ -39,11 +39,9 @@ export const ConversationItem = ({
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  conversation.participants = conversation.isGroup
-    ? conversation.participants
-    : conversation.participants.filter(
-        (p) => p.firstName !== currentCharacter?.firstName,
-      );
+  conversation.participants = conversation.participants.filter(
+    (p) => p.firstName !== currentCharacter?.firstName,
+  );
 
   // TODO translations
 
@@ -154,7 +152,7 @@ const ConversationDetails = ({ conversation }: ConversationProps) => (
 const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => {
   return (
     <span className="whitespace-nowrap text-xs text-default-400">
-      {date ? formatTimeHoursMinutes(date, locale) : ""}
+      {date ? formatDateTime(date, locale) : ""}
     </span>
   );
 };
