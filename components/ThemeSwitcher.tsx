@@ -20,7 +20,7 @@ export default function ThemeSwitcher({ className }: { className: string }) {
   return (
     <div className={className}>
       <Switch
-        isSelected={currentTheme === "dark" ? false : true}
+        isSelected={currentTheme !== "dark"}
         size="md"
         color="default"
         thumbIcon={({ isSelected }) =>

@@ -118,7 +118,7 @@ const LocationGroup = ({
 }) => (
   <div>
     {name && (
-      <h3 className="mb-2 rounded rounded-2xl border border-default-200 p-4 text-center font-bold">
+      <h3 className="mb-2 rounded-2xl border border-default-200 p-4 text-center font-bold">
         {name}
       </h3>
     )}
