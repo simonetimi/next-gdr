@@ -2,7 +2,7 @@ import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { Avatar } from "@heroui/react";
 import { MinimalCharacter } from "@/models/characters";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { capitalize, replaceAngleBrackets } from "@/utils/strings";
+import { replaceAngleBrackets } from "@/utils/strings";
 import { Interweave } from "interweave";
 import { generateMatchers } from "@/utils/interweaveMatchers";
 import { formatTimeHoursMinutes } from "@/utils/dates";
@@ -127,24 +127,31 @@ export function WhisperMessage({
 
 export function WhisperAllMessage({
   currentMessage,
-  currentUserCharacterId,
+  character,
 }: {
   currentMessage: LocationMessageWithCharacter;
-  currentUserCharacterId: string;
+  character: MinimalCharacter;
 }) {
   const t = useTranslations("components.locationChat.messages");
+
+  const { wordmatcher } = generateMatchers(character.firstName);
 
   const createdAt = new Date(currentMessage.message.createdAt);
   const timeString = formatTimeHoursMinutes(createdAt, locale);
 
   // current user whispers to all
-  if (currentMessage.character?.id === currentUserCharacterId) {
+  if (currentMessage.character?.id === character.id) {
     return (
       <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="italic">{`${t("outgoingWhisperToEverybody")}: `}</span>
-          <span>{currentMessage.message.content}</span>
+          <Interweave
+            disableLineBreaks
+            noHtmlExceptMatchers
+            matchers={[wordmatcher]}
+            content={currentMessage.message.content}
+          />
         </div>
       </div>
     );
@@ -160,7 +167,12 @@ export function WhisperAllMessage({
             character: currentMessage.character?.firstName,
           })}: `}
         </span>
-        <span>{currentMessage.message.content}</span>
+        <Interweave
+          disableLineBreaks
+          noHtmlExceptMatchers
+          matchers={[wordmatcher]}
+          content={currentMessage.message.content}
+        />
       </div>
     </div>
   );

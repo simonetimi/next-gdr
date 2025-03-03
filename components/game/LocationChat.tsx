@@ -43,7 +43,7 @@ function messageRender(
       return (
         <WhisperAllMessage
           currentMessage={currentMessage}
-          currentUserCharacterId={character.id}
+          character={character}
           key={currentMessage.message.id}
         />
       );
