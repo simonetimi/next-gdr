@@ -53,6 +53,7 @@
       "conversationRemoved": "Conversazione rimossa con successo",
       "noConversationFound": "Nessuna conversazione trovata",
       "noMoreCharacters": "Non ci sono più personaggi da aggiungere",
+      "newMessages": "Nuovi messaggi",
       "settings": {
         "title": "Impostazioni conversazione",
         "groupName": "Nome del gruppo",

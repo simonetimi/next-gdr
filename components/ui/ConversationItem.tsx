@@ -6,7 +6,7 @@ import {
 } from "@/models/offGameChat";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { addToast, Avatar } from "@heroui/react";
-import { formatDateTime, formatTimeHoursMinutes } from "@/utils/dates";
+import { formatDateTime } from "@/utils/dates";
 import { Markup } from "interweave";
 import { Tooltip } from "@heroui/tooltip";
 import { Button } from "@heroui/button";
@@ -16,9 +16,11 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import { shortenText, stripTags } from "@/utils/strings";
+import { useMediaQuery } from "@uidotdev/usehooks";
 
 interface ConversationProps {
   conversation: OffGameConversationWithDetails;
+  isMobile: boolean;
 }
 interface ParticipantsProps {
   participants: OffGameConversationWithDetails["participants"];
@@ -36,6 +38,8 @@ export const ConversationItem = ({
   const locale = GameConfig.getLocale();
   const t = useTranslations();
 
+  const isMobile = useMediaQuery("only screen and (max-width : 850px)");
+
   const { currentCharacter } = useGame();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,8 +47,6 @@ export const ConversationItem = ({
   conversation.participants = conversation.participants.filter(
     (p) => p.firstName !== currentCharacter?.firstName,
   );
-
-  // TODO translations
 
   const handleDeletion = async () => {
     try {
@@ -71,7 +73,7 @@ export const ConversationItem = ({
   return (
     <div className="flex w-full items-center py-1 lg:gap-4 lg:px-2">
       {conversation.unreadCount > 0 ? (
-        <Tooltip content="New messages">
+        <Tooltip content={t("components.gameChat.newMessages")}>
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-400 opacity-75"></span>
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
@@ -88,7 +90,10 @@ export const ConversationItem = ({
           <ParticipantsAvatars participants={conversation.participants} />
         </div>
         <div className="mr-7 min-w-0 flex-grow">
-          <ConversationDetails conversation={conversation} />
+          <ConversationDetails
+            conversation={conversation}
+            isMobile={isMobile}
+          />
         </div>
         <div className="flex flex-shrink-0 flex-col items-end gap-1">
           <TimeStamp date={conversation.lastMessageAt} locale={locale} />
@@ -108,43 +113,51 @@ export const ConversationItem = ({
   );
 };
 
-// limit avatars to 4
-export const ParticipantsAvatars = ({ participants }: ParticipantsProps) => (
-  <div className="w-20">
-    <div className="flex -space-x-3">
-      {participants.slice(0, 4).map((participant) => (
-        <Avatar
-          key={participant.id}
-          src={participant.miniAvatarUrl ?? ""}
-          name={participant.firstName}
-          className="h-8 w-8"
+export const ParticipantsAvatars = ({ participants }: ParticipantsProps) => {
+  const maxAvatarsShown = 4;
+
+  return (
+    <div className="w-20">
+      <div className="flex -space-x-3">
+        {participants.slice(0, maxAvatarsShown).map((participant) => (
+          <Avatar
+            key={participant.id}
+            src={participant.miniAvatarUrl ?? ""}
+            name={participant.firstName}
+            className="h-8 w-8"
+          />
+        ))}
+        {participants.length > 4 && (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-default-100 text-xs">
+            +{participants.length - 4}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ConversationDetails = ({ conversation, isMobile }: ConversationProps) => {
+  const maxPreviewLength = isMobile ? 15 : 30;
+  return (
+    <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
+      <span className="w-full truncate text-sm font-medium">
+        {conversation.isGroup
+          ? shortenText(conversation.name ?? "", maxPreviewLength)
+          : conversation.participants.map((p) => p.firstName)}
+      </span>
+      {conversation.lastMessage && (
+        <Markup
+          className="w-full truncate text-xs text-default-500"
+          content={stripTags(
+            shortenText(conversation.lastMessage.content, maxPreviewLength),
+          )}
+          allowList={[]}
         />
-      ))}
-      {participants.length > 4 && (
-        <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-background bg-default-100 text-xs">
-          +{participants.length - 4}
-        </div>
       )}
     </div>
-  </div>
-);
-
-const ConversationDetails = ({ conversation }: ConversationProps) => (
-  <div className="flex min-w-0 flex-1 flex-col items-start gap-1">
-    <span className="w-full truncate text-sm font-medium">
-      {conversation.isGroup
-        ? shortenText(conversation.name ?? "", 15)
-        : conversation.participants.map((p) => p.firstName)}
-    </span>
-    {conversation.lastMessage && (
-      <Markup
-        className="w-full truncate text-xs text-default-500"
-        content={stripTags(shortenText(conversation.lastMessage.content, 15))}
-        allowList={[]}
-      />
-    )}
-  </div>
-);
+  );
+};
 
 const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => {
   return (
