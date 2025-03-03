@@ -41,7 +41,11 @@ export default function ChatConversations({
         {isLoading && <Spinner variant="wave" size="sm" className="ml-auto" />}
       </div>
 
-      <ScrollShadow className="flex h-full w-full flex-col">
+      <ScrollShadow
+        className="flex h-full w-full flex-col"
+        visibility="bottom"
+        size={20}
+      >
         {conversations?.length === 0 && (
           <div className="flex h-full items-center justify-center">
             {t("components.gameChat.noConversationFound")}

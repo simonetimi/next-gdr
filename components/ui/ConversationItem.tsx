@@ -84,18 +84,18 @@ export const ConversationItem = ({
       )}
       <button
         onClick={() => navigateToEditor(conversation)}
-        className="flex w-full items-center gap-4 rounded-2xl px-3 py-3 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-100"
+        className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl px-3 py-3 transition hover:cursor-pointer hover:bg-default-100 active:translate-y-1 dark:hover:bg-default-100"
       >
-        <div className="flex-shrink-0">
+        <div>
           <ParticipantsAvatars participants={conversation.participants} />
         </div>
-        <div className="mr-7 min-w-0 flex-grow">
+        <div className="min-w-0">
           <ConversationDetails
             conversation={conversation}
             isMobile={isMobile}
           />
         </div>
-        <div className="flex flex-shrink-0 flex-col items-end gap-1">
+        <div className="flex w-20 flex-col items-end gap-1 text-right">
           <TimeStamp date={conversation.lastMessageAt} locale={locale} />
         </div>
       </button>
@@ -160,9 +160,18 @@ const ConversationDetails = ({ conversation, isMobile }: ConversationProps) => {
 };
 
 const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => {
+  if (!date)
+    return <span className="whitespace-nowrap text-xs text-default-400"></span>;
+
+  const { formattedDate, formattedTime, isToday } = formatDateTime(
+    date,
+    locale,
+  );
+
   return (
-    <span className="whitespace-nowrap text-xs text-default-400">
-      {date ? formatDateTime(date, locale) : ""}
-    </span>
+    <div className="flex flex-col items-end text-xs text-default-400">
+      <span className="whitespace-nowrap">{formattedTime}</span>
+      {!isToday && <span className="whitespace-nowrap">{formattedDate}</span>}
+    </div>
   );
 };
