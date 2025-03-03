@@ -15,16 +15,22 @@ export default function Weather({
   weather: WeatherForecasts;
   temperatureColor: string;
 }) {
-  const svgProps = { width: 20, height: 20 };
+  const iconSize = 22;
+  const svgProps = { width: iconSize, height: iconSize };
   const t = useTranslations("game.weather");
 
   return (
     <div className="flex w-full items-center justify-evenly rounded-2xl border border-default-200 p-1 text-sm dark:border-default-100">
       <Tooltip content={capitalize(t("condition." + weather.condition))}>
-        {ForecastMap[weather.condition as keyof typeof ForecastMap]}
+        {cloneElement(
+          ForecastMap[weather.condition as keyof typeof ForecastMap],
+          {
+            size: iconSize,
+          },
+        )}
       </Tooltip>
       <Tooltip content={weather.temperature + t("temperatureUnit")}>
-        <Thermometer style={{ color: temperatureColor }} />
+        <Thermometer size={iconSize} color={temperatureColor} />
       </Tooltip>
       <Tooltip content={fromCamelCase(t("moon." + weather.lunarPhase))}>
         {cloneElement(MoonMap[weather.lunarPhase as keyof typeof MoonMap], {

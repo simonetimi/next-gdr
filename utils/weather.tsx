@@ -24,7 +24,6 @@ import {
   WaxingCrescent,
   WaxingGibbous,
 } from "@/components/ui/icons/MoonPhases";
-import { AppConfig } from "@/utils/config/AppConfig";
 import { GameConfig } from "@/utils/config/GameConfig";
 
 export const ForecastMap = {
