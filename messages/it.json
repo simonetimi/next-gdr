@@ -217,7 +217,8 @@
       "onlyChatAdmin": "Solo l'amministratore della conversazione può eseguire l'azione",
       "conversationNotFound": "Conversazione non trovata",
       "newAdminNotInParticipants": "Il nuovo amministratore deve essere tra i partecipanti",
-      "onlyTwoParticipantsLeft": "Non puoi rimuovere tutti i partecipanti"
+      "onlyTwoParticipantsLeft": "Non puoi rimuovere tutti i partecipanti",
+      "maxCharLimit": "Non puoi superare il limite di {maxChar} caratteri"
     },
     "validation": {
       "noSpacesOrPunctuationAllowed": "può contenere solo lettere",

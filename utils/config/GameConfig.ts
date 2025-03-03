@@ -77,4 +77,12 @@ export class GameConfig {
   public static getMessagesLimitPerFetch() {
     return parseInt(process.env.MAX_MESSAGES_FETCHED_PER_LOAD ?? "50");
   }
+
+  public static maxCharactersPerOffGameMessage() {
+    return parseInt(process.env.MAX_CHARACTERS_PER_OFF_GAME_MESSAGE ?? "20000");
+  }
+
+  public static maxCharactersPerOnGameMessage() {
+    return parseInt(process.env.MAX_CHARACTERS_PER_ON_GAME_MESSAGE ?? "10000");
+  }
 }

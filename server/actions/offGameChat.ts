@@ -12,11 +12,19 @@ import { aliasedTable, and, eq, inArray } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { OffGameConversation } from "@/models/offGameChat";
 import { characters } from "@/database/schema/character";
+import { GameConfig } from "@/utils/config/GameConfig";
 
 export async function createSingleOffGameConversation(
   targetCharacterId: string,
   message: string,
 ): Promise<OffGameConversation> {
+  const t = await getTranslations("errors.gameChat");
+
+  const charLimit = GameConfig.maxCharactersPerOffGameMessage();
+  if (message.length > charLimit) {
+    throw new Error(t("maxCharLimit", { maxChar: charLimit }));
+  }
+
   const currentCharacter = await getCurrentCharacterIdOnly();
   const currentCharacterId = currentCharacter.id!;
 
@@ -97,6 +105,13 @@ export async function createGroupOffGameConversation(
   participantIds: string[],
   message: string,
 ): Promise<OffGameConversation> {
+  const t = await getTranslations("errors.gameChat");
+
+  const charLimit = GameConfig.maxCharactersPerOffGameMessage();
+  if (message.length > charLimit) {
+    throw new Error(t("maxCharLimit", { maxChar: charLimit }));
+  }
+
   const currentCharacter = await getCurrentCharacterIdOnly();
 
   // create the group conversation
@@ -134,6 +149,12 @@ export async function sendOffGameMessage(
   content: string,
 ) {
   const t = await getTranslations();
+
+  const charLimit = GameConfig.maxCharactersPerOffGameMessage();
+  if (content.length > charLimit) {
+    throw new Error(t("errors.gameChat.maxCharLimit", { maxChar: charLimit }));
+  }
+
   const currentCharacter = await getCurrentCharacterIdOnly();
 
   if (!currentCharacter.id)
