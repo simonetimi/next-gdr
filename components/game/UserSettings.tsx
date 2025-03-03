@@ -8,7 +8,7 @@ import { ChevronsDown, ChevronsUp } from "lucide-react";
 import { Tooltip } from "@heroui/tooltip";
 
 export function UserSettings() {
-  const t = useTranslations();
+  const t = useTranslations("");
   const { userSettings, refreshUserSettings } = useGame();
 
   const updateSetting = async (key: string, value: string) => {
@@ -19,28 +19,34 @@ export function UserSettings() {
       });
       refreshUserSettings();
     } catch (error) {
+      let errorMessage = t("errors.generic");
+      if (error instanceof Error) errorMessage = error.message;
       addToast({
-        title: t("error"),
-        description: "Error", // TODO add translations
+        title: t("errors.title"),
+        description: errorMessage,
         color: "danger",
       });
     }
   };
 
-  const toggleDirection = () => {
+  const toggleDirection = async () => {
     const newDirection =
       userSettings.chatDirection === "standard" ? "reverse" : "standard";
-    updateSetting("chatDirection", newDirection);
+    await updateSetting("chatDirection", newDirection);
   };
 
   return (
     <div className="m-4">
       <ul className="flex w-full flex-col gap-2">
         <li className="flex items-center gap-4">
-          <span className="text-md text-default-600">Chat Direction</span>
+          <span className="text-md text-default-600">
+            {t("components.settings.chatDirection.title")}
+          </span>
           <Tooltip
             content={
-              userSettings.chatDirection === "standard" ? "Standard" : "Reverse"
+              userSettings.chatDirection === "standard"
+                ? t("components.settings.chatDirection.standard")
+                : t("components.settings.chatDirection.reverse")
             }
           >
             <Button

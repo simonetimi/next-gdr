@@ -77,7 +77,12 @@
       "title": "Messaggi off"
     },
     "settings": {
-      "title": "Impostazioni"
+      "title": "Impostazioni",
+      "chatDirection": {
+        "title": "Orientamento chat",
+        "reverse": "Inverso",
+        "standard": "Standard"
+      }
     },
     "controlNavbar": {
       "map": "Mappa",
@@ -231,8 +236,8 @@
   "system": {
     "gameChat": {
       "hasLeftConversation": "{characterName} ha lasciato la conversazione",
-      "removedFromConversation": "{characterName} è stato rimosso dalla conversazione",
-      "addedToConversation": "{characterName} è stato aggiunto alla conversazione",
+      "removedFromConversation": "{characterName} non fa più parte della conversazione",
+      "addedToConversation": "{characterName} fa ora parte della conversazione",
       "conversationRenamed": "La conversazione è stata rinominata in {newName}"
     }
   }
