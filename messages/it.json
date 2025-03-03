@@ -96,6 +96,15 @@
       "adminDashboard": "Dashboard admin",
       "toggleInvisible": "Modalità invisible"
     },
+    "locationChat": {
+      "messages": {
+        "incomingWhisper": "{character} ti dice",
+        "outgoingWhisper": "Dici a {character}",
+        "thirdPartyWhisper": "{firstCharacter} dice a {secondCharacter}",
+        "incomingWhisperToEverybody": "{character} dice a tutti",
+        "outgoingWhisperToEverybody": "Dici a tutti"
+      }
+    },
     "locationControls": {
       "chatSavedOnClipboard": "Link alla chat salvato negli appunti",
       "rollDice": "Tiri",

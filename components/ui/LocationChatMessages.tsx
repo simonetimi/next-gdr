@@ -2,12 +2,11 @@ import { LocationMessageWithCharacter } from "@/models/locationMessage";
 import { Avatar } from "@heroui/react";
 import { MinimalCharacter } from "@/models/characters";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { replaceAngleBrackets } from "@/utils/strings";
+import { capitalize, replaceAngleBrackets } from "@/utils/strings";
 import { Interweave } from "interweave";
 import { generateMatchers } from "@/utils/interweaveMatchers";
 import { formatTimeHoursMinutes } from "@/utils/dates";
-
-// TODO insert labels text to be translated
+import { useTranslations } from "next-intl";
 
 const locale = GameConfig.getLocale();
 
@@ -71,6 +70,8 @@ export function WhisperMessage({
   currentMessage: LocationMessageWithCharacter;
   currentUserCharacterId: string;
 }) {
+  const t = useTranslations("components.locationChat.messages");
+
   const createdAt = new Date(currentMessage.message.createdAt);
   const timeString = formatTimeHoursMinutes(createdAt, locale);
 
@@ -81,7 +82,7 @@ export function WhisperMessage({
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="italic">
-            {currentMessage.character?.firstName} ti dice:{" "}
+            {`${t("incomingWhisper", { character: currentMessage.character?.firstName })}: `}
           </span>
           <span>{currentMessage.message.content}</span>
         </div>
@@ -99,7 +100,7 @@ export function WhisperMessage({
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
           <span className="italic">
-            Dici a {currentMessage.recipientCharacter?.firstName}:{" "}
+            {`${t("outgoingWhisper", { character: currentMessage.character?.firstName })}: `}
           </span>
           <span>{currentMessage.message.content}</span>
         </div>
@@ -113,8 +114,10 @@ export function WhisperMessage({
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="italic">
-          {currentMessage.character?.firstName} dice a{" "}
-          {currentMessage.recipientCharacter?.firstName}:{" "}
+          {`${t("thirdPartyWhisper", {
+            firstCharacter: currentMessage.character?.firstName,
+            secondCharacter: currentMessage.recipientCharacter?.firstName,
+          })}: `}
         </span>
         <span>{currentMessage.message.content}</span>
       </div>
@@ -129,6 +132,8 @@ export function WhisperAllMessage({
   currentMessage: LocationMessageWithCharacter;
   currentUserCharacterId: string;
 }) {
+  const t = useTranslations("components.locationChat.messages");
+
   const createdAt = new Date(currentMessage.message.createdAt);
   const timeString = formatTimeHoursMinutes(createdAt, locale);
 
@@ -138,7 +143,7 @@ export function WhisperAllMessage({
       <div className="flex items-center gap-2 py-1 text-foreground-700 dark:text-foreground-600">
         <span className="text-xs">{timeString}</span>
         <div className="text-justify">
-          <span className="italic">Dici a tutti: </span>
+          <span className="italic">{`${t("outgoingWhisperToEverybody")}: `}</span>
           <span>{currentMessage.message.content}</span>
         </div>
       </div>
@@ -151,7 +156,9 @@ export function WhisperAllMessage({
       <span className="text-xs">{timeString}</span>
       <div className="text-justify">
         <span className="italic">
-          {currentMessage.character?.firstName} dice a tutti:{" "}
+          {`${t("incomingWhisperToEverybody", {
+            character: currentMessage.character?.firstName,
+          })}: `}
         </span>
         <span>{currentMessage.message.content}</span>
       </div>
