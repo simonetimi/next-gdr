@@ -1,5 +1,5 @@
 import { Character } from "@/models/characters";
-import { getUserCharacters } from "@/server/character";
+import { getUserActiveCharacters } from "@/server/character";
 import { redirect } from "next/navigation";
 import { GAME_ROUTE } from "@/utils/routes";
 import CharacterSelection from "@/components/forms/CharacterSelection";
@@ -13,7 +13,7 @@ export default async function SelectCharacterPage() {
   const maxCharactersAllowed = GameConfig.getMaxCharacters() || 2;
   let characters: Character[] = [];
   try {
-    characters = await getUserCharacters();
+    characters = await getUserActiveCharacters();
   } catch (error) {
     Logger.error(error);
     redirect(GAME_ROUTE);

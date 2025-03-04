@@ -47,7 +47,7 @@ Chat-based RPG app built with Next.js
 - [ ] Private chats (on and off game)
 - [ ] Forum (with private threads and search functionality)
 - [ ] Internal market
-- [ ] Admin and master controls (especially for managing users, banning, locations, forum, docs)
+- [ ] Admin and master controls (especially for managing characters, banning, managing locations, forum, docs, reading chat and location histories)
 - [ ] News section on login (but before entering the game) that the admin can set up and update
 - [ ] Characters registry, searchable and/or divided in pages. Implement "last seen"
 - [ ] Pins for locations

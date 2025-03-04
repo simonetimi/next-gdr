@@ -4,7 +4,7 @@ import { Character } from "@/models/characters";
 import { auth } from "@/auth";
 import {
   getCurrentCharacterIdOnly,
-  getUserCharacters,
+  getUserActiveCharacters,
 } from "@/server/character";
 import { redirect } from "next/navigation";
 import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
@@ -23,7 +23,7 @@ export default async function GameLayout({
   const session = await auth();
 
   if (session) {
-    characters = await getUserCharacters();
+    characters = await getUserActiveCharacters();
     if (characters.length === 0) {
       // no characters, go to create new character
       return redirect(NEW_CHARACTER_ROUTE);

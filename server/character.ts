@@ -220,7 +220,7 @@ export async function getOnlineCharacters() {
   return onlineUsersSchema.parse(results);
 }
 
-export async function getUserCharacters() {
+export async function getUserActiveCharacters() {
   const session = await auth();
   const userId = session?.user?.id;
   const t = await getTranslations("errors");

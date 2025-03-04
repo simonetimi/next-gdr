@@ -4,13 +4,13 @@ import { auth } from "@/auth";
 
 import { GAME_ROUTE } from "@/utils/routes";
 import { redirect } from "next/navigation";
-import { getUserCharacters } from "@/server/character";
+import { getUserActiveCharacters } from "@/server/character";
 import { GameConfig } from "@/utils/config/GameConfig";
 
 export default async function NewChacterPage() {
   const session = await auth();
   if (session?.user) {
-    const characters = await getUserCharacters();
+    const characters = await getUserActiveCharacters();
     const maxCharactersAllowed = GameConfig.getMaxCharacters() || 1;
     if (characters.length >= maxCharactersAllowed) {
       redirect(GAME_ROUTE);
