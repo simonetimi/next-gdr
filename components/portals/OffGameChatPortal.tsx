@@ -3,7 +3,6 @@ import Movable from "@/components/ui/Movable";
 import { usePortalRoot } from "@/hooks/usePortalRoot";
 import { useWindowSize } from "@uidotdev/usehooks";
 import { Dispatch, SetStateAction } from "react";
-import ChatConversations from "@/components/game/messaging/ChatConversations";
 import { OffGameChatControl } from "@/components/game/OffGameChatControl";
 
 export default function OffGameChatPortal({

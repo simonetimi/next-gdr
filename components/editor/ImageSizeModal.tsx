@@ -53,7 +53,7 @@ export default function ImageSizeModal({
         setWidth(Math.round(height * aspect));
       }
     }
-  }, [width, height, maintainRatio, aspect]);
+  }, [width, height, maintainRatio, aspect, initialHeight, initialWidth]);
 
   const handleSubmit = () => {
     onSubmit(width, height);

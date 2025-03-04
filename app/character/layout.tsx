@@ -11,3 +11,5 @@ export default function CharacterLayout({ children }: { children: ReactNode }) {
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

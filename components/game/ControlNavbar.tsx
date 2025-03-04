@@ -71,7 +71,7 @@ function ControlNavbar({
   }, [isMaxWidth1024]);
 
   const { isInvisible, mutate } = useInvisibleStatus();
-  const { offCount, onCount } = useUnreadMessagesCount();
+  const { offCount } = useUnreadMessagesCount();
 
   const handleToggleInvisible = async () => {
     await toggleInvisible(isInvisible);
@@ -196,6 +196,7 @@ function ControlNavbar({
                 startContent={<MessageCircle />}
                 size="sm"
                 onPress={toggleOnGameMessagesMovable}
+                color={showOnGameMessagesMovable ? "primary" : "default"}
                 variant="light"
               />
             </Tooltip>

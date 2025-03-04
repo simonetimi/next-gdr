@@ -34,7 +34,11 @@ const eslintConfig = [
     files: ["**/*.{js,jsx,ts,tsx}"],
     ignores: ["next.config.mjs", "postcss.config.js", "tailwind.config.ts"],
     rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": ["warn", {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }],
       "no-console": "warn",
     },
     plugins: {

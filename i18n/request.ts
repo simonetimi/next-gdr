@@ -3,7 +3,7 @@ import { GameConfig } from "@/utils/config/GameConfig";
 
 export default getRequestConfig(async () => {
   // default locale
-  const defaultLocale = "it";
+  const defaultLocale = "it-IT";
 
   // read config
   const locale = GameConfig.getLocale();

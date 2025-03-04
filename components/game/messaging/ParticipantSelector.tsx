@@ -1,4 +1,3 @@
-import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
 import { Autocomplete, AutocompleteItem, Avatar } from "@heroui/react";
 import { useTranslations } from "next-intl";
 import { MinimalCharacter } from "@/models/characters";

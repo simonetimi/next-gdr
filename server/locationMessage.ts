@@ -251,7 +251,6 @@ export async function fetchAllLocationMessagesWithCharacters(
     // desc, from the newest to the oldest
     .orderBy(desc(locationMessage.createdAt));
 
-  console.log(result);
   return result;
 }
 

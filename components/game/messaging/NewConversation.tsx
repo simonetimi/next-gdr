@@ -1,5 +1,4 @@
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
-import { OnGameChatContext } from "@/contexts/OnGameChatContext";
 import { addToast, Button, Chip, Input, Avatar } from "@heroui/react";
 import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
 import { useEffect, useRef, useState } from "react";

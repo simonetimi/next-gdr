@@ -183,7 +183,7 @@ export default function LocationControls({
         title: t("components.locationControls.chatSavedOnClipboard"),
         color: "success",
       });
-    } catch (error) {
+    } catch (_error) {
       addToast({
         title: t("errors.title"),
         description: t("errors.chat.savingChat"),

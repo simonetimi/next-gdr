@@ -5,9 +5,11 @@ import { getTranslations } from "next-intl/server";
 import { Logger } from "@/utils/logger";
 
 export default async function SignInPage(props: {
-  searchParams: { callbackUrl: string | undefined };
+  searchParams: Promise<{ callbackUrl: string | undefined }>;
 }) {
   const t = await getTranslations("errors");
+  const searchParams = await props.searchParams;
+
   return (
     <div className="flex flex-col gap-2">
       {Object.values(providerMap).map((provider) => (
@@ -17,7 +19,7 @@ export default async function SignInPage(props: {
             "use server";
             try {
               await signIn(provider.id, {
-                redirectTo: props.searchParams?.callbackUrl ?? "",
+                redirectTo: searchParams?.callbackUrl ?? "",
               });
             } catch (error) {
               Logger.error(error);

@@ -1,12 +1,9 @@
 "use client";
 
 import { Avatar, Spinner } from "@heroui/react";
-import { useTranslations } from "next-intl";
 import { useCharacterSheet } from "@/hooks/swr/useCharacterSheet";
 
 function CharacterSheet({ characterId }: { characterId: string }) {
-  const t = useTranslations();
-
   const { characterSheet, isLoading } = useCharacterSheet(characterId);
 
   if (isLoading)
