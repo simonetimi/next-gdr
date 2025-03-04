@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/database/db";
 import { userSettings } from "@/database/schema/userSettings";
 import { eq, getTableColumns } from "drizzle-orm";

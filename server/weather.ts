@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/database/db";
 import { weatherForecasts } from "@/database/schema/weather";
 import { desc } from "drizzle-orm";

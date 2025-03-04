@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/database/db";
 import { races } from "@/database/schema/race";
 import { racesSelectSchema } from "@/zod/schemas/race";

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/database/db";
 import { characters } from "@/database/schema/character";
 import {

@@ -1,3 +1,5 @@
+import "server-only";
+
 export class AppConfig {
   public static getAppUrl() {
     return process.env.APP_URL;

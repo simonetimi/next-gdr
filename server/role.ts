@@ -1,3 +1,5 @@
+import "server-only";
+
 import { db } from "@/database/db";
 import { roles, userRoles } from "@/database/schema/role";
 import { and, eq } from "drizzle-orm";
