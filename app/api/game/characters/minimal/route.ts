@@ -1,10 +1,10 @@
-import { getAllNonBannedCharacters } from "@/server/character";
+import { getAllActiveCharacters } from "@/server/character";
 import { NextResponse } from "next/server";
 import { Logger } from "@/utils/logger";
 
 export async function GET() {
   try {
-    const nonBannedCharacters = await getAllNonBannedCharacters();
+    const nonBannedCharacters = await getAllActiveCharacters();
     return NextResponse.json(nonBannedCharacters);
   } catch (error) {
     Logger.error(error);

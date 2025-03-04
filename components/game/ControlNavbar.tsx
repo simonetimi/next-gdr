@@ -62,13 +62,13 @@ function ControlNavbar({
   const game = useGame();
   const t = useTranslations("components.controlNavbar");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSmallDevice, setIsSmallDevice] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const router = useRouter();
 
-  const isMaxWidth850 = useMediaQuery("only screen and (max-width : 850px)");
+  const isMaxWidth1024 = useMediaQuery("only screen and (max-width : 1024px)");
   useEffect(() => {
-    setIsSmallDevice(isMaxWidth850);
-  }, [isMaxWidth850]);
+    setIsSmallScreen(isMaxWidth1024);
+  }, [isMaxWidth1024]);
 
   const { isInvisible, mutate } = useInvisibleStatus();
   const { offCount, onCount } = useUnreadMessagesCount();
@@ -119,33 +119,33 @@ function ControlNavbar({
   // the draggable components are grouped here and conditionally rendered depending on their state
   // buttons on the navbar activate movables for large screens. instead, buttons on the side menu will open small screen movables
   return (
-    <div className="flex flex-grow items-center justify-start gap-0 sm:justify-center sm:gap-3">
-      <CharacterSheetPortal isSmallDevice={isSmallDevice} />
+    <div className="flex flex-grow items-center justify-start gap-0 lg:justify-center lg:gap-3">
+      <CharacterSheetPortal isSmallScreen={isSmallScreen} />
       <OnlineCharactersPortal
-        isSmallDevice={isSmallDevice}
+        isSmallScreen={isSmallScreen}
         show={showOnlineUsersMovable}
         setShow={setOnlineUsersMovable}
       />
       <OffGameChatPortal
-        isSmallDevice={isSmallDevice}
+        isSmallScreen={isSmallScreen}
         show={showOffGameMessagesMovable}
         setShow={setShowOffGameMessagesMovable}
       />
       <SettingsPortal
-        isSmallDevice={isSmallDevice}
+        isSmallScreen={isSmallScreen}
         show={showSettingsMovable}
         setShow={setShowSettingsMovable}
       />
       <Navbar
-        className="w-18 rounded-2xl border-0 bg-transparent dark:border-default-100 sm:w-fit sm:border-1 sm:border-default-200"
+        className="w-18 rounded-2xl border-0 bg-transparent dark:border-default-100 lg:w-fit lg:border-1 lg:border-default-200"
         isMenuOpen={isMenuOpen}
         onMenuOpenChange={setIsMenuOpen}
       >
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="-ml-5 mr-auto h-6 w-6 sm:hidden"
+          className="-ml-5 mr-auto h-6 w-6 lg:hidden"
         />
-        <NavbarContent className="hidden sm:flex sm:gap-4" justify="center">
+        <NavbarContent className="hidden lg:flex lg:gap-4" justify="center">
           <NavbarItem>
             <Tooltip content={t("map")}>
               <Button
@@ -372,7 +372,7 @@ function ControlNavbar({
           onClick={toggleCharacterSheetMovable}
         />
       </Tooltip>
-      {isMaster && !isSmallDevice && (
+      {isMaster && !isSmallScreen && (
         <Tooltip content={t("toggleInvisible")}>
           <Button
             isIconOnly

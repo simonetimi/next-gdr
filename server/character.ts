@@ -64,7 +64,7 @@ export async function getCurrentCharacterIdOnly() {
   return results[0];
 }
 
-export async function getCurrentCharacterIdOnlyFromuserId(userId: string) {
+export async function getCurrentCharacterIdOnlyFromUserId(userId: string) {
   const now = new Date();
 
   // retrieves the last non-expired session
@@ -116,6 +116,7 @@ export async function getCharacterSheet(characterId: string) {
         miniAvatarUrl: characters.miniAvatarUrl,
         createdAt: characters.createdAt,
         lastSeenAt: characters.lastSeenAt,
+        isActive: characters.isActive,
         // only fetch experience if user is admin, master or is owner of the character
         ...(isUserOwner || hasFullPermission
           ? {
@@ -209,7 +210,12 @@ export async function getOnlineCharacters() {
     .innerJoin(races, eq(races.id, characters.raceId))
     .leftJoin(locations, eq(locations.id, sessions.currentLocationId))
     .leftJoin(locationGroups, eq(locationGroups.id, locations.locationGroupId))
-    .where(eq(sessions.expires, latestSessions.maxExpires));
+    .where(
+      and(
+        eq(sessions.expires, latestSessions.maxExpires),
+        eq(characters.isActive, true),
+      ),
+    );
 
   return onlineUsersSchema.parse(results);
 }
@@ -223,7 +229,7 @@ export async function getUserCharacters() {
   const charactersList = await db
     .select()
     .from(characters)
-    .where(eq(characters.userId, userId));
+    .where(and(eq(characters.userId, userId), eq(characters.isActive, true)));
 
   return charactersSelectSchema.parse(charactersList);
 }
@@ -244,7 +250,7 @@ export async function isInvisible() {
   return results[0].invisibleMode;
 }
 
-export async function getAllNonBannedCharacters() {
+export async function getAllActiveCharacters() {
   const charactersList = await db
     .select({
       id: characters.id,
@@ -255,7 +261,7 @@ export async function getAllNonBannedCharacters() {
     })
     .from(characters)
     .innerJoin(users, eq(characters.userId, users.id))
-    .where(eq(users.isBanned, false));
+    .where(and(eq(users.isBanned, false), eq(characters.isActive, true)));
 
   return minimalCharactersSchema.parse(charactersList);
 }

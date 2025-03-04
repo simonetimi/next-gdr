@@ -20,7 +20,7 @@ export default async function Header({
   // multiple characters can be handled
   return (
     <header className="sticky top-0 z-0 flex h-[15vh] w-screen items-center justify-between bg-transparent p-6 shadow-sm dark:bg-transparent dark:shadow-default-100">
-      <h1 className="absolute inset-0 flex items-center justify-center sm:static sm:flex sm:items-center sm:justify-start">
+      <h1 className="absolute inset-0 flex items-center justify-center lg:static lg:flex lg:items-center lg:justify-start">
         Next GdR
       </h1>
       {character && showControls && (

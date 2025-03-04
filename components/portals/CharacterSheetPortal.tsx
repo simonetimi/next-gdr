@@ -6,17 +6,17 @@ import { usePortalRoot } from "@/hooks/usePortalRoot";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function CharacterSheetPortal({
-  isSmallDevice,
+  isSmallScreen,
 }: {
-  isSmallDevice: boolean;
+  isSmallScreen: boolean;
 }) {
   const game = useGame();
   const portalRef = usePortalRoot();
 
   const windowSize = useWindowSize();
 
-  const modalWidth = isSmallDevice ? windowSize.width! : 1000;
-  const modalHeight = isSmallDevice ? windowSize.height! : 600;
+  const modalWidth = isSmallScreen ? windowSize.width! : 1000;
+  const modalHeight = isSmallScreen ? windowSize.height! : 600;
 
   const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
   const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);
@@ -42,8 +42,8 @@ export default function CharacterSheetPortal({
                   game.toggleCharacterSheet(characterId);
                 }
               }}
-              enableResizing={!isSmallDevice}
-              enableMovement={!isSmallDevice}
+              enableResizing={!isSmallScreen}
+              enableMovement={!isSmallScreen}
               componentName="characterSheet"
             />,
             portalRef.current,

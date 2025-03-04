@@ -1,6 +1,7 @@
 import { users } from "@/database/schema/auth";
 import { races } from "@/database/schema/race";
 import {
+  boolean,
   integer,
   pgTable,
   text,
@@ -27,6 +28,7 @@ export const characters = pgTable("character", {
   currentExperience: integer("current_experience").default(0),
   totalExperience: integer("total_experience").default(0),
   lastSeenAt: timestamp("last_seen_at", { mode: "date" }),
+  isActive: boolean("is_active").default(true).notNull(),
 });
 
 export const characterSheets = pgTable("character_sheet", {

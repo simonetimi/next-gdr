@@ -193,8 +193,8 @@ export default function LocationControls({
   }
 
   return (
-    <div className="z-10 flex flex-[1] items-center gap-2 px-2 sm:gap-4 sm:pr-3">
-      <div className="w-10 sm:w-28">
+    <div className="z-10 flex flex-[1] items-center gap-2 px-2 lg:gap-4 lg:pr-3">
+      <div className="w-10 lg:w-28">
         <Navbar
           isBlurred={false}
           isMenuOpen={isMenuOpen}
@@ -202,10 +202,10 @@ export default function LocationControls({
           classNames={{ wrapper: "ml-4 p-2 items-self-center" }}
         >
           <NavbarMenuToggle
-            className="-ml-3 sm:hidden"
+            className="-ml-3 lg:hidden"
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           ></NavbarMenuToggle>
-          <NavbarContent className="hidden sm:flex sm:h-full sm:w-full sm:flex-col sm:gap-2">
+          <NavbarContent className="hidden lg:flex lg:h-full lg:w-full lg:flex-col lg:gap-2">
             <div className="-mt-4 flex flex-wrap gap-x-1 gap-y-2">
               <NavbarItem>
                 <Tooltip content={t("components.locationControls.rollDice")}>
@@ -251,7 +251,7 @@ export default function LocationControls({
           </NavbarMenu>
         </Navbar>
       </div>
-      <div className="align-items flex w-24 flex-col gap-2 sm:w-36">
+      <div className="align-items flex w-24 flex-col gap-2 lg:w-36">
         <Select
           onChange={handleSelectionChange}
           selectedKeys={[messageType]}

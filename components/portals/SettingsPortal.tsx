@@ -6,11 +6,11 @@ import { UserSettings } from "@/components/game/UserSettings";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function SettingsPortal({
-  isSmallDevice,
+  isSmallScreen,
   show,
   setShow,
 }: {
-  isSmallDevice: boolean;
+  isSmallScreen: boolean;
   show: boolean;
   setShow: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -18,8 +18,8 @@ export default function SettingsPortal({
 
   const windowSize = useWindowSize();
 
-  const modalWidth = isSmallDevice ? windowSize.width! : 600;
-  const modalHeight = isSmallDevice ? windowSize.height! : 600;
+  const modalWidth = isSmallScreen ? windowSize.width! : 600;
+  const modalHeight = isSmallScreen ? windowSize.height! : 600;
 
   const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
   const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);
@@ -40,7 +40,7 @@ export default function SettingsPortal({
             minHeight={modalHeight}
             showSetter={setShow}
             enableResizing={false}
-            enableMovement={!isSmallDevice}
+            enableMovement={!isSmallScreen}
             componentName="settings"
           />,
           portalRef.current,

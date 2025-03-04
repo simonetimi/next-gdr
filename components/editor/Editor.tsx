@@ -41,7 +41,7 @@ export default function Editor({
   onKeyDown?: (e: ReactKeyboardEvent) => void;
   editorRef?: Ref<{ clearContent: () => void }>;
 }) {
-  const isMobile = useMediaQuery("only screen and (max-width : 850px)");
+  const isSmallScreen = useMediaQuery("only screen and (max-width : 1024px)");
 
   const EnterHandler = Extension.create({
     name: "enterHandler",
@@ -185,7 +185,7 @@ export default function Editor({
       EnterHandler.configure({
         onEnter: () => {
           if (onKeyDown) {
-            if (isMobile) {
+            if (isSmallScreen) {
               return false;
             }
             const syntheticEvent = {

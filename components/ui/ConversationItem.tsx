@@ -163,15 +163,16 @@ const TimeStamp = ({ date, locale }: { date: Date | null; locale: string }) => {
   if (!date)
     return <span className="whitespace-nowrap text-xs text-default-400"></span>;
 
-  const { formattedDate, formattedTime, isToday } = formatDateTime(
-    date,
-    locale,
+  const [formattedTime, formattedDate] = formatDateTime(date, locale).split(
+    ",",
   );
 
   return (
     <div className="flex flex-col items-end text-xs text-default-400">
-      <span className="whitespace-nowrap">{formattedTime}</span>
-      {!isToday && <span className="whitespace-nowrap">{formattedDate}</span>}
+      <span className="whitespace-nowrap">{formattedTime.trim()}</span>
+      {formattedDate && (
+        <span className="whitespace-nowrap">{formattedDate.trim()}</span>
+      )}
     </div>
   );
 };

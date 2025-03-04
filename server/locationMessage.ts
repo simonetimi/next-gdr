@@ -16,7 +16,7 @@ import {
 import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 import { Logger } from "@/utils/logger";
 import { GameConfig } from "@/utils/config/GameConfig";
-import { getCurrentCharacterIdOnlyFromuserId } from "@/server/character";
+import { getCurrentCharacterIdOnlyFromUserId } from "@/server/character";
 
 export async function fetchAllLocationMessages(locationId: string) {
   const session = await auth();
@@ -130,7 +130,7 @@ export async function fetchAllLocationMessagesWithCharacters(
 
   const isUserMaster = await isMaster(userId);
 
-  const character = await getCurrentCharacterIdOnlyFromuserId(userId);
+  const character = await getCurrentCharacterIdOnlyFromUserId(userId);
 
   const userCharacterId = character.id ?? "";
 

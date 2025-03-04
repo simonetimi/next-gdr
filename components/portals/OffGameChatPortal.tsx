@@ -7,11 +7,11 @@ import ChatConversations from "@/components/game/messaging/ChatConversations";
 import { OffGameChatControl } from "@/components/game/OffGameChatControl";
 
 export default function OffGameChatPortal({
-  isSmallDevice,
+  isSmallScreen,
   show,
   setShow,
 }: {
-  isSmallDevice: boolean;
+  isSmallScreen: boolean;
   show: boolean;
   setShow: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -19,8 +19,8 @@ export default function OffGameChatPortal({
 
   const windowSize = useWindowSize();
 
-  const modalWidth = isSmallDevice ? windowSize.width! : 800;
-  const modalHeight = isSmallDevice ? windowSize.height! : 650;
+  const modalWidth = isSmallScreen ? windowSize.width! : 800;
+  const modalHeight = isSmallScreen ? windowSize.height! : 650;
 
   const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
   const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);
@@ -40,8 +40,8 @@ export default function OffGameChatPortal({
             minWidth={modalWidth - 100}
             minHeight={modalHeight - 50}
             showSetter={setShow}
-            enableResizing={!isSmallDevice}
-            enableMovement={!isSmallDevice}
+            enableResizing={!isSmallScreen}
+            enableMovement={!isSmallScreen}
             componentName="offGameChat"
           />,
           portalRef.current,

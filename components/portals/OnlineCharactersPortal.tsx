@@ -6,11 +6,11 @@ import { Dispatch, SetStateAction } from "react";
 import { useWindowSize } from "@uidotdev/usehooks";
 
 export default function OnlineCharactersPortal({
-  isSmallDevice,
+  isSmallScreen,
   show,
   setShow,
 }: {
-  isSmallDevice: boolean;
+  isSmallScreen: boolean;
   show: boolean;
   setShow: Dispatch<SetStateAction<boolean>>;
 }) {
@@ -18,8 +18,8 @@ export default function OnlineCharactersPortal({
 
   const windowSize = useWindowSize();
 
-  const modalWidth = isSmallDevice ? windowSize.width! : 1000;
-  const modalHeight = isSmallDevice ? windowSize.height! : 600;
+  const modalWidth = isSmallScreen ? windowSize.width! : 1000;
+  const modalHeight = isSmallScreen ? windowSize.height! : 600;
 
   const centerX = Math.max(0, (windowSize.width! - modalWidth) / 2);
   const centerY = Math.max(0, (windowSize.height! - modalHeight) / 2);
@@ -39,8 +39,8 @@ export default function OnlineCharactersPortal({
             minWidth={modalWidth - 100}
             minHeight={modalHeight - 50}
             showSetter={setShow}
-            enableResizing={!isSmallDevice}
-            enableMovement={!isSmallDevice}
+            enableResizing={!isSmallScreen}
+            enableMovement={!isSmallScreen}
             componentName="onlineCharacters"
           />,
           portalRef.current,
