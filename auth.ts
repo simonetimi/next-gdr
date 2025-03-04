@@ -11,6 +11,7 @@ import NextAuth from "next-auth";
 import { eq } from "drizzle-orm";
 import { Provider } from "next-auth/providers";
 import GitHub, { GitHubProfile } from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 import { BANNED_ROUTE } from "@/utils/routes";
 
 const providers: Provider[] = [
@@ -23,6 +24,7 @@ const providers: Provider[] = [
       };
     },
   }),
+  Google,
 ];
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -36,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "database",
     maxAge: 60 * 30, // in seconds, before expiring (no requests) - 30 mins
-    updateAge: 60 * 2, // in seconds, interval for refreshing the age - 60 seconds
+    updateAge: 60 * 2, // in seconds, interval for refreshing the age - 2 mins
   },
   callbacks: {
     authorized: async ({ auth }) => {

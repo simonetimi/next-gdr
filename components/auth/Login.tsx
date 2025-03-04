@@ -4,27 +4,45 @@ import { Button } from "@heroui/button";
 import { useState } from "react";
 import Github from "@/components/ui/icons/logos/Github";
 import { login } from "@/server/actions/auth";
+import Google from "@/components/ui/icons/logos/Google";
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [provider, setProvider] = useState("");
+  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+
+  const handleLogin = async (provider: string) => {
+    setLoadingProvider(provider);
+    await login(provider);
+    setLoadingProvider(null);
+  };
 
   return (
-    <form
-      onSubmit={async () => {
-        setIsLoading(true);
-        await login(provider);
-      }}
-    >
+    <div className="flex gap-2">
       <Button
-        isLoading={isLoading}
-        type="submit"
+        isLoading={loadingProvider === "github"}
+        disabled={loadingProvider !== null}
+        isIconOnly
         color="primary"
-        startContent={!isLoading && <Github className="h-5 w-5 fill-white" />}
-        onPress={() => setProvider("github")}
-      >
-        Login with GitHub
-      </Button>
-    </form>
+        variant="light"
+        startContent={
+          loadingProvider !== "github" && (
+            <Github className="h-5 w-5 dark:fill-white" />
+          )
+        }
+        onPress={() => handleLogin("github")}
+      />
+      <Button
+        isLoading={loadingProvider === "google"}
+        disabled={loadingProvider !== null}
+        isIconOnly
+        color="primary"
+        variant="light"
+        startContent={
+          loadingProvider !== "google" && (
+            <Google className="h-5 w-5 rounded-full" />
+          )
+        }
+        onPress={() => handleLogin("google")}
+      />
+    </div>
   );
 }
