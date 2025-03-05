@@ -5,13 +5,23 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { Button } from "@heroui/button";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import LoginErrorToast from "@/components/ui/LoginErrorToast";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const session = await auth();
   const t = await getTranslations("pages.index");
 
+  const error = (await searchParams).error;
+
   return (
     <>
+      {error && (
+        <LoginErrorToast error={typeof error === "string" ? error : error[0]} />
+      )}
       <Header />
       <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
         {session ? (

@@ -205,6 +205,10 @@
   "errors": {
     "title": "Errore",
     "generic": "Errore generico",
+    "login": {
+      "title": "Errore di login",
+      "OAuthAccountNotLinked": "L'account è collegato a un altro provider di accesso. Prova a entrare con il provider originale."
+    },
     "auth": {
       "unauthorized": "Utente non autorizzato",
       "unauthenticated": "Utente non autenticato",
