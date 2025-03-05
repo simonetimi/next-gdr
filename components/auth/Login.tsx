@@ -2,7 +2,7 @@
 
 import { Button } from "@heroui/button";
 import { useState } from "react";
-import Github from "@/components/ui/icons/logos/Github";
+import GitHub from "@/components/ui/icons/logos/GitHub";
 import { login } from "@/server/actions/auth";
 import Google from "@/components/ui/icons/logos/Google";
 
@@ -24,12 +24,12 @@ export default function Login() {
         className="bg-default/60 text-foreground"
         startContent={
           loadingProvider !== "github" && (
-            <Github className="h-5 w-5 dark:fill-white" />
+            <GitHub className="h-5 w-5 dark:fill-white" />
           )
         }
         onPress={() => handleLogin("github")}
       >
-        Github
+        GitHub
       </Button>
       <Button
         isLoading={loadingProvider === "google"}
