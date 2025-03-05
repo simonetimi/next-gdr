@@ -6,9 +6,29 @@ import ChatConversations from "@/components/game/messaging/ChatConversations";
 import { useOffGameChat } from "@/contexts/OffGameChatContext";
 import GroupChatSettings from "@/components/game/messaging/GroupChatSettings";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 
 export function OffGameChatControl() {
   const offGameChat = useOffGameChat();
+
+  // reset to conversations list when component  is closed
+  useEffect(() => {
+    // timeout to bypass strict mode (dev only)
+    let isMountedLongEnough = false;
+    const timer = setTimeout(() => {
+      isMountedLongEnough = true;
+    }, 10);
+
+    return () => {
+      clearTimeout(timer);
+      if (
+        isMountedLongEnough &&
+        offGameChat.componentInView !== "conversations"
+      ) {
+        offGameChat.navigateToConversations();
+      }
+    };
+  }, [offGameChat]);
 
   return (
     <AnimatePresence mode="wait">

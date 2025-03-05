@@ -65,28 +65,6 @@ export default function GroupChatSettings({
   const [isChangingAdmin, setIsChangingAdmin] = useState(false);
   const [isAdminDialogOpen, setIsAdminDialogOpen] = useState(false);
 
-  // Set initial group name when conversation details load
-  useEffect(() => {
-    if (conversationDetails?.name) {
-      setGroupName(conversationDetails.name);
-    }
-  }, [conversationDetails]);
-
-  // Reset the movable to the conversation lists when the user closes it
-  useEffect(() => {
-    let isMountedLongEnough = false;
-    const timer = setTimeout(() => {
-      isMountedLongEnough = true;
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      if (isMountedLongEnough) {
-        chatContext.navigateToConversations();
-      }
-    };
-  }, [chatContext]);
-
   const handleChangeAdmin = async () => {
     if (!newAdminId) return;
 

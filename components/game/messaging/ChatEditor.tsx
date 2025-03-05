@@ -107,24 +107,6 @@ export default function ChatEditor({
     }
   }, [messages, hasInitialScroll]);
 
-  // reset the movable to the conversation lists when the user closes it
-  useEffect(() => {
-    // set a flag to track if we've been mounted long enough
-    let isMountedLongEnough = false;
-
-    // timeout delay to get past React's strict mode double mount (development only)
-    const timer = setTimeout(() => {
-      isMountedLongEnough = true;
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      if (isMountedLongEnough && !hasClickedConversationSettings.current) {
-        chatContext.navigateToConversations();
-      }
-    };
-  }, [chatContext]);
-
   const isGroup = conversationDetails?.isGroup;
   const participants = conversationDetails?.participants || [];
   const otherParticipant = participants.find((p) => !p.isCurrentUser);
@@ -141,7 +123,7 @@ export default function ChatEditor({
   );
 
   return (
-    <div className="flex h-full flex-col lg:h-[90%]">
+    <div className="flex h-full flex-col lg:h-full">
       <header className="flex items-center gap-4 p-4">
         <Button
           isIconOnly

@@ -118,24 +118,6 @@ export default function NewConversation({
     }
   };
 
-  // reset the movable to the conversation lists when the user closes it
-  useEffect(() => {
-    // set a flag to track if we've been mounted long enough
-    let isMountedLongEnough = false;
-
-    // timeout delay to get past React's strict mode double mount (development only)
-    const timer = setTimeout(() => {
-      isMountedLongEnough = true;
-    }, 10);
-
-    return () => {
-      clearTimeout(timer);
-      if (isMountedLongEnough && !hasSubmittedRef.current) {
-        chatContext.navigateToConversations();
-      }
-    };
-  }, [chatContext]);
-
   // get excluded IDs (current character + already selected participants)
   const excludeIds = [
     ...(currentCharacter ? [currentCharacter.id] : []),
@@ -143,7 +125,7 @@ export default function NewConversation({
   ];
 
   return (
-    <div className="flex h-full flex-col lg:h-[90%]">
+    <div className="flex h-full flex-col lg:h-full">
       <header className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
         <Button
           isIconOnly
