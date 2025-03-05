@@ -8,21 +8,17 @@ import Google from "@/components/ui/icons/logos/Google";
 
 export default function Login() {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
-  const waitTimeBeforeRetry = 5000;
 
   const handleLogin = async (provider: string) => {
     setLoadingProvider(provider);
     await login(provider);
-    setTimeout(() => {
-      setLoadingProvider(null);
-    }, waitTimeBeforeRetry);
   };
 
   return (
     <div className="flex w-44 flex-col gap-3">
       <Button
         isLoading={loadingProvider === "github"}
-        disabled={loadingProvider !== null}
+        disabled={!!loadingProvider}
         color="primary"
         variant="light"
         className="bg-default/60 text-foreground"
@@ -37,7 +33,7 @@ export default function Login() {
       </Button>
       <Button
         isLoading={loadingProvider === "google"}
-        disabled={loadingProvider !== null}
+        disabled={!!loadingProvider}
         color="primary"
         variant="light"
         className="bg-default/60 text-foreground"
