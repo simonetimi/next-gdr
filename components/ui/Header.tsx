@@ -18,7 +18,7 @@ export default function Header({
 }) {
   // controls are rendered only if the user is logged it, has at least a character and renderControls is true
   return (
-    <header className="sticky top-0 z-0 flex h-[15vh] w-screen items-center justify-between bg-transparent p-6 shadow-sm dark:bg-transparent dark:shadow-default-100">
+    <header className="sticky top-0 z-0 flex h-[15dvh] w-screen items-center justify-between bg-transparent p-6 shadow-sm dark:bg-transparent dark:shadow-default-100">
       <h1 className="absolute inset-0 flex items-center justify-center lg:static lg:flex lg:items-center lg:justify-start">
         Next GdR
       </h1>

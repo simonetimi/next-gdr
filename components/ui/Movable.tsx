@@ -127,7 +127,7 @@ export default function Movable({
           />
         </div>
         <div
-          className={`h-[92vh] p-4 lg:h-[94%] ${isMinimized ? "hidden" : ""}`}
+          className={`h-[92dvh] p-4 lg:h-[94%] ${isMinimized ? "hidden" : ""}`}
         >
           {component}
         </div>

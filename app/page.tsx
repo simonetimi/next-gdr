@@ -5,7 +5,7 @@ import { GAME_ROUTE } from "@/utils/routes";
 import { Button } from "@heroui/button";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import LoginErrorToast from "@/components/ui/LoginErrorToast";
+import LoginErrorToast from "@/components/ui/IndexErrorToast";
 
 export default async function Home({
   searchParams,
@@ -23,7 +23,7 @@ export default async function Home({
         <LoginErrorToast error={typeof error === "string" ? error : error[0]} />
       )}
       <Header />
-      <main className="flex min-h-[85vh] flex-1 flex-col items-center justify-center gap-6">
+      <main className="flex min-h-[85dvh] flex-1 flex-col items-center justify-center gap-6">
         {session ? (
           <div className="flex flex-col gap-4">
             <p>
