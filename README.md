@@ -54,6 +54,7 @@ Chat-based RPG app built with Next.js
 - [ ] Implement user settings in the client store, updated on login
 - [ ] Add the ability for masters to post a picture in chat
 - [ ] Ticket management system for masters
+- [ ] Cookie consent and GDPR compliance
 
 ### TODO
 

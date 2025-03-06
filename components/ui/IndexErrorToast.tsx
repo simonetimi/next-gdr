@@ -5,15 +5,15 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
-const errors = ["OAuthAccountNotLinked"];
+const errors = ["OAuthAccountNotLinked", "Configuration"];
 
-function LoginErrorToast({ error }: { error: string }) {
+function IndexErrorToast({ error }: { error: string }) {
   const t = useTranslations("errors");
 
   useEffect(() => {
     addToast({
-      title: t("login.title"),
-      description: errors.includes(error) ? t(`login.${error}`) : t("generic"),
+      title: t("title"),
+      description: errors.includes(error) ? t(`index.${error}`) : t("unknown"),
       color: "danger",
     });
   }, [error, t]);
@@ -21,6 +21,6 @@ function LoginErrorToast({ error }: { error: string }) {
   return null;
 }
 
-export default dynamic(() => Promise.resolve(LoginErrorToast), {
+export default dynamic(() => Promise.resolve(IndexErrorToast), {
   ssr: false,
 });
