@@ -5,11 +5,11 @@ import { isInvisible } from "@/server/character";
 import LocationChat from "@/components/game/LocationChat";
 import { getMinimalCurrentCharacter } from "@/server/character";
 import { isMaster } from "@/server/role";
-import { auth } from "@/auth";
 import LocationChatSidebar from "@/components/game/LocationChatSidebar";
 import { fetchWeather } from "@/server/weather";
 import { accessLocation } from "@/server/location";
 import { Logger } from "@/utils/logger";
+import { getCurrentUserId } from "@/server/user";
 
 export default async function LocationPage({
   params,
@@ -18,8 +18,7 @@ export default async function LocationPage({
 }) {
   const locationCode = (await params).locationCode;
 
-  const session = await auth();
-  const userId = session?.user.id;
+  const userId = await getCurrentUserId();
   if (!userId) redirect(INDEX_ROUTE);
 
   let location;

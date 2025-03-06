@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, Ref } from "react";
+import { useRef, useState, useEffect, Ref, useLayoutEffect } from "react";
 import {
   addToast,
   Button,
@@ -56,6 +56,27 @@ export default function ChatEditor({
 
   const editorRef = useRef<{ clearContent: () => void }>(null);
 
+  // reset hasInitialScroll when component unmounts
+  useEffect(() => {
+    setHasInitialScroll(false);
+  }, []);
+
+  // scroll to bottom on mount and when messages finish loading
+  useLayoutEffect(() => {
+    if (!hasInitialScroll && !isLoading && messages?.length) {
+      if (scrollContainerRef.current) {
+        // scroll after a tiny delay to ensure all content is rendered
+        requestAnimationFrame(() => {
+          if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop =
+              scrollContainerRef.current.scrollHeight;
+            setHasInitialScroll(true);
+          }
+        });
+      }
+    }
+  }, [messages, hasInitialScroll, isLoading]);
+
   const handleClearContent = () => {
     if (editorRef.current) {
       editorRef.current.clearContent();
@@ -74,9 +95,11 @@ export default function ChatEditor({
       handleClearContent();
       setMessage("");
       await refreshMessages();
-      setTimeout(() => {
-        lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
+      // navigate to the bottom
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop =
+          scrollContainerRef.current.scrollHeight;
+      }
     } catch (error) {
       let errorMessage = t("errors.generic");
       if (error instanceof Error) errorMessage = error.message;
@@ -94,18 +117,10 @@ export default function ChatEditor({
     const scrollContainer = scrollContainerRef.current;
     if (!scrollContainer || !hasInitialScroll) return;
 
-    if (scrollContainer.scrollTop <= 100 && !isLoadingMore && !isReachingEnd) {
+    if (scrollContainer.scrollTop <= 250 && !isLoadingMore && !isReachingEnd) {
       loadMore();
     }
   };
-
-  // first scroll into view when messages are loaded the first time
-  useEffect(() => {
-    if (!hasInitialScroll && messages?.length) {
-      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-      setTimeout(() => setHasInitialScroll(true), 1000);
-    }
-  }, [messages, hasInitialScroll]);
 
   const isGroup = conversationDetails?.isGroup;
   const participants = conversationDetails?.participants || [];
@@ -185,7 +200,7 @@ export default function ChatEditor({
       >
         {isReachingEnd && messages && messages.length > 0 && (
           <div className="py-2 text-center text-xs text-default-400">
-            No more messages
+            {t("components.gameChat.noMoreMessages")}
           </div>
         )}
 
@@ -278,6 +293,8 @@ const ChatMessage = ({
   ref: Ref<HTMLDivElement>;
   onOpenCharacterSheet: (characterId: string) => void;
 }) => {
+  const t = useTranslations();
+
   if (message.isSystem) {
     return (
       <div ref={ref} className="my-2 flex justify-center">
@@ -333,7 +350,7 @@ const ChatMessage = ({
                   <div className="flex flex-col gap-1">
                     {isGroup ? (
                       <div className="flex flex-wrap gap-1">
-                        Read by:
+                        {t("components.gameChat.readBy")}:{" "}
                         {Array.from(
                           new Map(
                             message.readers
@@ -361,7 +378,7 @@ const ChatMessage = ({
                       </div>
                     ) : (
                       <div className="text-xs">
-                        Read:{" "}
+                        {t("components.gameChat.read")}:{" "}
                         {message.readers[0]?.readAt &&
                           formatDateTime(message.readers[0].readAt, locale)}
                       </div>

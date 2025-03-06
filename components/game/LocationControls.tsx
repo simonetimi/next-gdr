@@ -110,8 +110,8 @@ export default function LocationControls({
           const dice = parseInt(localMessage.trim().slice(2));
           if (Number.isNaN(dice)) {
             addToast({
-              title: t("errors.chat.invalidRoll"),
-              description: t("errors.chat.invalidRollDescription"),
+              title: t("errors.locationChat.invalidRoll"),
+              description: t("errors.locationChat.invalidRollDescription"),
               color: "warning",
             });
             return;
@@ -186,7 +186,7 @@ export default function LocationControls({
     } catch (_error) {
       addToast({
         title: t("errors.title"),
-        description: t("errors.chat.savingChat"),
+        description: t("errors.locationChat.savingChat"),
         color: "danger",
       });
     }

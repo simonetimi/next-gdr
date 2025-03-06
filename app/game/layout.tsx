@@ -1,7 +1,6 @@
 import Header from "@/components/ui/Header";
 import { ReactNode } from "react";
 import { Character } from "@/models/characters";
-import { auth } from "@/auth";
 import {
   getCurrentCharacterIdOnly,
   getUserActiveCharacters,
@@ -11,6 +10,7 @@ import { NEW_CHARACTER_ROUTE, SELECT_CHARACTER_ROUTE } from "@/utils/routes";
 import { isAdmin, isMaster } from "@/server/role";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { Providers } from "@/app/game/providers";
+import { getCurrentUserId } from "@/server/user";
 
 export default async function GameLayout({
   children,
@@ -20,10 +20,10 @@ export default async function GameLayout({
   const allowMultipleCharacters = GameConfig.isMultipleCharactersAllowed();
   let characters: Character[] = [];
   let character;
-  const session = await auth();
+  const userId = await getCurrentUserId();
 
-  if (session) {
-    characters = await getUserActiveCharacters();
+  if (userId) {
+    characters = await getUserActiveCharacters(userId);
     if (characters.length === 0) {
       // no characters, go to create new character
       return redirect(NEW_CHARACTER_ROUTE);
@@ -43,8 +43,8 @@ export default async function GameLayout({
     }
   } else return;
 
-  const isUserAdmin = await isAdmin(session.user.id ?? "");
-  const isUserMaster = await isMaster(session.user.id ?? "");
+  const isUserAdmin = await isAdmin(userId);
+  const isUserMaster = await isMaster(userId);
 
   return (
     <Providers>

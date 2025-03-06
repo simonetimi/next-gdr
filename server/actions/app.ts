@@ -1,23 +1,21 @@
 "use server";
 
 import { db } from "@/database/db";
-import { auth } from "@/auth";
 import { eq, and, sql } from "drizzle-orm";
 import { sessions } from "@/database/schema/auth";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
 import { revalidatePath } from "next/cache";
 import { LOCATION_ROUTE } from "@/utils/routes";
+import { getCurrentUserId } from "@/server/user";
 
 export async function toggleInvisible(isInvisibleActive: boolean) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
+
+  const t = await getTranslations("errors.auth");
 
   const isUsermaster = await isMaster(userId);
-
-  if (!isUsermaster) throw new Error("auth.unauthorized");
+  if (!isUsermaster) throw new Error(t("unauthorized"));
 
   // logic to turn it on (also removes current location)
   if (!isInvisibleActive) {

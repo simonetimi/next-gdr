@@ -5,11 +5,11 @@ import { isInvisible } from "@/server/character";
 import LocationChat from "@/components/game/LocationChat";
 import { getMinimalCurrentCharacter } from "@/server/character";
 import { isMaster } from "@/server/role";
-import { auth } from "@/auth";
 import LocationChatSidebar from "@/components/game/LocationChatSidebar";
 import { fetchWeather } from "@/server/weather";
 import { accessSecretLocation } from "@/server/location";
 import { Logger } from "@/utils/logger";
+import { getCurrentUserId } from "@/server/user";
 
 export default async function LocationPage({
   params,
@@ -18,8 +18,7 @@ export default async function LocationPage({
 }) {
   const secretCode = (await params).secretCode;
 
-  const session = await auth();
-  const userId = session?.user.id;
+  const userId = await getCurrentUserId();
 
   let secretLocation;
   let character;

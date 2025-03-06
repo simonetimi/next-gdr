@@ -1,4 +1,4 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import {
   locationActionMessages,
@@ -9,7 +9,6 @@ import {
 import { characterSelectSchema } from "@/zod/schemas/character";
 
 const locationMessageSchema = createSelectSchema(locationMessage);
-const locationMessagesSchema = createInsertSchema(locationMessage);
 
 const actionMessageSchema = createSelectSchema(locationActionMessages);
 const whisperMessageSchema = createSelectSchema(locationWhispers);

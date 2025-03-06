@@ -8,7 +8,7 @@ export async function rollDice(
   locationId: string,
   characterId: string,
 ) {
-  const tErrors = await getTranslations("errors.chat");
+  const tErrors = await getTranslations("errors.locationChat");
 
   if (dice < 2) throw new Error(tErrors("rollAtLeastTwoDice"));
   if (dice > 100) throw new Error(tErrors("rollAtMostOneHundredDice"));

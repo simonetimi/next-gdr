@@ -10,6 +10,7 @@ import { useEffect } from "react";
 
 export function OffGameChatControl() {
   const offGameChat = useOffGameChat();
+  const { setComponentInView } = offGameChat;
 
   // reset to conversations list when component  is closed
   useEffect(() => {
@@ -21,14 +22,11 @@ export function OffGameChatControl() {
 
     return () => {
       clearTimeout(timer);
-      if (
-        isMountedLongEnough &&
-        offGameChat.componentInView !== "conversations"
-      ) {
-        offGameChat.navigateToConversations();
+      if (isMountedLongEnough) {
+        setComponentInView("conversations");
       }
     };
-  }, [offGameChat]);
+  }, [setComponentInView]);
 
   return (
     <AnimatePresence mode="wait">
@@ -37,7 +35,7 @@ export function OffGameChatControl() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.1 }}
         className="h-full"
       >
         {offGameChat.componentInView === "editor" && (

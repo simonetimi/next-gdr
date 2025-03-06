@@ -1,6 +1,5 @@
 "use server";
 
-import { auth } from "@/auth";
 import { db } from "@/database/db";
 import { characters, characterSheets } from "@/database/schema/character";
 import {
@@ -14,12 +13,10 @@ import { sessions } from "@/database/schema/auth";
 import { CHARACTER_ROUTE, GAME_ROUTE } from "@/utils/routes";
 import { revalidatePath } from "next/cache";
 import { getTranslations } from "next-intl/server";
+import { getCurrentUser, getCurrentUserId } from "@/server/user";
 
 export async function createCharacter(formData: FormData) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const validatedForm = newCharacterFormSchema.parse({
     firstName: formData.get("firstName"),
@@ -46,10 +43,7 @@ export async function createCharacter(formData: FormData) {
 }
 
 export async function setCurrentCharacter(characterId: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const now = new Date();
 
@@ -73,10 +67,7 @@ export async function setCurrentCharacter(characterId: string) {
 }
 
 export async function resetCurrentCharacter() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const now = new Date();
 
@@ -94,10 +85,8 @@ export async function increaseCharacterExperience(
   amount: number,
   characterId: string,
 ) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  await getCurrentUser();
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const character = await db
     .select({

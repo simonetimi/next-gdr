@@ -9,7 +9,6 @@ import {
   savedLocationMessages,
 } from "@/database/schema/locationMessage";
 import { and, desc, eq } from "drizzle-orm";
-import { auth } from "@/auth";
 import { characters } from "@/database/schema/character";
 import { sessions } from "@/database/schema/auth";
 import { increaseCharacterExperience } from "@/server/actions/character";
@@ -18,8 +17,7 @@ import { isMaster } from "@/server/role";
 import { Logger } from "@/utils/logger";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { AppConfig } from "@/utils/config/AppConfig";
-import Undici from "undici-types";
-import errors = Undici.errors;
+import { getCurrentUser, getCurrentUserId } from "@/server/user";
 
 export async function postActionMessage(
   locationId: string,
@@ -28,10 +26,8 @@ export async function postActionMessage(
   tag: string,
   isSecretLocation?: boolean,
 ) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  await getCurrentUser();
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   // hard limits for characters
   const hardCharsLimits = GameConfig.getCharsLimitsPerAction();
@@ -99,9 +95,7 @@ export async function postWhisper(
       }),
     );
 
-  const session = await auth();
-  const userId = session?.user?.id;
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  await getCurrentUser();
 
   const [recipientCharacter] = await db
     .select({ id: characters.id })
@@ -111,7 +105,7 @@ export async function postWhisper(
   if (!recipientCharacter) throw new Error(t("game.characters.notFound"));
 
   if (recipientCharacter.id === characterId)
-    throw new Error(t("chat.whisperSelf"));
+    throw new Error(t("locationChat.whisperSelf"));
 
   const recipientInSession = await db
     .select()
@@ -169,9 +163,7 @@ export async function postWhisperForAll(
       }),
     );
 
-  const session = await auth();
-  const userId = session?.user?.id;
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  await getCurrentUser();
 
   const [message] = await db
     .insert(locationMessage)
@@ -205,9 +197,7 @@ export async function postMasterScreen(
       }),
     );
 
-  const session = await auth();
-  const userId = session?.user?.id;
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const isUserMaster = isMaster(userId);
 
@@ -232,10 +222,7 @@ export async function postSystemMessage(
   additionalData?: string,
   isSecretLocation?: boolean,
 ) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  await getCurrentUser();
 
   const [message] = await db
     .insert(locationMessage)
@@ -266,10 +253,7 @@ export async function postSystemMessage(
 }
 
 export async function saveLocationChat(htmlContent: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  await getCurrentUser();
 
   const [savedChat] = await db
     .insert(savedLocationMessages)
@@ -280,8 +264,6 @@ export async function saveLocationChat(htmlContent: string) {
 
   return domain + "/api/game/saved-chat/" + savedChat.id;
 }
-
-//
 
 // TODO method to fetch them all (from a single location) regardless of time (for the admins)
 

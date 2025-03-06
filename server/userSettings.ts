@@ -3,16 +3,17 @@ import "server-only";
 import { db } from "@/database/db";
 import { userSettings } from "@/database/schema/userSettings";
 import { eq, getTableColumns } from "drizzle-orm";
-import { auth } from "@/auth";
-import { getTranslations } from "next-intl/server";
+
+import { getCurrentUserId } from "@/server/user";
 
 export async function getUserSettings() {
-  const session = await auth();
-  const currentUserId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !currentUserId) throw new Error(t("unauthenticated"));
+  const currentUserId = await getCurrentUserId();
 
-  const { id, userId, ...userSettingsColumns } = getTableColumns(userSettings);
+  const {
+    id: _id,
+    userId: _userId,
+    ...userSettingsColumns
+  } = getTableColumns(userSettings);
   const [settings] = await db
     .select({ ...userSettingsColumns })
     .from(userSettings)

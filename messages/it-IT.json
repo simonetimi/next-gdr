@@ -54,6 +54,9 @@
       "noConversationFound": "Nessuna conversazione trovata",
       "noMoreCharacters": "Non ci sono più personaggi da aggiungere",
       "newMessages": "Nuovi messaggi",
+      "noMoreMessages": "Non ci sono più messaggi",
+      "read": "Letto",
+      "readBy": "Letto da",
       "settings": {
         "title": "Impostazioni conversazione",
         "groupName": "Nome del gruppo",
@@ -220,7 +223,7 @@
         "notFoundInLocation": "Personaggio non trovato tra i presenti"
       }
     },
-    "chat": {
+    "locationChat": {
       "whisperSelf": "Non puoi sussurrare a te stesso",
       "rollAtLeastTwoDice": "Devi lanciare almeno un dado d2",
       "rollAtMostOneHundredDice": "Devi lanciare al massimo un dado d100",

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { isMaster } from "@/server/role";
 import { db } from "@/database/db";
@@ -17,12 +16,11 @@ import { fullLocationMessagesSchema } from "@/zod/schemas/locationMessages";
 import { Logger } from "@/utils/logger";
 import { GameConfig } from "@/utils/config/GameConfig";
 import { getCurrentCharacterIdOnlyFromUserId } from "@/server/character";
+import { getCurrentUser, getCurrentUserId } from "@/server/user";
 
 export async function fetchAllLocationMessages(locationId: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const userId = await getCurrentUserId();
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("unauthenticated"));
 
   const isUsermaster = await isMaster(userId);
 
@@ -123,10 +121,7 @@ export async function fetchAllLocationMessagesWithCharacters(
   lastMessageTimestamp?: Date | null,
   isSecretLocation: boolean = false,
 ) {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const isUserMaster = await isMaster(userId);
 
@@ -255,10 +250,8 @@ export async function fetchAllLocationMessagesWithCharacters(
 }
 
 export async function getSavedChat(id: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  await getCurrentUser();
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const [savedChat] = await db
     .select({ htmlContent: savedLocationMessages.htmlContent })
@@ -266,7 +259,7 @@ export async function getSavedChat(id: string) {
     .where(eq(savedLocationMessages.id, id));
 
   if (!savedChat || !savedChat.htmlContent) {
-    throw new Error(t("chat.notFound"));
+    throw new Error(t("locationChat.notFound"));
   }
 
   return savedChat;

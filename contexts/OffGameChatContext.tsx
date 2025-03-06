@@ -22,6 +22,7 @@ export type OffGameChatContext = {
   currentConversation: OffGameConversation | null;
   componentInView: ComponentInView;
   type: "off";
+  setComponentInView: Dispatch<SetStateAction<ComponentInView>>;
 };
 
 const OffGameChatContext = createContext<OffGameChatContext | undefined>(
@@ -64,6 +65,7 @@ export function OffGameChatProvider({ children }: { children: ReactNode }) {
         currentConversation,
         componentInView,
         type: "off",
+        setComponentInView,
       }}
     >
       {children}

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { auth } from "@/auth";
 import { getTranslations } from "next-intl/server";
 import { db } from "@/database/db";
 import { sessions, users } from "@/database/schema/auth";
@@ -18,12 +17,10 @@ import { isAdmin, isMaster } from "@/server/role";
 import { races } from "@/database/schema/race";
 import { z } from "zod";
 import { onlineUsersSchema } from "@/zod/schemas/session";
+import { getCurrentUser, getCurrentUserId } from "@/server/user";
 
 export async function getMinimalCurrentCharacter() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const now = new Date();
 
@@ -46,10 +43,7 @@ export async function getMinimalCurrentCharacter() {
 }
 
 export async function getCurrentCharacterIdOnly() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const now = new Date();
 
@@ -79,10 +73,9 @@ export async function getCurrentCharacterIdOnlyFromUserId(userId: string) {
 }
 
 export async function getCharacterSheet(characterId: string) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const userId = await getCurrentUserId();
+
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
 
   const hasFullPermission = (await isAdmin(userId)) || (await isMaster(userId));
 
@@ -157,15 +150,11 @@ export async function getCharacterSheet(characterId: string) {
     characterSheet.masterNotes = null;
   }
 
-  // since this is the returned from the db and we have full control, the parsing isn't strictly necessary
   return characterSheetSchemaWithCharacter.parse(characterSheet);
 }
 
 export async function getOnlineCharacters() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  await getCurrentUser();
 
   const now = new Date();
 
@@ -220,11 +209,9 @@ export async function getOnlineCharacters() {
   return onlineUsersSchema.parse(results);
 }
 
-export async function getUserActiveCharacters() {
-  const session = await auth();
-  const userId = session?.user?.id;
+export async function getUserActiveCharacters(userId: string) {
   const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  if (!userId) throw new Error(t("auth.unauthenticated"));
 
   const charactersList = await db
     .select()
@@ -235,10 +222,7 @@ export async function getUserActiveCharacters() {
 }
 
 export async function isInvisible() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const t = await getTranslations("errors");
-  if (!session || !userId) throw new Error(t("auth.unauthenticated"));
+  const userId = await getCurrentUserId();
 
   const results = await db
     .select({ invisibleMode: sessions.invisibleMode })
@@ -251,6 +235,8 @@ export async function isInvisible() {
 }
 
 export async function getAllActiveCharacters() {
+  await getCurrentUser();
+
   const charactersList = await db
     .select({
       id: characters.id,

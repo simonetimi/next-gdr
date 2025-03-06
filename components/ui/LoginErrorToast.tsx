@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
+const errors = ["OAuthAccountNotLinked"];
+
 function LoginErrorToast({ error }: { error: string }) {
   const t = useTranslations("errors");
-
-  const errors = ["OAuthAccountNotLinked"];
 
   useEffect(() => {
     addToast({
