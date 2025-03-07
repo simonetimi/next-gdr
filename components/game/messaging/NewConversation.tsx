@@ -1,7 +1,7 @@
 import { OffGameChatContext } from "@/contexts/OffGameChatContext";
 import { addToast, Button, Chip, Input, Avatar } from "@heroui/react";
 import { useMinimalCharacters } from "@/hooks/swr/useMinimalCharacters";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useGame } from "@/contexts/GameContext";
 import Editor from "@/components/editor/Editor";
 import { ArrowLeftIcon, Send } from "lucide-react";
@@ -34,7 +34,6 @@ export default function NewConversation({
   const [message, setMessage] = useState("");
   const [groupName, setGroupName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasSubmittedRef = useRef(false); // TODO remove
 
   const handleCharacterSelect = (characterId: string) => {
     if (!characters) return;
@@ -103,7 +102,6 @@ export default function NewConversation({
         // On-game chat logic here
       }
 
-      hasSubmittedRef.current = true; // TODO REMOVE
       // navigate to the editor with the right conversation id
       chatContext.navigateToEditor(conversation ?? null);
     } catch (error) {
@@ -172,8 +170,7 @@ export default function NewConversation({
         {isGroup && (
           <Input
             className="w-[200px]"
-            label="Group name"
-            placeholder="Enter group name"
+            label={t("components.gameChat.groupName")}
             value={groupName}
             onValueChange={setGroupName}
           />

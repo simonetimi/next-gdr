@@ -6,6 +6,7 @@ import { Button } from "@heroui/button";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import LoginErrorToast from "@/components/ui/IndexErrorToast";
+import { Card, CardBody } from "@heroui/card";
 
 export default async function Home({
   searchParams,
@@ -24,18 +25,32 @@ export default async function Home({
       )}
       <Header />
       <main className="flex min-h-[85dvh] flex-1 flex-col items-center justify-center gap-6">
-        {session ? (
-          <div className="flex flex-col gap-4">
-            <p>
-              {t("welcome")}, {session.user?.name}!
-            </p>
-            <Button as={Link} color="primary" href={GAME_ROUTE} variant="solid">
-              {t("enter")}
-            </Button>
-          </div>
-        ) : (
-          <Login />
-        )}
+        <Card
+          className="px-20 py-12 dark:border dark:border-default/90"
+          isBlurred
+          shadow="sm"
+        >
+          <CardBody className="flex w-full flex-col items-center justify-center gap-8">
+            {session ? (
+              <>
+                <p>
+                  {t("welcome")}, {session.user?.name}!
+                </p>
+                <Button
+                  as={Link}
+                  color="primary"
+                  href={GAME_ROUTE}
+                  variant="solid"
+                  className="w-full"
+                >
+                  {t("enter")}
+                </Button>
+              </>
+            ) : (
+              <Login />
+            )}
+          </CardBody>
+        </Card>
       </main>
     </>
   );

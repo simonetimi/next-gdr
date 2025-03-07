@@ -1,5 +1,6 @@
 {
   "general": {
+    "appName": "Next GdR",
     "entryLocationName": "Mappa",
     "secretLocationName": "Luoghi segreti",
     "success": "Successo"
@@ -11,6 +12,10 @@
     }
   },
   "components": {
+    "login": {
+      "title": "Entra su {appName}",
+      "subheading": "Benvenuto! Accedi per continuare"
+    },
     "map": {
       "select": {
         "placeholder": "Scegli un luogo",
@@ -57,6 +62,7 @@
       "noMoreMessages": "Non ci sono più messaggi",
       "read": "Letto",
       "readBy": "Letto da",
+      "groupName": "Nome del gruppo",
       "settings": {
         "title": "Impostazioni conversazione",
         "groupName": "Nome del gruppo",
